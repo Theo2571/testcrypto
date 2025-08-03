@@ -1,0 +1,493 @@
+/* Token Content */
+.token-content {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Token Container */
+.token-container {
+  padding: 20px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Connection Banner */
+.token-connection-banner {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  margin: 20px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.token-connection-banner h2 {
+  margin: 0 0 16px 0;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.token-connection-banner p {
+  margin: 0 0 20px 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+}
+
+/* Token Portfolio Card */
+.token-portfolio-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-bottom: 16px;
+}
+
+.portfolio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.portfolio-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.total-value {
+  text-align: right;
+}
+
+.total-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.total-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #667eea;
+  margin: 0;
+}
+
+/* Search Section */
+.search-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-bottom: 16px;
+}
+
+.search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.search-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.add-token-button {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color: white;
+  --border-radius: 12px;
+  height: 36px;
+  font-weight: 600;
+  font-size: 14px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+.token-searchbar {
+  --background: rgba(249, 250, 251, 0.8);
+  --border-radius: 12px;
+  --box-shadow: none;
+  --color: #111827;
+  margin-bottom: 16px;
+}
+
+/* Token List */
+.token-list {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-bottom: 16px;
+}
+
+.token-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.token-list-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.token-count {
+  font-size: 14px;
+  color: #6b7280;
+  background: rgba(243, 244, 246, 0.8);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.token-item {
+  background: rgba(249, 250, 251, 0.8);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.token-item:hover {
+  background: rgba(243, 244, 246, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.token-item:last-child {
+  margin-bottom: 0;
+}
+
+.token-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 16px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.token-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: 16px;
+}
+
+.token-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.token-symbol {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.token-name {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.token-balance {
+  text-align: right;
+}
+
+.token-amount {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.token-value {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.token-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.token-action-button {
+  --background: transparent;
+  --color: #6b7280;
+  --border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.token-action-button:hover {
+  --background: rgba(243, 244, 246, 0.8);
+  --color: #667eea;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  color: #d1d5db;
+  margin-bottom: 16px;
+}
+
+.empty-state-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 8px 0;
+}
+
+.empty-state-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Loading State */
+.loading-item {
+  padding: 16px;
+  margin-bottom: 12px;
+  background: rgba(249, 250, 251, 0.8);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.loading-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 16px;
+  background: #e5e7eb;
+}
+
+.loading-content {
+  flex: 1;
+}
+
+.loading-text {
+  height: 16px;
+  background: #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.loading-text.short {
+  width: 60%;
+}
+
+.loading-text.long {
+  width: 80%;
+}
+
+/* Popular Tokens */
+.popular-tokens {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.popular-tokens-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 16px 0;
+}
+
+.popular-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.popular-token-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.popular-token-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.popular-token-symbol {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 4px 0;
+}
+
+.popular-token-name {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+/* Statistics */
+.token-stats {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 16px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 4px 0;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .token-container {
+    padding: 16px;
+  }
+  
+  .token-portfolio-card,
+  .search-section,
+  .token-list {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  
+  .popular-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .token-item {
+    padding: 12px;
+  }
+  
+  .token-avatar,
+  .token-placeholder {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .token-portfolio-card,
+  .search-section,
+  .token-list {
+    background: rgba(31, 41, 55, 0.95);
+    border: 1px solid rgba(75, 85, 99, 0.3);
+  }
+  
+  .portfolio-title,
+  .search-title,
+  .token-list-title,
+  .token-symbol,
+  .token-amount {
+    color: #f3f4f6;
+  }
+  
+  .total-label,
+  .token-name,
+  .token-value,
+  .empty-state-description {
+    color: #9ca3af;
+  }
+  
+  .empty-state-title {
+    color: #e5e7eb;
+  }
+  
+  .token-item {
+    background: rgba(55, 65, 81, 0.8);
+    border-color: rgba(75, 85, 99, 0.8);
+  }
+  
+  .token-item:hover {
+    background: rgba(75, 85, 99, 0.9);
+  }
+  
+  .token-count {
+    background: rgba(55, 65, 81, 0.8);
+    color: #9ca3af;
+  }
+  
+  .token-searchbar {
+    --background: rgba(55, 65, 81, 0.8);
+    --color: #f3f4f6;
+  }
+  
+  .loading-avatar,
+  .loading-text {
+    background: #4b5563;
+  }
+}

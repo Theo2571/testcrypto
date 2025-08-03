@@ -1,0 +1,1644 @@
+========================
+CODE SNIPPETS
+========================
+TITLE: Setup Development Environment for CoinGecko TypeScript SDK
+DESCRIPTION: Installs required dependencies and builds output files for the CoinGecko TypeScript SDK using Yarn. This prepares the project for development by ensuring all necessary packages are installed and compiled.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+$ yarn
+$ yarn build
+```
+
+----------------------------------------
+
+TITLE: Run a TypeScript Example
+DESCRIPTION: Provides commands to make an example script executable and then run it against the API using `yarn tsn`. This allows developers to test custom examples and verify their functionality.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+$ chmod +x examples/<your-example>.ts
+# run the example against your api
+$ yarn tsn -T examples/<your-example>.ts
+```
+
+----------------------------------------
+
+TITLE: Add a New TypeScript Example
+DESCRIPTION: Illustrates how to add a new TypeScript example file within the `examples/` directory. Files in this directory are not modified by the code generator, allowing for free editing and custom example creation.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+// add an example to examples/<your-example>.ts
+
+#!/usr/bin/env -S npm run tsn -T
+…
+```
+
+----------------------------------------
+
+TITLE: Install CoinGecko TypeScript SDK via Git
+DESCRIPTION: Demonstrates how to install the CoinGecko TypeScript SDK directly from its Git repository using npm. This method is useful for consuming the package directly from source control, bypassing npm registry publications.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_3
+
+LANGUAGE: sh
+CODE:
+```
+$ npm install git+ssh://git@github.com:coingecko/coingecko-typescript.git
+```
+
+----------------------------------------
+
+TITLE: Install and Run Coingecko MCP Server Directly via npx
+DESCRIPTION: This snippet demonstrates how to directly run the Coingecko MCP Server using `npx`. It requires setting environment variables for API keys and the desired environment before execution, providing a quick setup for server operation.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+export COINGECKO_PRO_API_KEY="My Pro API Key"
+export COINGECKO_DEMO_API_KEY="My Demo API Key"
+export COINGECKO_ENVIRONMENT="pro"
+npx -y @coingecko/coingecko-mcp@latest
+```
+
+----------------------------------------
+
+TITLE: Install Coingecko TypeScript Library
+DESCRIPTION: Instructions to install the Coingecko TypeScript API library using npm, making it available for use in your project.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+npm install @coingecko/coingecko-typescript
+```
+
+----------------------------------------
+
+TITLE: Set Up Mock Server for Tests
+DESCRIPTION: Explains how to set up a mock server using `npx prism` against an OpenAPI specification. This mock server is a prerequisite for running most tests in the repository, simulating API responses.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_6
+
+LANGUAGE: sh
+CODE:
+```
+$ npx prism mock path/to/your/openapi.yml
+```
+
+----------------------------------------
+
+TITLE: Run CoinGecko TypeScript SDK Tests
+DESCRIPTION: Command to execute the test suite for the CoinGecko TypeScript SDK. It is important to note that a mock server must be running for most tests to function correctly.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_7
+
+LANGUAGE: sh
+CODE:
+```
+$ yarn run test
+```
+
+----------------------------------------
+
+TITLE: Initialize Coingecko Client and Fetch Price (JavaScript)
+DESCRIPTION: Demonstrates how to initialize the Coingecko client with an API key and fetch the price of Bitcoin using the simple price API. This example shows a basic asynchronous call and logging the result.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_1
+
+LANGUAGE: js
+CODE:
+```
+import Coingecko from '@coingecko/coingecko-typescript';
+
+const client = new Coingecko({
+  proAPIKey: process.env['COINGECKO_PRO_API_KEY'],
+  // demoAPIKey: process.env['COINGECKO_DEMO_API_KEY'], // Optional, for Demo API access
+  environment: 'pro', // 'demo' to initialize the client with Demo API access
+});
+
+async function main() {
+  const price = await client.simple.price.get({ vs_currencies: 'usd', ids: 'bitcoin' });
+  console.log(price);
+}
+
+main()
+```
+
+----------------------------------------
+
+TITLE: Configure Proxy for Coingecko Client in Deno
+DESCRIPTION: This example demonstrates how to configure a proxy for the Coingecko client in a Deno environment. It uses `Deno.createHttpClient` to create an HTTP client with proxy settings, which is then assigned to the `client` property within `fetchOptions`.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_16
+
+LANGUAGE: typescript
+CODE:
+```
+import Coingecko from 'npm:@coingecko/coingecko-typescript';
+
+const httpClient = Deno.createHttpClient({ proxy: { url: 'http://localhost:8888' } });
+const client = new Coingecko({
+  fetchOptions: {
+    client: httpClient,
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Link Local CoinGecko TypeScript SDK Repository (pnpm)
+DESCRIPTION: Shows how to link a locally cloned CoinGecko TypeScript SDK repository into another project using pnpm. This method facilitates local development and testing of changes without requiring a package publication.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_5
+
+LANGUAGE: sh
+CODE:
+```
+# With pnpm
+$ pnpm link --global
+$ cd ../my-package
+$ pnpm link -—global @coingecko/coingecko-typescript
+```
+
+----------------------------------------
+
+TITLE: Link Local CoinGecko TypeScript SDK Repository (Yarn)
+DESCRIPTION: Shows how to link a locally cloned CoinGecko TypeScript SDK repository into another project using Yarn. This is beneficial for local development and testing changes without needing to publish the package.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_4
+
+LANGUAGE: sh
+CODE:
+```
+# Clone
+$ git clone https://www.github.com/coingecko/coingecko-typescript
+$ cd coingecko-typescript
+
+# With yarn
+$ yarn link
+$ cd ../my-package
+$ yarn link @coingecko/coingecko-typescript
+```
+
+----------------------------------------
+
+TITLE: Configure Coingecko MCP Server for MCP Client via JSON
+DESCRIPTION: This JSON configuration snippet illustrates how to integrate the Coingecko MCP Server into an MCP client's setup. It defines the command, arguments, and environment variables necessary for the server to be invoked by the client, including dynamic tool exposure.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "mcpServers": {
+    "coingecko_coingecko_typescript_api": {
+      "command": "npx",
+      "args": ["-y", "@coingecko/coingecko-mcp", "--client=claude", "--tools=dynamic"],
+      "env": {
+        "COINGECKO_PRO_API_KEY": "My Pro API Key",
+        "COINGECKO_DEMO_API_KEY": "My Demo API Key",
+        "COINGECKO_ENVIRONMENT": "pro"
+      }
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Proxy for Coingecko Client in Node.js
+DESCRIPTION: This example shows how to configure a proxy for the Coingecko client when running in a Node.js environment. It utilizes `undici.ProxyAgent` to route requests through a specified proxy server, which is then passed as a `dispatcher` in the `fetchOptions`.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_14
+
+LANGUAGE: typescript
+CODE:
+```
+import Coingecko from '@coingecko/coingecko-typescript';
+import * as undici from 'undici';
+
+const proxyAgent = new undici.ProxyAgent('http://localhost:8888');
+const client = new Coingecko({
+  fetchOptions: {
+    dispatcher: proxyAgent,
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Complex Filtering of MCP Server Tools with Multiple Criteria
+DESCRIPTION: This example showcases advanced filtering capabilities by combining multiple criteria for the MCP Server. It includes read operations for `cards` and `accounts` resources, filters by the `kyc` tag, and explicitly excludes the `create_cards` tool, demonstrating comprehensive control.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+--resource=cards,accounts --operation=read --tag=kyc --no-tool=create_cards
+```
+
+----------------------------------------
+
+TITLE: Lint CoinGecko TypeScript SDK Code
+DESCRIPTION: Runs ESLint to check for code quality and style issues in the CoinGecko TypeScript SDK repository. This command helps maintain consistent code standards and identify potential problems.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_8
+
+LANGUAGE: sh
+CODE:
+```
+$ yarn lint
+```
+
+----------------------------------------
+
+TITLE: API Resource: Get Token Price
+DESCRIPTION: Provides an endpoint to retrieve the price of a token based on its contract address on a network.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_27
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_addresses_networks_simple_onchain_token_price (read)
+Description: This endpoint allows you to get token price based on the provided token contract address on a network.
+```
+
+----------------------------------------
+
+TITLE: Format and Fix Lint Issues in CoinGecko TypeScript SDK
+DESCRIPTION: Automatically formats code using Prettier and fixes ESLint issues. This command helps ensure code adheres to the project's predefined formatting and style guidelines, improving code readability and consistency.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/CONTRIBUTING.md#_snippet_9
+
+LANGUAGE: sh
+CODE:
+```
+$ yarn fix
+```
+
+----------------------------------------
+
+TITLE: API Resource: Get Token OHLCV Chart
+DESCRIPTION: Provides an endpoint to retrieve Open, High, Low, Close, Volume (OHLCV) chart data for a specific token.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_21
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_timeframe_tokens_networks_onchain_ohlcv (read)
+Description: This endpoint allows you to get the OHLCV chart (Open, High, Low, Close, Volume) of a token based on the provided token address on a network.
+```
+
+----------------------------------------
+
+TITLE: Accessing Raw HTTP Response Data in Coingecko TypeScript Client
+DESCRIPTION: Demonstrates how to access the raw `Response` object from `fetch()` using `.asResponse()` to get headers immediately, or `.withResponse()` to get the raw response along with parsed data after the body is consumed. This is useful for inspecting HTTP details like headers and status.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_6
+
+LANGUAGE: TypeScript
+CODE:
+```
+const client = new Coingecko();
+
+const response = await client.simple.price.get({ vs_currencies: 'usd', ids: 'bitcoin' }).asResponse();
+console.log(response.headers.get('X-My-Header'));
+console.log(response.statusText); // access the underlying Response object
+
+const { data: price, response: raw } = await client.simple.price
+  .get({ vs_currencies: 'usd', ids: 'bitcoin' })
+  .withResponse();
+console.log(raw.headers.get('X-My-Header'));
+console.log(price);
+```
+
+----------------------------------------
+
+TITLE: Filter MCP Server Tools for Read Operations on Cards Resource
+DESCRIPTION: This command-line example demonstrates how to filter the MCP Server's exposed tools. It specifically includes only read operations (`--operation=read`) for endpoints related to the `cards` resource (`--resource=cards`), helping to manage the AI's context window.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+--resource=cards --operation=read
+```
+
+----------------------------------------
+
+TITLE: API Resource: Get Pool OHLCV Chart
+DESCRIPTION: Provides an endpoint to retrieve Open, High, Low, Close, Volume (OHLCV) chart data for a specific pool.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_15
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_timeframe_pools_networks_onchain_ohlcv (read)
+Description: This endpoint allows you to get the OHLCV chart (Open, High, Low, Close, Volume) of a pool based on the provided pool address on a network.
+```
+
+----------------------------------------
+
+TITLE: Exclude Specific Tools While Including Others in MCP Server
+DESCRIPTION: This example illustrates how to selectively manage exposed tools by including all tools under the `cards` resource while explicitly excluding a specific tool, `create_cards`, using the `--no-tool` argument. This provides fine-grained control over available functionalities.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+--resource=cards --no-tool=create_cards
+```
+
+----------------------------------------
+
+TITLE: API Resource: Get Token Holders Chart
+DESCRIPTION: Provides an endpoint to retrieve historical token holders chart data for a specific token.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_20
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_tokens_networks_onchain_holders_chart (read)
+Description: This endpoint allows you to get the historical token holders chart based on the provided token contract address on a network.
+```
+
+----------------------------------------
+
+TITLE: Use Undocumented Request Parameters in Coingecko TypeScript Client
+DESCRIPTION: Demonstrates how to include undocumented parameters in API requests using `// @ts-expect-error` to bypass TypeScript type checking. The library sends these extra values as-is, either in the query for GET requests or in the body for other request types.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_10
+
+LANGUAGE: TypeScript
+CODE:
+```
+client.simple.price.get({
+  // ...
+  // @ts-expect-error baz is not yet public
+  baz: 'undocumented option',
+});
+```
+
+----------------------------------------
+
+TITLE: Importing and Initializing CoinGecko MCP Server and Tools
+DESCRIPTION: Demonstrates how to import the CoinGecko MCP server, generated endpoints, and individual tools. It shows how to initialize the server with default or custom endpoints, including defining a custom tool with a Zod schema.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_8
+
+LANGUAGE: javascript
+CODE:
+```
+// Import the server, generated endpoints, or the init function
+import { server, endpoints, init } from "@coingecko/coingecko-mcp/server";
+
+// import a specific tool
+import getAssetPlatforms from "@coingecko/coingecko-mcp/tools/asset-platforms/get-asset-platforms";
+
+// initialize the server and all endpoints
+init({ server, endpoints });
+
+// manually start server
+const transport = new StdioServerTransport();
+await server.connect(transport);
+
+// or initialize your own server with specific tools
+const myServer = new McpServer(...);
+
+// define your own endpoint
+const myCustomEndpoint = {
+  tool: {
+    name: 'my_custom_tool',
+    description: 'My custom tool',
+    inputSchema: zodToJsonSchema(z.object({ a_property: z.string() })),
+  },
+  handler: async (client: client, args: any) => {
+    return { myResponse: 'Hello world!' };
+  })
+};
+
+// initialize the server with your custom endpoints
+init({ server: myServer, endpoints: [getAssetPlatforms, myCustomEndpoint] });
+```
+
+----------------------------------------
+
+TITLE: Configure Proxy for Coingecko Client in Bun
+DESCRIPTION: This snippet illustrates how to set up a proxy for the Coingecko client when using the Bun runtime. Bun provides a direct `proxy` option within `fetchOptions`, simplifying the configuration to route requests through a specified proxy URL.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_15
+
+LANGUAGE: typescript
+CODE:
+```
+import Coingecko from '@coingecko/coingecko-typescript';
+
+const client = new Coingecko({
+  fetchOptions: {
+    proxy: 'http://localhost:8888',
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Available CoinGecko MCP Server API Tools
+DESCRIPTION: Lists all the available resources and their respective endpoints provided by the CoinGecko MCP server, detailing their purpose and functionality for accessing various CoinGecko data.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: asset_platforms
+  - get_asset_platforms (read): Query all the asset platforms on CoinGecko.
+
+Resource: coins
+  - get_id_coins (read): Query all the metadata (image, websites, socials, description, contract address, etc.) and market data (price, ATH, exchange tickers, etc.) of a coin from the CoinGecko coin page based on a particular coin ID.
+
+Resource: coins.categories
+  - get_list_coins_categories (read): Query all the coins categories on CoinGecko.
+
+Resource: coins.list
+  - get_coins_list (read): Query all the supported coins on CoinGecko with coins ID, name and symbol.
+  - get_new_coins_list (read): Query the latest 200 coins that recently listed on CoinGecko.
+
+Resource: coins.markets
+  - get_coins_markets (read): Query all the supported coins with price, market cap, volume and market related data.
+
+Resource: coins.top_gainers_losers
+  - get_coins_top_gainers_losers (read): Query the top 30 coins with largest price gain and loss by a specific time duration.
+
+Resource: coins.contract
+  - get_coins_contract (read): Query all the metadata (image, websites, socials, description, contract address, etc.) and market data (price, ATH, exchange tickers, etc.) of a coin from the CoinGecko coin page based on an asset platform and a particular token contract address.
+
+Resource: coins.contract.market_chart
+  - get_range_contract_coins_market_chart (read): Get the historical chart data within certain time range in UNIX along with price, market cap and 24hr volume based on asset platform and particular token contract address.
+
+Resource: coins.history
+  - get_coins_history (read): Query the historical data (price, market cap, 24hrs volume, ...) at a given date for a coin based on a particular coin ID.
+
+Resource: coins.market_chart
+  - get_range_coins_market_chart (read): Get the historical chart data of a coin within certain time range in UNIX along with price, market cap and 24hr volume based on particular coin ID.
+
+Resource: coins.ohlc
+  - get_range_coins_ohlc (read): Get the OHLC chart (Open, High, Low, Close) of a coin within a range of timestamp based on particular coin ID.
+
+Resource: global
+  - get_global (read): Query cryptocurrency global data including active cryptocurrencies, markets, total crypto market cap and etc.
+
+Resource: nfts
+  - get_id_nfts (read): Query all the NFT data (name, floor price, 24hr volume ...) based on the NFT collection ID.
+  - get_list_nfts (read): Query all supported NFTs with ID, contract address, name, asset platform ID and symbol on CoinGecko.
+
+Resource: nfts.market_chart
+  - get_nfts_market_chart (read): Query historical market data of a NFT collection, including floor price, market cap, and 24hr volume, by number of days away from now.
+
+Resource: onchain.categories
+  - get_onchain_categories (read): Query all the supported categories on GeckoTerminal.
+  - get_pools_onchain_categories (read): Query all the pools based on the provided category ID.
+
+Resource: onchain.networks
+  - get_onchain_networks (read): Query all the supported networks on GeckoTerminal.
+```
+
+----------------------------------------
+
+TITLE: MCP Server Client Compatibility and Capability Configuration API
+DESCRIPTION: This section details the command-line arguments for configuring MCP server compatibility with various clients and enabling specific capabilities. The `--client` argument sets predefined capabilities, while `--capability` allows manual fine-tuning of features like union support, JSON parsing, and tool name length.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+--client=<type>: Set all capabilities based on a known MCP client.
+  Valid values: openai-agents, claude, claude-code, cursor.
+  Example: --client=cursor
+
+--capability=<name>: Specify individual client capabilities.
+  Available capabilities:
+    top-level-unions: Enable support for top-level unions in tool schemas.
+    valid-json: Enable JSON string parsing for arguments.
+    refs: Enable support for $ref pointers in schemas.
+    unions: Enable support for union types (anyOf) in schemas.
+    formats: Enable support for format validations in schemas (e.g. date-time, email).
+    tool-name-length=N: Set maximum tool name length to N characters.
+  Example: --capability=top-level-unions --capability=tool-name-length=40
+  Example: --capability=top-level-unions,tool-name-length=40
+```
+
+----------------------------------------
+
+TITLE: API Reference: Simple Supported Vs Currencies
+DESCRIPTION: Documents the API for retrieving a list of supported vs (fiat) currencies for price conversions.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_42
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Simple Supported Vs Currencies
+Types:
+  SupportedVsCurrencyGetResponse
+Methods:
+  get /simple/supported_vs_currencies
+    client.simple.supportedVsCurrencies.get() -> SupportedVsCurrencyGetResponse
+```
+
+----------------------------------------
+
+TITLE: Polyfill Global Fetch for Coingecko TypeScript Client
+DESCRIPTION: Shows how to polyfill the global `fetch` function if you want to use a different `fetch` implementation than the default one expected by the library.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_11
+
+LANGUAGE: TypeScript
+CODE:
+```
+import fetch from 'my-fetch';
+
+globalThis.fetch = fetch;
+```
+
+----------------------------------------
+
+TITLE: API Documentation for On-Chain Tokens
+DESCRIPTION: Detailed API documentation for interacting with on-chain tokens, covering token information by address, multi-address queries, general info, and top holders.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_28
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tokens:
+  Types:
+    - TokenGetAddressResponse
+  Methods:
+    - client.onchain.networks.tokens.getAddress(address, { ...params }) -> TokenGetAddressResponse (GET /onchain/networks/{network}/tokens/{address})
+
+  Multi:
+    Types:
+      - MultiGetAddressesResponse
+    Methods:
+      - client.onchain.networks.tokens.multi.getAddresses(addresses, { ...params }) -> MultiGetAddressesResponse (GET /onchain/networks/{network}/tokens/multi/{addresses})
+
+  Info:
+    Types:
+      - InfoGetResponse
+    Methods:
+      - client.onchain.networks.tokens.info.get(address, { ...params }) -> InfoGetResponse (GET /onchain/networks/{network}/tokens/{address}/info)
+
+  TopHolders:
+    Types:
+      - TopHolderGetResponse
+    Methods:
+      - client.onchain.networks.tokens.topHolders.get(address, { ...params }) -> TopHolderGetResponse (GET /onchain/networks/{network}/tokens/{address}/top_holders)
+```
+
+----------------------------------------
+
+TITLE: Configure Custom Fetch Options for Coingecko Client
+DESCRIPTION: This snippet demonstrates how to provide custom `fetchOptions` when instantiating the Coingecko client. These options can be any valid `RequestInit` properties, allowing for fine-grained control over network requests. Request-specific options will override client-level settings.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_13
+
+LANGUAGE: typescript
+CODE:
+```
+import Coingecko from '@coingecko/coingecko-typescript';
+
+const client = new Coingecko({
+  fetchOptions: {
+    // `RequestInit` options
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: API Documentation for On-Chain Pools
+DESCRIPTION: Comprehensive API documentation for interacting with on-chain pools, including general pool information, multi-address queries, detailed info, OHLCV data, and trade history.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_27
+
+LANGUAGE: APIDOC
+CODE:
+```
+Pools:
+  Types:
+    - PoolGetResponse
+    - PoolGetAddressResponse
+  Methods:
+    - client.onchain.networks.pools.get(network, { ...params }) -> PoolGetResponse (GET /onchain/networks/{network}/pools)
+    - client.onchain.networks.pools.getAddress(address, { ...params }) -> PoolGetAddressResponse (GET /onchain/networks/{network}/pools/{address})
+
+  Multi:
+    Types:
+      - MultiGetAddressesResponse
+    Methods:
+      - client.onchain.networks.pools.multi.getAddresses(addresses, { ...params }) -> MultiGetAddressesResponse (GET /onchain/networks/{network}/pools/multi/{addresses})
+
+  Info:
+    Types:
+      - InfoGetResponse
+    Methods:
+      - client.onchain.networks.pools.info.get(poolAddress, { ...params }) -> InfoGetResponse (GET /onchain/networks/{network}/pools/{pool_address}/info)
+
+  Ohlcv:
+    Types:
+      - OhlcvGetTimeframeResponse
+    Methods:
+      - client.onchain.networks.pools.ohlcv.getTimeframe(timeframe, { ...params }) -> OhlcvGetTimeframeResponse (GET /onchain/networks/{network}/pools/{pool_address}/ohlcv/{timeframe})
+
+  Trades:
+    Types:
+      - TradeGetResponse
+    Methods:
+      - client.onchain.networks.pools.trades.get(poolAddress, { ...params }) -> TradeGetResponse (GET /onchain/networks/{network}/pools/{pool_address}/trades)
+```
+
+----------------------------------------
+
+TITLE: API Resource: Search CoinGecko Listings
+DESCRIPTION: Provides an endpoint to search for coins, categories, and markets listed on CoinGecko.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_28
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_search (read)
+Description: This endpoint allows you to search for coins, categories and markets listed on CoinGecko.
+```
+
+----------------------------------------
+
+TITLE: MCP Server Dynamic Tools API Reference
+DESCRIPTION: This section describes the three core dynamic tools exposed by the MCP server when `--tools=dynamic` is enabled. These tools (`list_api_endpoints`, `get_api_endpoint_schema`, `invoke_api_endpoint`) allow an LLM to dynamically discover, inspect, and execute API endpoints without pre-loading all schemas into context.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+list_api_endpoints:
+  Description: Discovers available endpoints, with optional filtering by search query.
+get_api_endpoint_schema:
+  Description: Gets detailed schema information for a specific endpoint.
+invoke_api_endpoint:
+  Description: Executes any endpoint with the appropriate parameters.
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Simple Supported VS Currencies API Endpoint
+DESCRIPTION: This endpoint allows you to query all the supported currencies on CoinGecko. It is a read operation.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_31
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: simple.supported_vs_currencies
+  Endpoint: get_simple_supported_vs_currencies
+    Method: read
+    Description: Query all the supported currencies on CoinGecko.
+```
+
+----------------------------------------
+
+TITLE: CoinGecko API: TokenLists Endpoint Documentation
+DESCRIPTION: Documents the `TokenLists` API endpoint and its associated client method. It details the response type `TokenListGetAllJsonResponse` and the `getAllJson` method, including its endpoint, parameters, and return type.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_44
+
+LANGUAGE: APIDOC
+CODE:
+```
+TokenLists:
+  Types:
+    TokenListGetAllJsonResponse:
+      Source: ./src/resources/token-lists.ts
+  Methods:
+    client.tokenLists.getAllJson(assetPlatformID):
+      Endpoint: GET /token_lists/{asset_platform_id}/all.json
+      Returns: TokenListGetAllJsonResponse
+      Source: ./src/resources/token-lists.ts
+```
+
+----------------------------------------
+
+TITLE: Pass Custom Fetch Client to Coingecko TypeScript Client
+DESCRIPTION: Illustrates how to directly pass a custom `fetch` function to the Coingecko client constructor, allowing the library to use a specific `fetch` implementation instead of relying on a global polyfill.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_12
+
+LANGUAGE: TypeScript
+CODE:
+```
+import Coingecko from '@coingecko/coingecko-typescript';
+import fetch from 'my-fetch';
+
+const client = new Coingecko({ fetch });
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query DEXs and Top Pools
+DESCRIPTION: Provides endpoints to query supported decentralized exchanges (DEXs) and top pools based on network and DEX on GeckoTerminal.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_networks_onchain_dexes (read)
+Description: This endpoint allows you to query all the supported decentralized exchanges (DEXs) based on the provided network on GeckoTerminal.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_pools_networks_onchain_dexes (read)
+Description: This endpoint allows you to query all the top pools based on the provided network and decentralized exchange (DEX).
+```
+
+----------------------------------------
+
+TITLE: API Reference: Simple Price Endpoint
+DESCRIPTION: Documents the API for retrieving simple price conversions for cryptocurrencies.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_41
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Simple Price
+Types:
+  PriceGetResponse
+Methods:
+  get /simple/price
+    client.simple.price.get({ ...params }) -> PriceGetResponse
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Top and Specific Pools
+DESCRIPTION: Provides endpoints to query top pools based on network or a specific pool by address on GeckoTerminal.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_networks_onchain_pools (read)
+Description: This endpoint allows you to query all the top pools based on the provided network.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_address_networks_onchain_pools (read)
+Description: This endpoint allows you to query the specific pool based on the provided network and pool address.
+```
+
+----------------------------------------
+
+TITLE: API Reference: General Search Endpoint
+DESCRIPTION: Documents the general Search API endpoint for finding various crypto assets.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_39
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Search
+Types:
+  SearchGetResponse
+Methods:
+  get /search
+    client.search.get({ ...params }) -> SearchGetResponse
+```
+
+----------------------------------------
+
+TITLE: Integrate Custom Logger with Coingecko TypeScript Client
+DESCRIPTION: Shows how to provide a custom logging library, such as Pino, to the Coingecko client using the `logger` option. The `logLevel` option still filters messages before they are sent to the custom logger.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_8
+
+LANGUAGE: TypeScript
+CODE:
+```
+import Coingecko from '@coingecko/coingecko-typescript';
+import pino from 'pino';
+
+const logger = pino();
+
+const client = new Coingecko({
+  logger: logger.child({ name: 'Coingecko' }),
+  logLevel: 'debug', // Send all messages to pino, allowing it to filter
+});
+```
+
+----------------------------------------
+
+TITLE: Configure MCP Server for Cursor Client with Custom Tool Name Length
+DESCRIPTION: This command configures the MCP Server for compatibility with the `cursor` client using `--client=cursor`. Additionally, it sets a custom maximum tool name length to 40 characters via `--capability=tool-name-length=40`, optimizing tool presentation for the client.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+--client=cursor --capability=tool-name-length=40
+```
+
+----------------------------------------
+
+TITLE: API Reference: On-chain Simple Network Token Price
+DESCRIPTION: Documents the API for retrieving token prices for specific addresses on a given network.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_36
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Simple Network Token Price
+Types:
+  TokenPriceGetAddressesResponse
+Methods:
+  get /onchain/simple/networks/{network}/token_price/{addresses}
+    client.onchain.simple.networks.tokenPrice.getAddresses(addresses, { ...params }) -> TokenPriceGetAddressesResponse
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Trending Searches
+DESCRIPTION: Provides an endpoint to query trending search coins, NFTs, and categories on CoinGecko within the last 24 hours.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_29
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_search_trending (read)
+Description: This endpoint allows you query trending search coins, NFTs and categories on CoinGecko in the last 24 hours.
+```
+
+----------------------------------------
+
+TITLE: API Reference: On-chain Search Pools
+DESCRIPTION: Documents the API for searching on-chain pools.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_35
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Search Pools (On-chain)
+Types:
+  PoolGetResponse
+Methods:
+  get /onchain/search/pools
+    client.onchain.search.pools.get({ ...params }) -> PoolGetResponse
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Pools with Megafilter
+DESCRIPTION: Provides an endpoint to query pools across all networks on GeckoTerminal using various advanced filters.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_24
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_pools_onchain_megafilter (read)
+Description: This endpoint allows you to query pools based on various filters across all networks on GeckoTerminal.
+```
+
+----------------------------------------
+
+TITLE: AssetPlatforms API Endpoints
+DESCRIPTION: Provides API endpoints for retrieving information about asset platforms.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+AssetPlatforms:
+  Types:
+    - AssetPlatformGetResponse
+  Methods:
+    - get /asset_platforms: client.assetPlatforms.get({ ...params }) -> AssetPlatformGetResponse
+```
+
+----------------------------------------
+
+TITLE: CoinGecko API: TokenPrice Endpoint Documentation
+DESCRIPTION: Documents the `TokenPrice` API endpoint and its associated client method. It outlines the response type `TokenPriceGetIDResponse` and the `getID` method, including its endpoint, parameters, and return type.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_43
+
+LANGUAGE: APIDOC
+CODE:
+```
+TokenPrice:
+  Types:
+    TokenPriceGetIDResponse:
+      Source: ./src/resources/simple/token-price.ts
+  Methods:
+    client.simple.tokenPrice.getID(id, { ...params }):
+      Endpoint: GET /simple/token_price/{id}
+      Returns: TokenPriceGetIDResponse
+      Source: ./src/resources/simple/token-price.ts
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Top Pools by Token
+DESCRIPTION: Provides an endpoint to query top pools associated with a specific token contract address on a network.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_22
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_tokens_networks_onchain_pools (read)
+Description: This endpoint allows you to query top pools based on the provided token contract address on a network.
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Latest Pools
+DESCRIPTION: Provides endpoints to query the latest pools across various networks on GeckoTerminal.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_networks_onchain_new_pools (read)
+Description: This endpoint allows you to query all the latest pools across all networks on GeckoTerminal.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_network_networks_onchain_new_pools (read)
+Description: This endpoint allows you to query all the latest pools based on provided network.
+```
+
+----------------------------------------
+
+TITLE: Use TypeScript Definitions for Coingecko API Requests and Responses
+DESCRIPTION: Illustrates how to import and utilize TypeScript definitions for request parameters and response fields. This ensures type safety and provides autocompletion and validation in modern editors when interacting with the Coingecko API.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_2
+
+LANGUAGE: ts
+CODE:
+```
+import Coingecko from '@coingecko/coingecko-typescript';
+
+const client = new Coingecko({
+  proAPIKey: process.env['COINGECKO_PRO_API_KEY'],
+  // demoAPIKey: process.env['COINGECKO_DEMO_API_KEY'], // Optional, for Demo API access
+  environment: 'pro', // 'demo' to initialize the client with Demo API access
+});
+
+const params: Coingecko.Simple.PriceGetParams = { vs_currencies: 'usd', ids: 'bitcoin' };
+const price: Coingecko.Simple.PriceGetResponse = await client.simple.price.get(params);
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Derivatives API Endpoints
+DESCRIPTION: Documents the API endpoints and client methods for retrieving general derivatives data.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_15
+
+LANGUAGE: APIDOC
+CODE:
+```
+Derivatives:
+  Types:
+    - DerivativeGetResponse
+  Methods:
+    - client.derivatives.get() -> DerivativeGetResponse (GET /derivatives)
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Trending Pools
+DESCRIPTION: Provides endpoints to query trending pools across various networks on GeckoTerminal.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_11
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_networks_onchain_trending_pools (read)
+Description: This endpoint allows you to query all the trending pools across all networks on GeckoTerminal.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_network_networks_onchain_trending_pools (read)
+Description: This endpoint allows you to query the trending pools based on the provided network.
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Trending Search Pools
+DESCRIPTION: Provides an endpoint to query all trending search pools across all networks on GeckoTerminal.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_25
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_pools_onchain_trending_search (read)
+Description: This endpoint allows you to query all the trending search pools across all networks on GeckoTerminal.
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Decentralized Exchanges (Dexes)
+DESCRIPTION: Details API endpoints and response types for querying decentralized exchange information and their associated pools on specific networks.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_26
+
+LANGUAGE: APIDOC
+CODE:
+```
+Dexes:
+  Types:
+    - DexGetResponse
+    - DexGetPoolsResponse
+  Methods:
+    - client.onchain.networks.dexes.get(network, { ...params }) -> DexGetResponse (GET /onchain/networks/{network}/dexes)
+    - client.onchain.networks.dexes.getPools(dex, { ...params }) -> DexGetPoolsResponse (GET /onchain/networks/{network}/dexes/{dex}/pools)
+```
+
+----------------------------------------
+
+TITLE: API Reference: Ping Endpoint
+DESCRIPTION: Documents the simple Ping API endpoint, used to check API connectivity and status.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_38
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Ping
+Types:
+  PingGetResponse
+Methods:
+  get /ping
+    client.ping.get() -> PingGetResponse
+```
+
+----------------------------------------
+
+TITLE: API Reference: On-chain Token OHLCV Data
+DESCRIPTION: Documents the API for retrieving Open, High, Low, Close, Volume (OHLCV) data for a specific token on a given network over a specified timeframe.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_30
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Ohlcv
+Types:
+  OhlcvGetTimeframeResponse
+Methods:
+  get /onchain/networks/{network}/tokens/{token_address}/ohlcv/{timeframe}
+    client.onchain.networks.tokens.ohlcv.getTimeframe(timeframe, { ...params }) -> OhlcvGetTimeframeResponse
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Pool Metadata
+DESCRIPTION: Provides an endpoint to query detailed metadata for a specific pool, including token details, images, and social links.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_pools_networks_onchain_info (read)
+Description: This endpoint allows you to query pool metadata (base and quote token details, image, socials, websites, description, contract address, etc.) based on a provided pool contract address on a network.
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Token Metadata
+DESCRIPTION: Provides an endpoint to query detailed metadata for a specific token, including name, symbol, CoinGecko ID, and social links.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_18
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_tokens_networks_onchain_info (read)
+Description: This endpoint allows you to query token metadata (name, symbol, CoinGecko ID, image, socials, websites, description, etc.) based on a provided token contract address on a network.
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Simple Price API Endpoint
+DESCRIPTION: This endpoint allows you to query the prices of one or more coins by using their unique Coin API IDs. It is a read operation.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_30
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: simple.price
+  Endpoint: get_simple_price
+    Method: read
+    Description: Query the prices of one or more coins by using their unique Coin API IDs.
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Token Trades
+DESCRIPTION: Provides an endpoint to query the last 300 trades within the past 24 hours across all pools for a specific token.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_23
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_tokens_networks_onchain_trades (read)
+Description: This endpoint allows you to query the last 300 trades in the past 24 hours, across all pools, based on the provided token contract address on a network.
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Simple Token Price API Endpoint
+DESCRIPTION: This endpoint allows you to query one or more token prices using their token contract addresses. It is a read operation.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_32
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: simple.token_price
+  Endpoint: get_id_simple_token_price
+    Method: read
+    Description: Query one or more token prices using their token contract addresses.
+```
+
+----------------------------------------
+
+TITLE: API Resource: Search Pools
+DESCRIPTION: Provides an endpoint to search for pools on a specific network.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_26
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_search_onchain_pools (read)
+Description: This endpoint allows you to search for pools on a network.
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Trending Pools
+DESCRIPTION: Provides API endpoints and response types for retrieving trending pool data across various networks.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_25
+
+LANGUAGE: APIDOC
+CODE:
+```
+TrendingPools:
+  Types:
+    - TrendingPoolGetResponse
+    - TrendingPoolGetNetworkResponse
+  Methods:
+    - client.onchain.networks.trendingPools.get({ ...params }) -> TrendingPoolGetResponse (GET /onchain/networks/trending_pools)
+    - client.onchain.networks.trendingPools.getNetwork(network, { ...params }) -> TrendingPoolGetNetworkResponse (GET /onchain/networks/{network}/trending_pools)
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Coins TotalSupplyChart API Endpoints
+DESCRIPTION: Documents the API endpoints and client methods for retrieving total supply chart data for cryptocurrencies, including specific ranges.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+TotalSupplyChart:
+  Types:
+    - TotalSupplyChartGetResponse
+    - TotalSupplyChartGetRangeResponse
+  Methods:
+    - client.coins.totalSupplyChart.get(id, { ...params }) -> TotalSupplyChartGetResponse (GET /coins/{id}/total_supply_chart)
+    - client.coins.totalSupplyChart.getRange(id, { ...params }) -> TotalSupplyChartGetRangeResponse (GET /coins/{id}/total_supply_chart/range)
+```
+
+----------------------------------------
+
+TITLE: CoinGecko ExchangeRates API Endpoints
+DESCRIPTION: Documents the API endpoints and client methods for retrieving current exchange rates.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+ExchangeRates:
+  Types:
+    - ExchangeRateGetResponse
+  Methods:
+    - client.exchangeRates.get() -> ExchangeRateGetResponse (GET /exchange_rates)
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Top Token Holders
+DESCRIPTION: Provides an endpoint to query the top holders for a specific token on a network.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_19
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_tokens_networks_onchain_top_holders (read)
+Description: This endpoint allows you to query top token holders based on the provided token contract address on a network.
+```
+
+----------------------------------------
+
+TITLE: CoinGecko On-chain Data API Endpoints
+DESCRIPTION: Offers API endpoints for accessing on-chain data, including categories and network-specific information like new liquidity pools.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_24
+
+LANGUAGE: APIDOC
+CODE:
+```
+Onchain.Categories:
+  Types:
+    - CategoryGetResponse
+    - CategoryGetPoolsResponse
+  Methods:
+    - client.onchain.categories.get({ ...params }) -> CategoryGetResponse (GET /onchain/categories)
+    - client.onchain.categories.getPools(categoryID, { ...params }) -> CategoryGetPoolsResponse (GET /onchain/categories/{category_id}/pools)
+
+Onchain.Networks:
+  Types:
+    - NetworkGetResponse
+  Methods:
+    - client.onchain.networks.get({ ...params }) -> NetworkGetResponse (GET /onchain/networks)
+
+Onchain.Networks.NewPools:
+  Types:
+    - NewPoolGetResponse
+    - NewPoolGetNetworkResponse
+  Methods:
+    - client.onchain.networks.newPools.get({ ...params }) -> NewPoolGetResponse (GET /onchain/networks/new_pools)
+    - client.onchain.networks.newPools.getNetwork(network, { ...params }) -> NewPoolGetNetworkResponse (GET /onchain/networks/{network}/new_pools)
+```
+
+----------------------------------------
+
+TITLE: Make Undocumented HTTP Requests with Coingecko TypeScript Client
+DESCRIPTION: Explains how to use generic HTTP verbs (`client.post`, `client.get`, etc.) to interact with undocumented API endpoints. Client options like retries will be automatically applied to these requests.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_9
+
+LANGUAGE: TypeScript
+CODE:
+```
+await client.post('/some/path', {
+  body: { some_prop: 'foo' },
+  query: { some_query_arg: 'bar' },
+});
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Global Market Data API Endpoints
+DESCRIPTION: Provides API endpoints for accessing global cryptocurrency market data, including overall market statistics, decentralized finance (DeFi) metrics, and global market capitalization charts.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_21
+
+LANGUAGE: APIDOC
+CODE:
+```
+Global:
+  Types:
+    - GlobalGetResponse
+  Methods:
+    - client.global.get() -> GlobalGetResponse (GET /global)
+
+DecentralizedFinanceDefi:
+  Types:
+    - DecentralizedFinanceDefiGetResponse
+  Methods:
+    - client.global.decentralizedFinanceDefi.get() -> DecentralizedFinanceDefiGetResponse (GET /global/decentralized_finance_defi)
+
+MarketCapChart:
+  Types:
+    - MarketCapChartGetResponse
+  Methods:
+    - client.global.marketCapChart.get({ ...params }) -> MarketCapChartGetResponse (GET /global/market_cap_chart)
+```
+
+----------------------------------------
+
+TITLE: API Reference: On-chain Token Pools
+DESCRIPTION: Documents the API for retrieving pool information associated with a specific token on a given network.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_31
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Pools (Token Specific)
+Types:
+  PoolGetResponse
+Methods:
+  get /onchain/networks/{network}/tokens/{token_address}/pools
+    client.onchain.networks.tokens.pools.get(tokenAddress, { ...params }) -> PoolGetResponse
+```
+
+----------------------------------------
+
+TITLE: API Reference: On-chain Token Trades
+DESCRIPTION: Documents the API for retrieving trade data for a specific token on a given network.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_32
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Trades
+Types:
+  TradeGetResponse
+Methods:
+  get /onchain/networks/{network}/tokens/{token_address}/trades
+    client.onchain.networks.tokens.trades.get(tokenAddress, { ...params }) -> TradeGetResponse
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Derivatives Exchanges API Endpoints
+DESCRIPTION: Documents the API endpoints and client methods for retrieving derivatives exchange information, including lists and details for specific exchanges.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+Derivatives Exchanges:
+  Types:
+    - ExchangeGetResponse
+    - ExchangeGetIDResponse
+    - ExchangeGetListResponse
+  Methods:
+    - client.derivatives.exchanges.get({ ...params }) -> ExchangeGetResponse (GET /derivatives/exchanges)
+    - client.derivatives.exchanges.getID(id, { ...params }) -> ExchangeGetIDResponse (GET /derivatives/exchanges/{id})
+    - client.derivatives.exchanges.getList() -> ExchangeGetListResponse (GET /derivatives/exchanges/list)
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Specific Token Data
+DESCRIPTION: Provides an endpoint to query specific token data based on its contract address on a network.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_address_networks_onchain_tokens (read)
+Description: This endpoint allows you to query specific token data based on the provided token contract address on a network.
+```
+
+----------------------------------------
+
+TITLE: Configure Log Levels for Coingecko TypeScript Client
+DESCRIPTION: Illustrates how to set the logging level for the Coingecko client using the `logLevel` client option. This controls the verbosity of messages, ranging from 'debug' (most verbose) to 'off' (no logging), and overrides the `COINGECKO_LOG` environment variable.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_7
+
+LANGUAGE: TypeScript
+CODE:
+```
+import Coingecko from '@coingecko/coingecko-typescript';
+
+const client = new Coingecko({
+  logLevel: 'debug', // Show all log messages
+});
+```
+
+----------------------------------------
+
+TITLE: Coins API Endpoints
+DESCRIPTION: Provides API endpoints for retrieving general information about coins.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Coins:
+  Types:
+    - CoinGetIDResponse
+  Methods:
+    - get /coins/{id}: client.coins.getID(id, { ...params }) -> CoinGetIDResponse
+```
+
+----------------------------------------
+
+TITLE: API Reference: On-chain Tokens Info Recently Updated
+DESCRIPTION: Documents the API for retrieving information about recently updated on-chain tokens.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_37
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Tokens Info Recently Updated
+Types:
+  InfoRecentlyUpdatedGetResponse
+Methods:
+  get /onchain/tokens/info_recently_updated
+    client.onchain.tokens.infoRecentlyUpdated.get({ ...params }) -> InfoRecentlyUpdatedGetResponse
+```
+
+----------------------------------------
+
+TITLE: API Reference: On-chain Pools Trending Search
+DESCRIPTION: Documents the API for retrieving trending search results related to on-chain pools.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_34
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Pools Trending Search
+Types:
+  TrendingSearchGetResponse
+Methods:
+  get /onchain/pools/trending_search
+    client.onchain.pools.trendingSearch.get({ ...params }) -> TrendingSearchGetResponse
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Coins Ohlc API Endpoints
+DESCRIPTION: Documents the API endpoints and client methods for retrieving Open-High-Low-Close (OHLC) market data for cryptocurrencies, including specific ranges.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_11
+
+LANGUAGE: APIDOC
+CODE:
+```
+Ohlc:
+  Types:
+    - OhlcGetResponse
+    - OhlcGetRangeResponse
+  Methods:
+    - client.coins.ohlc.get(id, { ...params }) -> OhlcGetResponse (GET /coins/{id}/ohlc)
+    - client.coins.ohlc.getRange(id, { ...params }) -> OhlcGetRangeResponse (GET /coins/{id}/ohlc/range)
+```
+
+----------------------------------------
+
+TITLE: Handle API Errors with Coingecko TypeScript Client
+DESCRIPTION: Shows how to catch and handle `APIError` instances thrown by the Coingecko client when API calls fail due to connection issues or non-success status codes. It demonstrates accessing error properties like status, name, and headers for detailed error analysis.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/README.md#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+const price = await client.simple.price.get({ vs_currencies: 'usd', ids: 'bitcoin' }).catch(async (err) => {
+  if (err instanceof Coingecko.APIError) {
+    console.log(err.status); // 400
+    console.log(err.name); // BadRequestError
+    console.log(err.headers); // {server: 'nginx', ...}
+  } else {
+    throw err;
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Coins Market Chart API Endpoints
+DESCRIPTION: Provides API endpoints for retrieving market chart data for coins.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+Coins MarketChart:
+  Types:
+    - MarketChartGetResponse
+    - MarketChartGetRangeResponse
+  Methods:
+    - get /coins/{id}/market_chart: client.coins.marketChart.get(id, { ...params }) -> MarketChartGetResponse
+    - get /coins/{id}/market_chart/range: client.coins.marketChart.getRange(id, { ...params }) -> MarketChartGetRangeResponse
+```
+
+----------------------------------------
+
+TITLE: CoinGecko Companies PublicTreasury API Endpoints
+DESCRIPTION: Documents the API endpoints and client methods for retrieving public treasury data for companies holding specific cryptocurrencies.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+PublicTreasury:
+  Types:
+    - PublicTreasuryGetCoinIDResponse
+  Methods:
+    - client.companies.publicTreasury.getCoinID(coinID) -> PublicTreasuryGetCoinIDResponse (GET /companies/public_treasury/{coin_id})
+```
+
+----------------------------------------
+
+TITLE: Coins Markets API Endpoints
+DESCRIPTION: Provides API endpoints for retrieving market data for coins.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Coins Markets:
+  Types:
+    - MarketGetResponse
+  Methods:
+    - get /coins/markets: client.coins.markets.get({ ...params }) -> MarketGetResponse
+```
+
+----------------------------------------
+
+TITLE: API Resource: Query Pool Trades
+DESCRIPTION: Provides an endpoint to query the last 300 trades within the past 24 hours for a specific pool.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/packages/mcp-server/README.md#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: get_pools_networks_onchain_trades (read)
+Description: This endpoint allows you to query the last 300 trades in the past 24 hours based on the provided pool address.
+```
+
+----------------------------------------
+
+TITLE: CoinGecko API Key Status Endpoint
+DESCRIPTION: Documents the API endpoint to check the status or details related to the API key.
+
+SOURCE: https://github.com/coingecko/coingecko-typescript/blob/main/api.md#_snippet_22
+
+LANGUAGE: APIDOC
+CODE:
+```
+Key:
+  Types:
+    - KeyGetResponse
+  Methods:
+    - client.key.get() -> KeyGetResponse (GET /key)
+```

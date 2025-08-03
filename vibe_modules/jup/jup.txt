@@ -1,0 +1,1426 @@
+========================
+CODE SNIPPETS
+========================
+TITLE: Initialize Jup.ag Referral Accounts and Claim Tokens (TypeScript)
+DESCRIPTION: This comprehensive TypeScript example demonstrates how to initialize a referral account, set up a referral token account for a specific mint, and claim all accumulated tokens using the `@jup-ag/referral-sdk` on Solana. It includes wallet setup, transaction sending, and logging.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/5-add-fees-to-ultra.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { ReferralProvider } from "@jup-ag/referral-sdk";
+import { Connection, Keypair, PublicKey, sendAndConfirmTransaction, sendAndConfirmRawTransaction } from "@solana/web3.js";
+import fs from 'fs';
+
+const connection = new Connection("https://api.mainnet-beta.solana.com");
+const privateKeyArray = JSON.parse(fs.readFileSync('/Path/to/.config/solana/id.json', 'utf8').trim());
+const wallet = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+
+const provider = new ReferralProvider(connection);
+const projectPubKey = new PublicKey('DkiqsTrw1u1bYFumumC7sCG2S8K25qc2vemJFHyW2wJc');
+
+async function initReferralAccount() {
+  const transaction = await provider.initializeReferralAccountWithName({
+    payerPubKey: wallet.publicKey,
+    partnerPubKey: wallet.publicKey,
+    projectPubKey: projectPubKey,
+    name: "insert-name-here",
+  });
+
+  const referralAccount = await connection.getAccountInfo(
+    transaction.referralAccountPubKey,
+  );
+
+  if (!referralAccount) {
+    const signature = await sendAndConfirmTransaction(connection, transaction.tx, [wallet]);
+    console.log('signature:', `https://solscan.io/tx/${signature}`);
+    console.log('created referralAccountPubkey:', transaction.referralAccountPubKey.toBase58());
+  } else {
+    console.log(
+      `referralAccount ${transaction.referralAccountPubKey.toBase58()} already exists`,
+    );
+  }
+}
+
+async function initReferralTokenAccount() {
+  const mint = new PublicKey("So11111111111111111111111111111111111111112"); // the token mint you want to collect fees in
+  
+  const transaction = await provider.initializeReferralTokenAccountV2({
+    payerPubKey: wallet.publicKey,
+    referralAccountPubKey: new PublicKey("insert-referral-account-pubkey-here"), // you get this from the initReferralAccount function
+    mint,
+  });
+  
+    const referralTokenAccount = await connection.getAccountInfo(
+      transaction.tokenAccount,
+    );
+  
+    if (!referralTokenAccount) {
+      const signature = await sendAndConfirmTransaction(connection, transaction.tx, [wallet]);
+      console.log('signature:', `https://solscan.io/tx/${signature}`);
+      console.log('created referralTokenAccountPubKey:', transaction.tokenAccount.toBase58());
+      console.log('mint:', mint.toBase58());
+    } else {
+      console.log(
+        `referralTokenAccount ${transaction.tokenAccount.toBase58()} for mint ${mint.toBase58()} already exists`,
+      );
+    }
+}
+
+async function claimAllTokens() {
+  const transactions = await provider.claimAllV2({
+    payerPubKey: wallet.publicKey,
+    referralAccountPubKey: new PublicKey("insert-referral-account-pubkey-here"),
+  })
+
+  // Send each claim transaction one by one.
+  for (const transaction of transactions) {
+    transaction.sign([wallet]);
+
+    const signature = await sendAndConfirmRawTransaction(connection, transaction.serialize(), [wallet]);
+    console.log('signature:', `https://solscan.io/tx/${signature}`);
+  }
+}
+
+// initReferralAccount(); // you should only run this once
+// initReferralTokenAccount();
+// claimAllTokens();
+```
+
+----------------------------------------
+
+TITLE: Install Jup.ag Referral SDK Dependencies (Bash)
+DESCRIPTION: Commands to install necessary Node.js packages for the Jup.ag referral SDK integration, including `@jup-ag/referral-sdk`, `@solana/web3.js` (version 1), `bs58`, and `dotenv`.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/5-add-fees-to-ultra.md#_snippet_1
+
+LANGUAGE: Bash
+CODE:
+```
+npm install @jup-ag/referral-sdk
+npm install @solana/web3.js@1 # Using v1 of web3.js instead of v2
+npm install bs58
+npm install dotenv # if required for wallet setup
+```
+
+----------------------------------------
+
+TITLE: Create a New Next.js Project
+DESCRIPTION: This command initializes a new Next.js project named 'terminal-demo' with TypeScript support, navigates into the newly created project directory, and then starts the development server.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/terminal/nextjs-app-example.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx create-next-app@latest terminal-demo --typescript
+cd terminal-demo
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Create a New React Project with TypeScript
+DESCRIPTION: This command initializes a new React application named 'terminal-demo' using the `create-react-app` tool with a TypeScript template. It then navigates into the newly created project directory and starts the development server.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/terminal/react-app-example.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx create-react-app terminal-demo --template typescript
+cd terminal-demo
+npm start
+```
+
+----------------------------------------
+
+TITLE: Install Jupiter Terminal npm package
+DESCRIPTION: This command installs the `@jup-ag/terminal` package using npm. This package is essential for integrating the Jupiter Terminal functionality into your project, providing the necessary modules and assets.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/terminal/react-app-example.md#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+npm install @jup-ag/terminal
+```
+
+----------------------------------------
+
+TITLE: Example .env Configuration
+DESCRIPTION: Illustrates a basic .env file structure, typically used for storing sensitive information like private keys in development environments.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/5-add-fees-to-ultra.md#_snippet_4
+
+LANGUAGE: plaintext
+CODE:
+```
+PRIVATE_KEY=""
+```
+
+----------------------------------------
+
+TITLE: Set up Solana RPC Connection (JavaScript)
+DESCRIPTION: Example demonstrating how to establish a connection to the Solana blockchain using `@solana/web3.js`, specifying a mainnet-beta RPC endpoint. It highlights the importance of using a dedicated RPC endpoint for production applications.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/5-add-fees-to-ultra.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { Connection } from "@solana/web3.js";
+
+const connection = new Connection('https://api.mainnet-beta.solana.com');
+```
+
+----------------------------------------
+
+TITLE: Install and Integrate Jupiter Terminal using @jup-ag/terminal Package
+DESCRIPTION: This snippet outlines the process of installing the `@jup-ag/terminal` package and then initializing the Jupiter Terminal within a React `useEffect` hook by dynamically importing the package. This method requires managing package dependencies and is recommended for a more controlled integration.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/terminal/nextjs-app-example.md#_snippet_6
+
+LANGUAGE: bash
+CODE:
+```
+npm install @jup-ag/terminal
+```
+
+LANGUAGE: typescript
+CODE:
+```
+"use client";
+
+import React, { useEffect } from "react";
+import "@jup-ag/terminal/css";
+
+export default function TerminalComponent() {
+  useEffect(() => {
+    import("@jup-ag/terminal").then((mod) => {
+      const { init } = mod;
+      init({
+        displayMode: "widget",
+        integratedTargetId: "jupiter-terminal",
+      });
+    });
+  }, []);
+
+  return (
+    <div>
+      <h1>Jupiter Terminal Demo</h1>
+      <div id="jupiter-terminal" />
+    </div>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize Jupiter Referral Account
+DESCRIPTION: Provides a TypeScript example for initializing a new referral account using the `@jup-ag/referral-sdk`. This account is essential for collecting referral fees and should be created only once per project.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/5-add-fees-to-ultra.md#_snippet_6
+
+LANGUAGE: ts
+CODE:
+```
+import { ReferralProvider } from "@jup-ag/referral-sdk";
+import { Connection, Keypair, PublicKey, sendAndConfirmTransaction } from "@solana/web3.js";
+
+const connection = new Connection("https://api.mainnet-beta.solana.com");
+const privateKeyArray = JSON.parse(fs.readFileSync('/Path/to/.config/solana/id.json', 'utf8').trim());
+const wallet = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+const provider = new ReferralProvider(connection);
+const projectPubKey = new PublicKey('DkiqsTrw1u1bYFumumC7sCG2S8K25qc2vemJFHyW2wJc'); // Jupiter Ultra Referral Project
+
+async function initReferralAccount() {
+  const transaction = await provider.initializeReferralAccountWithName({
+    payerPubKey: wallet.publicKey,
+    partnerPubKey: wallet.publicKey,
+    projectPubKey: projectPubKey,
+    name: "insert-name-here",
+  });
+
+  const referralAccount = await connection.getAccountInfo(
+    transaction.referralAccountPubKey,
+  );
+
+  if (!referralAccount) {
+    const signature = await sendAndConfirmTransaction(connection, transaction.tx, [wallet]);
+    console.log('signature:', `https://solscan.io/tx/${signature}`);
+    console.log('created referralAccountPubkey:', transaction.referralAccountPubKey.toBase58());
+  } else {
+    console.log(
+      `referralAccount ${transaction.referralAccountPubKey.toBase58()} already exists`,
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Install Jupiter Limit Order SDK
+DESCRIPTION: Instructions to install the Jupiter Limit Order SDK using Yarn, adding it as a dependency to your project.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/Moved/2-limit-order-with-sdk.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+yarn add @jup-ag/limit-order-sdk
+```
+
+----------------------------------------
+
+TITLE: Perform Jup.ag Swap with Fee Account (Main API)
+DESCRIPTION: This example demonstrates how to execute a swap using the main Jup.ag API. Similar to the Lite API, it requires the `quoteResponse`, the `userPublicKey`, and the `feeAccount` where collected platform fees will be sent. Ensure the `feeAccount` is correctly initialized for the target mint.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/100-swap-api/4-add-fees-to-swap.md#_snippet_8
+
+LANGUAGE: jsx
+CODE:
+```
+const swapResponse = await (
+    await fetch('https://api.jup.ag/swap/v1/swap', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            quoteResponse,
+            userPublicKey: wallet.publicKey, // Pass in actual referred user in production
+            feeAccount: feeAccount,
+        })
+    })
+).json();
+```
+
+----------------------------------------
+
+TITLE: Clone and Navigate to Arbitrage Bot Example Repository
+DESCRIPTION: This snippet provides the necessary shell commands to clone the `api-arbs-example` repository from GitHub and change the current directory into the newly cloned repository. This is the initial step required to set up and run the arbitrage bot example.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/9-legacy/1-apis/1-swap-api.md#_snippet_13
+
+LANGUAGE: shell
+CODE:
+```
+$ git clone https://github.com/jup-ag/api-arbs-example.git
+$ cd api-arbs-example
+```
+
+----------------------------------------
+
+TITLE: Create a New HTML Project Directory
+DESCRIPTION: This snippet demonstrates how to create a new project directory and an `index.html` file using basic shell commands, setting up the initial structure for the HTML application.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/terminal/html-app-example.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+mkdir terminal-demo
+cd terminal-demo
+touch index.html
+```
+
+----------------------------------------
+
+TITLE: Start Jupiter Swap API with Yellowstone gRPC
+DESCRIPTION: Command to start the self-hosted Jupiter Swap API server, leveraging the Yellowstone gRPC plugin for efficient account listening. This setup is recommended for production use cases as it relies on real-time updates rather than polling.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/9-self-hosted.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+RUST_LOG=info ./jupiter-swap-api --rpc-url <RPC-URL> --yellowstone-grpc-endpoint <GRPC-ENDPOINT> --yellowstone-grpc-x-token <X-TOKEN>
+```
+
+LANGUAGE: Shell
+CODE:
+```
+--rpc-url https://supersolnode.jup/91842103123091841 --yellowstone-grpc-endpoint https://supersolnode.jup --yellowstone-grpc-x-token 91842103123091841
+```
+
+----------------------------------------
+
+TITLE: Run the HTML Project with http-server
+DESCRIPTION: This command demonstrates how to serve the HTML application locally using `http-server`, making the `index.html` file accessible via a web browser for testing the integrated Jupiter Terminal.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/terminal/html-app-example.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+http-server
+```
+
+----------------------------------------
+
+TITLE: Install Solana Web3.js and Dependencies
+DESCRIPTION: Installs necessary Node.js packages for Solana transaction signing, including `@solana/web3.js` (v1), `bs58`, and `dotenv` for environment variable management.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/2-execute-order.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm install @solana/web3.js@1 # Using v1 of web3.js instead of v2
+npm install bs58
+npm install dotenv # if required for wallet setup
+```
+
+----------------------------------------
+
+TITLE: Example: Fetch Token Price with cURL
+DESCRIPTION: A cURL command demonstrating how to make a GET request to the `/price/v2` endpoint to retrieve pricing information for a specific token, including extra details.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/5-price-api-v2.md#_snippet_3
+
+LANGUAGE: shell
+CODE:
+```
+curl -X 'GET' 'https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112&showExtraInfo=true'
+```
+
+----------------------------------------
+
+TITLE: Perform Jup.ag Swap with Referral Fee Account (Lite API)
+DESCRIPTION: This example shows how to execute a swap using the Jup.ag Lite API. It includes passing the `quoteResponse` obtained from a prior quote request, the `userPublicKey` of the wallet initiating the swap, and the `feeAccount` derived for referral fee collection.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/100-swap-api/4-add-fees-to-swap.md#_snippet_6
+
+LANGUAGE: jsx
+CODE:
+```
+const swapResponse = await (
+    await fetch('https://lite-api.jup.ag/swap/v1/swap', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            quoteResponse,
+            userPublicKey: wallet.publicKey.toBase58(), // Pass in actual referred user in production
+            feeAccount: feeAccount,
+        })
+    })
+).json();
+```
+
+----------------------------------------
+
+TITLE: Install Solana SPL Token Library
+DESCRIPTION: Installs the `@solana/spl-token` package, which provides essential utilities for interacting with Solana Program Library (SPL) tokens, crucial for token operations on the Solana blockchain.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/100-swap-api/5-payments-through-swap.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm i @solana/spl-token
+```
+
+----------------------------------------
+
+TITLE: Build and Start Local Development Server for Jupiter Docs
+DESCRIPTION: This command sequence first builds the static website using Docusaurus, compiling all content and assets. Following the build, it starts a local development server, making the documentation accessible in a web browser. This allows contributors to preview changes and test the site's functionality in real-time.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm build && pnpm start
+```
+
+----------------------------------------
+
+TITLE: Load Solana Wallet from File
+DESCRIPTION: Demonstrates how to load a Solana Keypair from a local JSON file, typically `id.json` generated by the Solana CLI, for development purposes.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/5-add-fees-to-ultra.md#_snippet_5
+
+LANGUAGE: jsx
+CODE:
+```
+import { Keypair } from '@solana/web3.js';
+import fs from 'fs';
+
+const privateKeyArray = JSON.parse(fs.readFileSync('/Path/To/.config/solana/id.json', 'utf8').trim());
+const wallet = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+```
+
+----------------------------------------
+
+TITLE: Install Unified Wallet Kit
+DESCRIPTION: Installs the Unified Wallet Kit package using pnpm, adding it to your project's dependencies for Solana dApp development.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/5-jupiter-terminal/3-unified-wallet-kit.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+pnpm i @jup-ag/wallet-adapter
+```
+
+----------------------------------------
+
+TITLE: Set up Solana RPC Connection
+DESCRIPTION: This snippet demonstrates how to establish a connection to the Solana mainnet-beta RPC endpoint using the `@solana/web3.js` library. It notes the importance of using dedicated RPC providers like Helius or Triton for production applications instead of the default Solana endpoint.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/1-environment-setup.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+const connection = new Connection('https://api.mainnet-beta.solana.com');
+```
+
+----------------------------------------
+
+TITLE: Example: Successful Price API Response (200 OK)
+DESCRIPTION: An example JSON response for a successful `GET /price/v2` request, showing the structure of token pricing data, including `id`, `type`, `price`, and optional `extraInfo` fields like `lastSwappedPrice`, `quotedPrice`, `confidenceLevel`, and `depth`.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/5-price-api-v2.md#_snippet_4
+
+LANGUAGE: json
+CODE:
+```
+{
+    "data": {
+        "So11111111111111111111111111111111111111112": {
+            "id": "So11111111111111111111111111111111111111112",
+            "type": "derivedPrice",
+            "price": "132.280970000",
+            "extraInfo": {
+                "lastSwappedPrice": {
+                    "lastJupiterSellAt": 1726231876,
+                    "lastJupiterSellPrice": "132.29239989531536",
+                    "lastJupiterBuyAt": 1726231877,
+                    "lastJupiterBuyPrice": "132.19714417319207"
+                },
+                "quotedPrice": {
+                    "buyPrice": "132.286960000",
+                    "buyAt": 1726231878,
+                    "sellPrice": "132.274980000",
+                    "sellAt": 1726231878
+                },
+                "confidenceLevel": "high",
+                "depth": {
+                    "buyPriceImpactRatio": {
+                        "depth": {
+                            "10": 0.03363618661226941,
+                            "100": 0.08002735245686805,
+                            "1000": 0.14333736423496682
+                        },
+                        "timestamp": 1726231876
+                    },
+                    "sellPriceImpactRatio": {
+                        "depth": {
+                            "10": 0.02031954946621532,
+                            "100": 0.020354720955966937,
+                            "1000": 0.06331837713363023
+                        },
+                        "timestamp": 1726231876
+                    }
+                }
+            }
+        }
+    },
+    "timeTaken": 0.00463168
+}
+```
+
+----------------------------------------
+
+TITLE: Set up Solana Development Wallet from Private Key (JavaScript)
+DESCRIPTION: Illustrates how to initialize a Solana `Keypair` from a base58 encoded private key stored in an environment variable using `dotenv`. This method is suitable for development but not recommended for production environments.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/5-add-fees-to-ultra.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+// index.js
+import { Keypair } from '@solana/web3.js';
+import dotenv from 'dotenv';
+require('dotenv').config();
+
+const wallet = Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY || ''));
+```
+
+----------------------------------------
+
+TITLE: Example: Get SOL Price against mSOL using cURL
+DESCRIPTION: Demonstrates how to make a GET request using cURL to retrieve the price of SOL against mSOL from the Jup.ag Price API. This example uses both `ids` and `vsToken` parameters.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/4-price-api.md#_snippet_3
+
+LANGUAGE: shell
+CODE:
+```
+curl -X 'GET' 'https://price.jup.ag/v6/price?ids=SOL&vsToken=mSOL'
+```
+
+----------------------------------------
+
+TITLE: Example: Get SOL Price using cURL
+DESCRIPTION: Demonstrates how to make a GET request using cURL to retrieve the price of SOL from the Jup.ag Price API. This example uses the `ids` parameter to specify the token.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/4-price-api.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+curl -X 'GET' 'https://price.jup.ag/v6/price?ids=SOL'
+```
+
+----------------------------------------
+
+TITLE: Example: Partial/Error Price API Response
+DESCRIPTION: An example JSON response for the `GET /price/v2` endpoint when some requested token IDs might not be found or processed, resulting in `null` entries for those specific IDs within the `data` object.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/5-price-api-v2.md#_snippet_5
+
+LANGUAGE: json
+CODE:
+```
+{
+    "data": {
+        "So11111111111111111111111111111111111111112": {
+            "id": "So11111111111111111111111111111111111111112",
+            "type": "derivedPrice",
+            "price": "134.170633378"
+        },
+        "8agCopCHWdpj7mHk3JUWrzt8pHAxMiPX5hLVDJh9TXWv": null
+    },
+    "timeTaken": 0.003186833
+}
+```
+
+----------------------------------------
+
+TITLE: Set up Project Directory and Install Dependencies
+DESCRIPTION: This shell command sequence creates a new directory for the DCA bot, initializes a Node.js project, and installs necessary dependencies including `@solana/web3.js`, `@jup-ag/dca-sdk`, and `dotenv`. These packages are essential for interacting with the Solana blockchain and Jupiter's DCA functionalities.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/4-dca/2-dca-sdk.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+mkdir dca-bot
+cd dca-bot
+npm init -y
+npm i @solana/web3.js@1 @jup-ag/dca-sdk@2.3.5 dotenv
+```
+
+----------------------------------------
+
+TITLE: Install Required Libraries for Jupiter Limit Order API
+DESCRIPTION: Instructions for installing the necessary JavaScript/TypeScript libraries (`@solana/web3.js`, `bs58`, `dotenv`) using npm, bun, pnpm, or yarn to interact with the Jupiter Limit Order API and Solana blockchain.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/3-limit-order/1-limit-order.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm install @solana/web3.js bs58 dotenv
+```
+
+----------------------------------------
+
+TITLE: Install Solana Development Libraries
+DESCRIPTION: Instructions to install required Node.js packages for Solana development, including `@solana/web3.js`, `cross-fetch`, `@project-serum/anchor`, and `bs58` using npm. These libraries are essential for interacting with the Solana blockchain and the Jupiter Aggregator API.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/Moved/1-limit-order-api.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+npm i @solana/web3.js@1
+npm i cross-fetch
+npm i @project-serum/anchor
+npm i bs58
+```
+
+----------------------------------------
+
+TITLE: Jup.ag Order Response Examples
+DESCRIPTION: Illustrates the JSON structure of order responses from the Jup.ag API for both aggregator and RFQ (Request for Quote) swap types. These examples show the key fields returned, including the base64 encoded transaction, request ID, and various swap-specific parameters.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/1-get-order.md#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+{
+  "swapType": "aggregator",
+  "requestId": "f087e8d8-fca6-4af6-a4ff-2d962fa95489",
+  "inAmount": "100000000",
+  "outAmount": "12550645",
+  "otherAmountThreshold": "12425139",
+  "swapMode": "ExactIn",
+  "slippageBps": 100,
+  "priceImpactPct": "0",
+  "routePlan": [
+    {
+      "swapInfo": {
+        "ammKey": "AHhiY6GAKfBkvseQDQbBC7qp3fTRNpyZccuEdYSdPFEf",
+        "label": "SolFi",
+        "inputMint": "So11111111111111111111111111111111111111112",
+        "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "inAmount": "100000000",
+        "outAmount": "12550645",
+        "feeAmount": "0",
+        "feeMint": "So11111111111111111111111111111111111111112"
+      },
+      "percent": 100
+    }
+  ],
+  "inputMint": "So11111111111111111111111111111111111111112",
+  "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "feeBps": 0,
+  "taker": "jdocuPgEAjMfihABsPgKEvYtsmMzjUHeq9LX4Hvs7f3",
+  "gasless": false,
+  "transaction": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAICwrsAhWzTDt8lE+KOND7l5F1l+AGosYESC5zchQ4ZfpWT2oNgWTjN0T1WlxqLRVMemOUFGyMhmsSKBlEsNmgHvWaNCoAnvG0/Sp0KxhDwMgeIge1NzW+fIbfreNBVIJfRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjJclj04kifG7PRApFI4NgwtaE5na/xCEBI572Nvp+FmsH4P9uc5VDeldVYzceVRhzPQ3SsaI7BOphAAiCnjaBgMGRm/lIRcy/+ytunLDm+e8jOW7xfcSayxDmzpAAAAAtD/6J/XX9kp0wJsfKVh53ksJqzbfyd1RSzIap7OM5ejG+nrzvtutOj1l82qryXQxsbvkwtL24OR8pgIDRS9dYQR51VvyMcBu7nTFbs5oFQf9sbLeo/SOUQKxzaJWvBOPBt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKmKsHMLXQw2qLEyz0OzhbbleC1ZXTY4NGK6N8QWPXRWPwcGAAUCwFwVAAYACQMt3AYAAAAAAAMCAAIMAgAAAPD+FAYAAAAACQUCAA4KAwmT8Xtk9ISudvwEBgABAAgDCgEBCRMKAAIBCQgJBwkPAAwNCwIBChAFJOUXy5d6460qAQAAAD0AZAABAOH1BQAAAAD1gb8AAAAAADMAAAoDAgAAAQkByzeZPtf3yZ4VjS880xYauu0yJzlCh6lntUFWKcU6tHoDDQsOAwcPEA==",
+  "prioritizationType": "ComputeBudget",
+  "prioritizationFeeLamports": 629413,
+  "dynamicSlippageReport": {
+    "slippageBps": 51,
+    "otherAmount": null,
+    "simulatedIncurredSlippageBps": null,
+    "amplificationRatio": null,
+    "categoryName": "solana",
+    "heuristicMaxSlippageBps": 100,
+    "rtseSlippageBps": 51,
+    "failedTxnEstSlippage": 0,
+    "emaEstSlippage": 51,
+    "useIncurredSlippageForQuoting": null
+  },
+  "totalTime": 701
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "inputMint": "So11111111111111111111111111111111111111112",
+  "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "inAmount": "100000000",
+  "outAmount": "12619939",
+  "otherAmountThreshold": "12626253",
+  "swapMode": "ExactIn",
+  "slippageBps": 0,
+  "priceImpactPct": "0",
+  "routePlan": [
+    {
+      "swapInfo": {
+        "ammKey": "96ywtMs5KJNt2iAinr1U8KMzxjcY1FUEpgKHMYNz818g",
+        "label": "RFQ",
+        "inputMint": "So11111111111111111111111111111111111111112",
+        "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "inAmount": "100000000",
+        "outAmount": "12619939",
+        "feeAmount": "0",
+        "feeMint": "11111111111111111111111111111111"
+      },
+      "percent": 100
+    }
+  ],
+  "feeBps": 5,
+  "transaction": null,
+  "gasless": true,
+  "prioritizationType": "None",
+  "prioritizationFeeLamports": 0,
+  "requestId": "0abacc75-6a3c-d688-b633-ce2c14cef0fd",
+  "swapType": "rfq",
+  "quoteId": "25e8fc14-15f9-522d-8e18-5130e273b90f",
+  "maker": "96ywtMs5KJNt2iAinr1U8KMzxjcY1FUEpgKHMYNz818g",
+  "taker": null,
+  "expireAt": null,
+  "contextSlot": 0,
+  "platformFee": {
+    "amount": "6313",
+    "feeBps": 5
+  },
+  "totalTime": 425
+}
+```
+
+----------------------------------------
+
+TITLE: Example of Failed Token Balances API Response
+DESCRIPTION: Provides an example of a JSON response indicating an error from the Jup.ag Ultra API, typically due to an invalid input such as an incorrect wallet address or other processing issues.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/3-get-balances.md#_snippet_3
+
+LANGUAGE: json
+CODE:
+```
+{
+  "error": "Invalid address"
+}
+```
+
+----------------------------------------
+
+TITLE: Set up Solana Development Wallet from CLI config file
+DESCRIPTION: This snippet demonstrates how to load a Solana `Keypair` from a JSON file generated by the Solana CLI, typically located at `/Path/to/.config/solana/id.json`. It uses Node.js's `fs` module to read the file and constructs the `Keypair` from the `Uint8Array` representation of the private key.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/1-environment-setup.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { Keypair } from '@solana/web3.js';
+import fs from 'fs';
+
+const privateKeyArray = JSON.parse(fs.readFileSync('/Path/to/.config/solana/id.json', 'utf8').trim());
+const wallet = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+```
+
+----------------------------------------
+
+TITLE: Install Unified Wallet Kit Dependency
+DESCRIPTION: This command installs the `@jup-ag/wallet-adapter` package, which is the core dependency for integrating the Unified Wallet Kit into your project. It uses npm, the Node.js package manager, to fetch and add the library to your project's `node_modules` directory, making the wallet functionalities available for use.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/wallet-kit/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm i @jup-ag/wallet-adapter
+```
+
+----------------------------------------
+
+TITLE: Jupiter API: Get Quote with Referral Fee
+DESCRIPTION: This section details how to use the Jupiter API's `/quote` endpoint to retrieve swap quotes, including how to specify a referral fee using the `platformFeeBps` parameter. It provides a comprehensive API definition and code examples in both shell (curl) and JavaScript.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/3-adding-fees.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /quote
+  - Description: Retrieves a swap quote from Jupiter Aggregator, allowing for the inclusion of a referral fee.
+  - Endpoint: https://quote-api.jup.ag/v6/quote
+  - Parameters:
+    - inputMint (string): The mint address of the input token (e.g., So111...SOL).
+    - outputMint (string): The mint address of the output token (e.g., EPjFW...USDC).
+    - amount (number): The amount of input tokens to be swapped, in the smallest denomination (e.g., lamports for SOL).
+    - slippageBps (number): The maximum allowable slippage for the swap, in basis points (e.g., 50 for 0.5%).
+    - platformFeeBps (number, optional): Basis points of the referral fee to be added to the swap.
+  - Returns: A JSON object containing the swap quote details.
+  - Usage: This endpoint is typically called before initiating a swap to get current exchange rates and fees.
+```
+
+LANGUAGE: shell
+CODE:
+```
+curl -G "https://quote-api.jup.ag/v6/quote" \
+     --data-urlencode "inputMint=So11111111111111111111111111111111111111112" \
+     --data-urlencode "outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" \
+     --data-urlencode "amount=100000000" \
+     --data-urlencode "slippageBps=50" \
+     --data-urlencode "platformFeeBps=20"
+```
+
+LANGUAGE: javascript
+CODE:
+```
+// Function to swap SOL to USDC with input 0.1 SOL and 0.5% slippage
+async function getQuote() {
+  try {
+    // Create a new URL object for the quote API endpoint
+    const url = new URL("https://quote-api.jup.ag/v6/quote");
+
+    // Append query parameters to the URL
+    // inputMint: The mint address of the input token (SOL)
+    url.searchParams.append(
+      "inputMint",
+      "So11111111111111111111111111111111111111112"
+    );
+
+    // outputMint: The mint address of the output token (USDC)
+    url.searchParams.append(
+      "outputMint",
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    );
+
+    // amount: The amount of input tokens to be swapped (0.1 SOL in lamports, where 1 SOL = 1,000,000,000 lamports)
+    url.searchParams.append("amount", 100000000);
+
+    // slippageBps: The maximum allowable slippage for the swap (0.5% expressed in basis points)
+    url.searchParams.append("slippageBps", 50);
+
+    // platformFeeBps: The platform fee to be added (20 basis points)
+    url.searchParams.append("platformFeeBps", 20);
+
+    // Perform the fetch request to the constructed URL
+    const response = await fetch(url.toString());
+
+    // Check if the response is not OK (status code is not in the range 200-299)
+    if (!response.ok) {
+      // Throw an error with the status text from the response
+      throw new Error(`Error fetching quote: ${response.statusText}`);
+    }
+
+    // Parse the response body as JSON
+    const quoteResponse = await response.json();
+
+    // Log the parsed response to the console
+    console.log({ quoteResponse });
+  } catch (error) {
+    // Catch any errors that occur during the fetch request or JSON parsing
+    // Log the error to the console
+    console.error("Failed to get quote:", error);
+  }
+}
+
+// Call the function to get the quote
+getQuote();
+```
+
+----------------------------------------
+
+TITLE: Install Dependencies for Jupiter Docs
+DESCRIPTION: This command installs all necessary project dependencies for the Jupiter Developer Documentation website. It utilizes pnpm, a fast and disk-space efficient package manager, to set up the development environment locally. This step is crucial for anyone looking to contribute or run the documentation site.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm install
+```
+
+----------------------------------------
+
+TITLE: Integrate Jupiter Terminal Script into HTML
+DESCRIPTION: This comprehensive HTML snippet shows how to set up a basic web page, include the Jupiter Terminal script from a CDN, and initialize the terminal widget within a designated HTML element upon page load. It demonstrates the necessary HTML structure and JavaScript initialization for embedding the terminal.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/terminal/html-app-example.md#_snippet_1
+
+LANGUAGE: html
+CODE:
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jupiter Terminal Demo</title>
+    <script src="https://terminal.jup.ag/main-v4.js" data-preload defer></script>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Jupiter Terminal Demo</h1>
+        <div id="jupiter-terminal"></div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            window.Jupiter.init({
+                displayMode: "widget",
+                integratedTargetId: "jupiter-terminal",
+            });
+        };
+    </script>
+</body>
+</html>
+```
+
+----------------------------------------
+
+TITLE: Install Required Libraries for Jupiter API Integration
+DESCRIPTION: This snippet provides the necessary `npm` commands to install the JavaScript libraries required for interacting with the Jupiter Swap API on Solana. It specifies a minimum NodeJS 16 version.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/1-swap-api.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npm i @solana/web3.js@1
+npm i cross-fetch
+npm i @project-serum/anchor
+npm i bs58
+```
+
+----------------------------------------
+
+TITLE: Initialize Referral and Mint Public Keys
+DESCRIPTION: This snippet demonstrates how to initialize PublicKey objects for a referral account and a hardcoded Solana mint account (SOL), which are prerequisites for interacting with the Jupiter referral program. Replace 'ReplaceWithPubkey' with your actual referral account public key.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/100-swap-api/4-add-fees-to-swap.md#_snippet_0
+
+LANGUAGE: jsx
+CODE:
+```
+const referralAccount = new Publickey('ReplaceWithPubkey');
+const mintAccount = new Publickey('So11111111111111111111111111111111111111112');
+```
+
+----------------------------------------
+
+TITLE: Add Basic TypeScript Declaration for Jupiter Terminal
+DESCRIPTION: This TypeScript declaration file extends the global Window interface to include the JupiterTerminal type, making the Jupiter object available globally for type checking. It provides a minimal setup for integrating the terminal with type safety.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/300-tool-kits/terminal/nextjs-app-example.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+declare global {
+  interface Window {
+    Jupiter: JupiterTerminal;
+  }
+};
+export {};
+```
+
+----------------------------------------
+
+TITLE: Install Node.js Libraries for Jupiter Aggregator Integration
+DESCRIPTION: This snippet provides commands to install necessary Node.js packages like @solana/web3.js, cross-fetch, and bs58 using npm. These libraries are required for interacting with the Solana blockchain and the Jupiter Aggregator API.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/9-legacy/1-apis/1-swap-api.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+npm i @solana/web3.js@1
+npm i cross-fetch
+npm i bs58
+```
+
+----------------------------------------
+
+TITLE: Perform Jupiter Aggregator Swap on Solana with `maxAccounts` Handling
+DESCRIPTION: This comprehensive JavaScript/TypeScript example demonstrates how to interact with the Jupiter Aggregator API to perform token swaps on Solana. It covers fetching swap quotes, retrieving detailed swap instructions, and constructing a versioned transaction, including handling `maxAccounts` for transaction size optimization. The code initializes a Solana connection and wallet, then defines functions for quoting, getting instructions, and building the transaction.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/100-swap-api/7-requote-with-lower-max-accounts.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+import {
+    AddressLookupTableAccount,
+    Connection,
+    Keypair,
+    PublicKey,
+    TransactionInstruction,
+    TransactionMessage,
+    VersionedTransaction,
+} from '@solana/web3.js';
+
+// Set up dev environment
+import fs from 'fs';
+const privateKeyArray = JSON.parse(fs.readFileSync('/Path/to/key', 'utf8').trim());
+const wallet = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+const connection = new Connection('your-own-rpc');
+
+// Recommended
+const MAX_ACCOUNTS = 64
+
+async function getQuote(maxAccounts) {
+    const params = new URLSearchParams({
+        inputMint: 'insert-mint',
+        outputMint: 'insert-mint',
+        amount: '1000000',
+        slippageBps: '100',
+        maxAccounts: maxAccounts.toString()
+    });
+
+    const url = `https://lite-api.jup.ag/swap/v1/quote?${params}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
+    
+    const quoteResponse = await response.json();
+    
+    if (quoteResponse.error) {
+        throw new Error(`Jupiter API error: ${quoteResponse.error}`);
+    }
+    
+    return quoteResponse;
+};
+
+async function getSwapInstructions(quoteResponse) {
+    const response = await fetch('https://lite-api.jup.ag/swap/v1/swap-instructions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            quoteResponse: quoteResponse,
+            userPublicKey: wallet.publicKey.toString(),
+            prioritizationFeeLamports: {
+                priorityLevelWithMaxLamports: {
+                    maxLamports: 10000000,
+                    priorityLevel: "veryHigh"
+                }
+            },
+            dynamicComputeUnitLimit: true,
+        }, null, 2)
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
+
+    const swapInstructionsResponse = await response.json();
+    
+    if (swapInstructionsResponse.error) {
+        throw new Error(`Jupiter API error: ${swapInstructionsResponse.error}`);
+    }
+
+    return swapInstructionsResponse;
+};
+
+async function buildSwapTransaction(swapInstructionsResponse) {
+    const {
+        computeBudgetInstructions,
+        setupInstructions,
+        swapInstruction,
+        cleanupInstruction,
+        addressLookupTableAddresses,
+    } = swapInstructionsResponse;
+    
+    const deserializeInstruction = (instruction) => {
+        if (!instruction) return null;
+        return new TransactionInstruction({
+            programId: new PublicKey(instruction.programId),
+            keys: instruction.accounts.map((key) => ({
+                pubkey: new PublicKey(key.pubkey),
+                isSigner: key.isSigner,
+                isWritable: key.isWritable,
+            })),
+            data: Buffer.from(instruction.data, "base64"),
+        });
+    };
+
+    const getAddressLookupTableAccounts = async (
+        keys
+    ) => {
+        const addressLookupTableAccountInfos =
+            await connection.getMultipleAccountsInfo(
+                keys.map((key) => new PublicKey(key))
+            );
+    
+        return addressLookupTableAccountInfos.reduce((acc, accountInfo, index) => {
+            const addressLookupTableAddress = keys[index];
+            if (accountInfo) {
+                const addressLookupTableAccount = new AddressLookupTableAccount({
+                    key: new PublicKey(addressLookupTableAddress),
+                    state: AddressLookupTableAccount.deserialize(accountInfo.data),
+                });
+                acc.push(addressLookupTableAccount);
+            }
+    
+            return acc;
+        }, []);
+    };
+
+    const addressLookupTableAccounts = [];
+    addressLookupTableAccounts.push(
+        ...(await getAddressLookupTableAccounts(addressLookupTableAddresses))
+    );
+
+    const blockhash = (await connection.getLatestBlockhash()).blockhash;
+
+    // Create transaction message with all instructions
+    const messageV0 = new TransactionMessage({
+        payerKey: wallet.publicKey,
+        recentBlockhash: blockhash,
+        instructions: [
+```
+
+----------------------------------------
+
+TITLE: Example Shield API Response Structure
+DESCRIPTION: Illustrates the expected JSON structure of a successful response from the Jupiter Ultra API's `/shield` endpoint. It shows how warnings for different token addresses are returned, including their type, message, and severity.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/4-get-shield.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "warnings": {
+    "someTokenAddressForEducationalPurposes": [
+      {
+        "type": "NOT_VERIFIED",
+        "message": "This token is not verified, make sure the mint address is correct before trading",
+        "severity": "info"
+      },
+      {
+        "type": "LOW_ORGANIC_ACTIVITY",
+        "message": "This token has low organic activity",
+        "severity": "info"
+      },
+      {
+        "type": "NEW_LISTING",
+        "message": "This token is newly listed",
+        "severity": "info"
+      }
+    ],
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": [
+      {
+        "type": "HAS_FREEZE_AUTHORITY",
+        "message": "The authority's owner has the ability to freeze your token account, preventing you from further trading",
+        "severity": "warning"
+      },
+      {
+        "type": "HAS_MINT_AUTHORITY",
+        "message": "The authority's owner has the ability to mint more tokens",
+        "severity": "info"
+      }
+    ],
+    "So11111111111111111111111111111111111111112": []
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Jupiter Ultra API Endpoints for Swaps and Referrals
+DESCRIPTION: Comprehensive documentation for the Jupiter Ultra API, covering the `/order` endpoint for creating swap orders with optional referral fees and the `/execute` endpoint for submitting signed transactions to the Solana blockchain.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/5-add-fees-to-ultra.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+/ultra/v1/order
+  - Method: GET
+  - Description: Creates a swap order with optional referral details.
+  - Parameters:
+    - inputMint: (string) The mint address of the input token.
+    - outputMint: (string) The mint address of the output token.
+    - amount: (number) The amount of the input token (in lamports/smallest unit).
+    - taker: (string) The public key of the taker wallet.
+    - referralAccount: (string, optional) The public key of the referral token account.
+    - referralFee: (number, optional) The referral fee in basis points (bps).
+  - Returns: JSON object containing transaction details, requestId, feeMint, feeBps.
+  - Notes: Referral token account must be initialized for fees to be collected. If not initialized, the order will still return and can be executed without your fees.
+
+/ultra/v1/execute
+  - Method: POST
+  - Description: Executes a previously generated swap transaction.
+  - Request Body:
+    - signedTransaction: (string) Base64 encoded signed VersionedTransaction.
+    - requestId: (string) The requestId obtained from the /order response.
+  - Returns: JSON object with status (Success/Failed) and signature.
+```
+
+----------------------------------------
+
+TITLE: Fetch All Tradable Token Mints using Jupiter Token API V1
+DESCRIPTION: Shows how to get a comprehensive list of all token mint addresses currently tradable on Jupiter via its Token API V1. These tokens are expected to be quotable and swappable. The example uses a simple `fetch` call.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/501-token-api/v1.md#_snippet_3
+
+LANGUAGE: jsx
+CODE:
+```
+const allTradableResponse = await (
+    await fetch('https://lite-api.jup.ag/tokens/v1/mints/tradable')
+).json();
+
+console.log(allTradableResponse);
+```
+
+----------------------------------------
+
+TITLE: Example of Successful Token Balances API Response
+DESCRIPTION: Illustrates the structure of a successful JSON response from the Jup.ag Ultra API when querying token balances. It shows a single token entry (SOL) with its amount, UI amount, blockchain slot, and frozen status.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/101-ultra-api/3-get-balances.md#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+{
+  "SOL": {
+    "amount": "0",
+    "uiAmount": 0,
+    "slot": 324307186,
+    "isFrozen": false
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Set up Solana Development Wallet using .env file
+DESCRIPTION: This snippet shows how to load a Solana `Keypair` from a private key stored in a `.env` file. It utilizes the `dotenv` library to manage environment variables and `bs58` for decoding the base58-encoded private key. While convenient for testing, this method is not recommended for production applications due to security concerns.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/1-environment-setup.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+// index.js
+import { Keypair } from '@solana/web3.js';
+import dotenv from 'dotenv';
+require('dotenv').config();
+
+const wallet = Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY || ''));
+```
+
+LANGUAGE: dotenv
+CODE:
+```
+// .env
+PRIVATE_KEY=""
+```
+
+----------------------------------------
+
+TITLE: Complete Jupiter Aggregator Swap Flow Example
+DESCRIPTION: This comprehensive JavaScript example demonstrates an end-to-end token swap on Solana using the Jupiter Aggregator API. It covers initializing connection and wallet, fetching a swap quote, obtaining the serialized transaction, deserializing, signing, and finally executing and confirming the transaction on the Solana network.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/2-apis/1-swap-api.md#_snippet_8
+
+LANGUAGE: js
+CODE:
+```
+import { Connection, Keypair, VersionedTransaction } from '@solana/web3.js';
+import fetch from 'cross-fetch';
+import { Wallet } from '@project-serum/anchor';
+import bs58 from 'bs58';
+
+// It is recommended that you use your own RPC endpoint.
+// This RPC endpoint is only for demonstration purposes so that this example will run.
+const connection = new Connection('https://neat-hidden-sanctuary.solana-mainnet.discover.quiknode.pro/2af5315d336f9ae920028bbb90a73b724dc1bbed/');
+
+const wallet = new Wallet(Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY || '')));
+
+// Swapping SOL to USDC with input 0.1 SOL and 0.5% slippage
+const quoteResponse = await (
+  await fetch('https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112\
+&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\
+&amount=100000000\
+&slippageBps=50'
+  )
+).json();
+// console.log({ quoteResponse })
+
+// get serialized transactions for the swap
+const { swapTransaction } = await (
+  await fetch('https://quote-api.jup.ag/v6/swap', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      // quoteResponse from /quote api
+      quoteResponse,
+      // user public key to be used for the swap
+      userPublicKey: wallet.publicKey.toString(),
+      // auto wrap and unwrap SOL. default is true
+      wrapAndUnwrapSol: true,
+      // Optional, use if you want to charge a fee.  feeBps must have been passed in /quote API.
+      // feeAccount: "fee_account_public_key"
+    })
+  })
+).json();
+
+// deserialize the transaction
+const swapTransactionBuf = Buffer.from(swapTransaction, 'base64');
+var transaction = VersionedTransaction.deserialize(swapTransactionBuf);
+console.log(transaction);
+
+// sign the transaction
+transaction.sign([wallet.payer]);
+
+// Execute the transaction
+const rawTransaction = transaction.serialize()
+const txid = await connection.sendRawTransaction(rawTransaction, {
+  skipPreflight: true,
+  maxRetries: 2
+});
+await connection.confirmTransaction(txid);
+console.log(`https://solscan.io/tx/${txid}`);
+```
+
+----------------------------------------
+
+TITLE: Fetch Jupiter Aggregator Swap Routes for Token Pair
+DESCRIPTION: This JavaScript snippet demonstrates how to query the Jupiter Aggregator API to get potential swap routes for a specific token pair (SOL to USDC in this example), given an amount and slippage tolerance. It fetches the top routes sorted by output token amount.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs_versioned_docs/version-old/9-legacy/1-apis/1-swap-api.md#_snippet_6
+
+LANGUAGE: js
+CODE:
+```
+// swapping SOL to USDC with input 0.1 SOL and 0.5% slippage
+const { data } = await (
+  await fetch('https://quote-api.jup.ag/v4/quote?inputMint=So11111111111111111111111111111111111111112\
+&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\
+&amount=100000000\
+&slippageBps=50'
+  )
+).json();
+const routes = data;
+// console.log(routes)
+```
+
+----------------------------------------
+
+TITLE: Jupiter Swap API Quote Response Structure
+DESCRIPTION: An example JSON response object returned by the Jupiter Swap API's quote endpoint. It illustrates the typical structure and fields, including input/output mints and amounts, slippage, platform fees, price impact, and the detailed route plan with swap information.
+
+SOURCE: https://github.com/jup-ag/docs/blob/main/docs/100-swap-api/1-get-quote.md#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+{
+  "inputMint": "So11111111111111111111111111111111111111112",
+  "inAmount": "100000000",
+  "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "outAmount": "16198753",
+  "otherAmountThreshold": "16117760",
+  "swapMode": "ExactIn",
+  "slippageBps": 50,
+  "platformFee": null,
+  "priceImpactPct": "0",
+  "routePlan": [
+    {
+      "swapInfo": {
+        "ammKey": "5BKxfWMbmYBAEWvyPZS9esPducUba9GqyMjtLCfbaqyF",
+        "label": "Meteora DLMM",
+        "inputMint": "So11111111111111111111111111111111111111112",
+        "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "inAmount": "100000000",
+        "outAmount": "16198753",
+        "feeAmount": "24825",
+        "feeMint": "So11111111111111111111111111111111111111112"
+      },
+      "percent": 100
+    }
+  ],
+  "contextSlot": 299283763,
+  "timeTaken": 0.015257836
+}
+```

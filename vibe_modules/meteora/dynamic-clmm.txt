@@ -1,0 +1,802 @@
+========================
+CODE SNIPPETS
+========================
+TITLE: Install DLMM SDK Dependencies
+DESCRIPTION: Installs the necessary dependencies for the DLMM SDK, including the SDK itself, Anchor for Solana development, and the Solana Web3.js library.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npm i @meteora-ag/dlmm @coral-xyz/anchor @solana/web3.js
+```
+
+----------------------------------------
+
+TITLE: Run DLMM CLI
+DESCRIPTION: Executes the compiled DLMM CLI. The example shows how to access the help message, which lists all available commands and options.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/cli/README.md#_snippet_3
+
+LANGUAGE: shell
+CODE:
+```
+target/debug/cli --help
+```
+
+----------------------------------------
+
+TITLE: Install DLMM SDK and Dependencies
+DESCRIPTION: Installs the DLMM SDK and the 'solders' library using pip. These are the primary dependencies for using the DLMM Python client.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/python-client/dlmm/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+pip install dlmm solders
+```
+
+----------------------------------------
+
+TITLE: Swap API
+DESCRIPTION: Methods for interacting with the swap functionality, including getting swap quotes and executing swaps.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_20
+
+LANGUAGE: APIDOC
+CODE:
+```
+swapQuote:
+  Description: Provides a quote for a swap operation.
+  Returns: SwapQuote
+
+swap:
+  Description: Executes a token swap within the LbPair.
+  Returns: Promise<Transaction>
+```
+
+----------------------------------------
+
+TITLE: Swap - DLMM SDK
+DESCRIPTION: Demonstrates how to perform a token swap within a DLMM pool. It includes fetching bin arrays for swapping, getting a swap quote, and executing the swap transaction.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_11
+
+LANGUAGE: ts
+CODE:
+```
+const swapAmount = new BN(0.1 * 10 ** 9);
+// Swap quote
+const swapYtoX = true;
+const binArrays = await dlmmPool.getBinArrayForSwap(swapYtoX);
+
+const swapQuote = await dlmmPool.swapQuote(
+  swapAmount,
+  swapYtoX,
+  new BN(1),
+  binArrays
+);
+
+// Swap
+const swapTx = await dlmmPool.swap({
+  inToken: dlmmPool.tokenX.publicKey,
+  binArraysPubkey: swapQuote.binArraysPubkey,
+  inAmount: swapAmount,
+  lbPair: dlmmPool.pubkey,
+  user: user.publicKey,
+  minOutAmount: swapQuote.minOutAmount,
+  outToken: dlmmPool.tokenY.publicKey,
+});
+
+try {
+  const swapTxHash = await sendAndConfirmTransaction(connection, swapTx, [
+    user,
+  ]);
+} catch (error) {}
+```
+
+----------------------------------------
+
+TITLE: Claim Fee - DLMM SDK
+DESCRIPTION: Provides an example of how to claim all accumulated swap fees for a user from a DLMM pool. It iterates through positions and sends transactions to claim fees.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_9
+
+LANGUAGE: ts
+CODE:
+```
+async function claimFee(dlmmPool: DLMM) {
+  const claimFeeTxs = await dlmmPool.claimAllSwapFee({
+    owner: user.publicKey,
+    positions: userPositions,
+  });
+
+  try {
+    for (const claimFeeTx of claimFeeTxs) {
+      const claimFeeTxHash = await sendAndConfirmTransaction(
+        connection,
+        claimFeeTx,
+        [user]
+      );
+    }
+  } catch (error) {}
+```
+
+----------------------------------------
+
+TITLE: Execute SDK Integration Tests
+DESCRIPTION: A sequence of commands to set up and run integration tests for the SDK. It involves navigating to the TypeScript client directory, starting a local Solana validator with specific features, and then running the tests using pnpm.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/README.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+1. cd ts-client
+2. anchor localnet -- --features localnet
+3. pnpm run test
+```
+
+----------------------------------------
+
+TITLE: Create Balanced Position
+DESCRIPTION: Guides on creating a balanced liquidity position within a specified range of bins around the active bin. It involves calculating token amounts and submitting a transaction.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_3
+
+LANGUAGE: typescript
+CODE:
+```
+import { BN } from '@project-serum/anchor';
+import { Keypair } from '@solana/web3.js';
+import { StrategyType, autoFillYByStrategy } from '@meteora-ag/dlmm';
+
+// Assuming 'connection', 'user', 'baseMint', 'activeBin' are defined
+const TOTAL_RANGE_INTERVAL = 10; // 10 bins on each side
+const minBinId = activeBin.binId - TOTAL_RANGE_INTERVAL;
+const maxBinId = activeBin.binId + TOTAL_RANGE_INTERVAL;
+
+const totalXAmount = new BN(100 * 10 ** baseMint.decimals);
+const totalYAmount = autoFillYByStrategy(
+  activeBin.binId,
+  dlmmPool.lbPair.binStep,
+  totalXAmount,
+  activeBin.xAmount,
+  activeBin.yAmount,
+  minBinId,
+  maxBinId,
+  StrategyType.Spot // or StrategyType.BidAsk, StrategyType.Curve
+);
+const newBalancePosition = new Keypair();
+
+// Create Position Transaction
+const createPositionTx = await dlmmPool.initializePositionAndAddLiquidityByStrategy({
+  positionPubKey: newBalancePosition.publicKey,
+  user: user.publicKey,
+  totalXAmount,
+  totalYAmount,
+  strategy: {
+    maxBinId,
+    minBinId,
+    strategyType: StrategyType.Spot,
+  },
+});
+
+try {
+  // Assuming 'sendAndConfirmTransaction' is available
+  const createBalancePositionTxHash = await sendAndConfirmTransaction(
+    connection,
+    createPositionTx,
+    [user, newBalancePosition]
+  );
+} catch (error) {}
+```
+
+----------------------------------------
+
+TITLE: Get User Positions
+DESCRIPTION: Demonstrates how to fetch all liquidity positions associated with a specific user's public key for a given DLMM pool. It also shows how to access the bin data within a position.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_6
+
+LANGUAGE: typescript
+CODE:
+```
+// Assuming 'dlmmPool' and 'user' (with publicKey) are defined
+const { userPositions } = await dlmmPool.getPositionsByUserAndLbPair(
+  user.publicKey
+);
+
+// Accessing bin data for the first position
+if (userPositions.length > 0) {
+  const binData = userPositions[0].positionData.positionBinData;
+}
+```
+
+----------------------------------------
+
+TITLE: Add Liquidity to Existing Position
+DESCRIPTION: Provides an example of adding more liquidity to an already existing position in a DLMM pool. This involves specifying the position to update and the additional amounts of tokens.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_7
+
+LANGUAGE: typescript
+CODE:
+```
+import { BN } from '@project-serum/anchor';
+import { StrategyType, autoFillYByStrategy } from '@meteora-ag/dlmm';
+
+// Assuming 'connection', 'user', 'baseMint', 'activeBin', 'newBalancePosition' are defined
+const TOTAL_RANGE_INTERVAL = 10; // 10 bins on each side
+const minBinId = activeBin.binId - TOTAL_RANGE_INTERVAL;
+const maxBinId = activeBin.binId + TOTAL_RANGE_INTERVAL;
+
+const totalXAmount = new BN(100 * 10 ** baseMint.decimals);
+const totalYAmount = autoFillYByStrategy(
+  activeBin.binId,
+  dlmmPool.lbPair.binStep,
+  totalXAmount,
+  activeBin.xAmount,
+  activeBin.yAmount,
+  minBinId,
+  maxBinId,
+  StrategyType.Spot // or StrategyType.BidAsk, StrategyType.Curve
+);
+
+// Add Liquidity Transaction
+const addLiquidityTx = await dlmmPool.addLiquidityByStrategy({
+  positionPubKey: newBalancePosition.publicKey, // The existing position to add liquidity to
+  user: user.publicKey,
+  totalXAmount,
+  totalYAmount,
+  strategy: {
+    maxBinId,
+    minBinId,
+    strategyType: StrategyType.Spot,
+  },
+});
+
+try {
+  // Assuming 'sendAndConfirmTransaction' is available
+  const addLiquidityTxHash = await sendAndConfirmTransaction(
+    connection,
+    addLiquidityTx,
+    [user] // Only user needs to sign if position is already owned
+  );
+} catch (error) {}
+```
+
+----------------------------------------
+
+TITLE: Get Active Bin Data
+DESCRIPTION: Retrieves the active bin information from a DLMM pool instance. It shows how to access the raw price in lamports and convert it to a user-friendly price per token.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_2
+
+LANGUAGE: typescript
+CODE:
+```
+const activeBin = await dlmmPool.getActiveBin();
+const activeBinPriceLamport = activeBin.price;
+const activeBinPricePerToken = dlmmPool.fromPricePerLamport(
+  Number(activeBin.price)
+);
+```
+
+----------------------------------------
+
+TITLE: Initialize DLMM Instance
+DESCRIPTION: Demonstrates how to create a DLMM instance using a Solana connection and a pool public key. It also mentions the utility of `createMultiple` for handling multiple pools.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+import DLMM from '@meteora-ag/dlmm';
+import { PublicKey } from '@solana/web3.js';
+
+// Assuming 'connection' is an initialized Solana connection object
+const USDC_USDT_POOL = new PublicKey('ARwi1S4DaiTG5DX7S4M4ZsrXqpMD1MrTmbu9ue2tpmEq'); // Pool address from API
+const dlmmPool = await DLMM.create(connection, USDC_USDT_POOL);
+
+// For multiple pools:
+// const dlmmPools = await DLMM.createMultiple(connection, [USDC_USDT_POOL, ...]);
+```
+
+----------------------------------------
+
+TITLE: DLMM Instance Price and Bin ID Conversions
+DESCRIPTION: Utility functions for converting between real-world prices and the internal lamport price representation, and for mapping prices to bin IDs.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+toPricePerLamport()
+  Description: Converts a real price of a bin into its corresponding lamport price representation.
+  Returns: string
+
+fromPricePerLamport()
+  Description: Converts a price per lamport value back into a real price of a bin.
+  Returns: string
+
+getPriceOfBinByBinId(binId: number)
+  Description: Gets the price of a bin based on its provided bin ID.
+  Parameters:
+    - binId: The identifier of the bin.
+  Returns: string
+
+getBinIdFromPrice(price: string, roundDown: boolean)
+  Description: Gets the bin ID corresponding to a given price. Includes a flag to specify rounding direction.
+  Parameters:
+    - price: The price to convert to a bin ID.
+    - roundDown: A boolean flag indicating whether to round down or up.
+  Returns: number
+```
+
+----------------------------------------
+
+TITLE: Build DLMM CLI
+DESCRIPTION: Compiles the DLMM command-line interface using Cargo, the Rust package manager. This command builds the project and places the executable in the target/debug directory.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/cli/README.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+cargo build
+```
+
+----------------------------------------
+
+TITLE: DLMM Instance State and Initialization
+DESCRIPTION: Functions related to updating the on-chain state of a DLMM instance and retrieving core data structures like bin arrays.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+refetchStates()
+  Description: Updates the on-chain state of the DLMM instance. It is recommended to call this before interacting with the program (e.g., Deposit/Withdraw/Swap).
+  Returns: Promise<void>
+
+getBinArrays()
+  Description: Retrieves the list of all Bin Arrays associated with the DLMM instance.
+  Returns: Promise<BinArrayAccount[]>
+
+getBinArrayForSwap()
+  Description: Retrieves a list of Bin Arrays specifically filtered for swap purposes.
+  Returns: Promise<BinArrayAccount[]>
+```
+
+----------------------------------------
+
+TITLE: Reward Claiming API
+DESCRIPTION: Methods for claiming liquidity mining (LM) rewards and swap fees for specific or all positions.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_21
+
+LANGUAGE: APIDOC
+CODE:
+```
+claimLMReward:
+  Description: Claim LM rewards for a specific position owned by a specific owner.
+  Returns: Promise<Transaction>
+
+claimAllLMRewards:
+  Description: Claim all liquidity mining rewards for a given owner and their positions.
+  Returns: Promise<Transaction[]>
+
+claimSwapFee:
+  Description: Claim swap fees for a specific position owned by a specific owner.
+  Returns: Promise<Transaction>
+
+claimAllSwapFee:
+  Description: Claim swap fees for multiple positions owned by a specific owner.
+  Returns: Promise<Transaction>
+
+claimAllRewards:
+  Description: Claim swap fees and LM rewards for multiple positions owned by a specific owner.
+  Returns: Promise<Transaction[]>
+```
+
+----------------------------------------
+
+TITLE: Pool Information and Utility API
+DESCRIPTION: Utility methods for syncing pool data with market prices and retrieving pool-related information.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_22
+
+LANGUAGE: APIDOC
+CODE:
+```
+syncWithMarketPrice:
+  Description: Sync the pool's current active bin to match the nearest market price bin.
+  Returns: Promise<Transaction>
+
+getPairPubkeyIfExists:
+  Description: Get the existing pool address given parameters; returns null if not found.
+  Returns: Promise<PublicKey | null>
+
+getMaxPriceInBinArrays:
+  Description: Get the maximum price of the last bin that has liquidity, given bin arrays.
+  Returns: Promise<string | null>
+```
+
+----------------------------------------
+
+TITLE: DLMM SDK Static Functions
+DESCRIPTION: Documentation for static functions available in the DLMM SDK for creating and managing pools, positions, and rewards. These functions provide utility for interacting with the DLMM protocol.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+DLMM SDK Static Functions:
+
+create(dlmmAddress: PublicKey): Promise<DLMM>
+  - Given the DLMM address, create an instance to access the state and functions.
+  - Returns: A Promise that resolves to a DLMM instance.
+
+createMultiple(dlmmAddresses: PublicKey[]): Promise<Array<DLMM>>
+  - Given a list of DLMM addresses, create instances to access the state and functions.
+  - Returns: A Promise that resolves to an array of DLMM instances.
+
+getAllPresetParameters(): Promise<PresetParams>
+  - Get all the preset parameters used for creating DLMM pools.
+  - Returns: A Promise that resolves to PresetParams object.
+
+createPermissionLbPair(params: CreateLbPairParams): Promise<Transaction>
+  - Create a new DLMM Pool.
+  - Parameters:
+    - params: An object containing parameters for creating the pool (e.g., token accounts, fee tiers, etc.).
+  - Returns: A Promise that resolves to a Transaction object for creating the pool.
+
+getClaimableLMReward(dlmmPool: DLMM, position: PublicKey): Promise<LMRewards>
+  - Get the claimable Liquidity Mining reward for a specific position in a DLMM pool.
+  - Parameters:
+    - dlmmPool: The DLMM pool instance.
+    - position: The public key of the user's position.
+  - Returns: A Promise that resolves to LMRewards object.
+
+getClaimableSwapFee(dlmmPool: DLMM, position: PublicKey): Promise<SwapFee>
+  - Get the claimable swap fee for a specific position in a DLMM pool.
+  - Parameters:
+    - dlmmPool: The DLMM pool instance.
+    - position: The public key of the user's position.
+  - Returns: A Promise that resolves to SwapFee object.
+
+getAllLbPairPositionsByUser(dlmmPool: DLMM, user: PublicKey): Promise<Map<string, PositionInfo>>
+  - Get all positions owned by a user across all DLMM pools.
+  - Parameters:
+    - dlmmPool: The DLMM pool instance.
+    - user: The public key of the user.
+  - Returns: A Promise that resolves to a Map where keys are DLMM pool addresses and values are PositionInfo objects.
+```
+
+----------------------------------------
+
+TITLE: DLMM Instance Position Management
+DESCRIPTION: Functions for retrieving user positions within a specific LB pair and for initializing new positions with liquidity.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_18
+
+LANGUAGE: APIDOC
+CODE:
+```
+getPositionsByUserAndLbPair(userAddress: string, lbPairAddress: string)
+  Description: Retrieves all positions associated with a given user address and LB pair, including details about the active bin and user-specific positions.
+  Parameters:
+    - userAddress: The wallet address of the user.
+    - lbPairAddress: The address of the LB pair.
+  Returns: Promise<{ activeBin: { binId: any; price: string; }; userPositions: Array<Position>; }>
+
+initializePositionAndAddLiquidityByStrategy(params: any)
+  Description: Initializes a new position for a user and adds liquidity according to a specified strategy. This is a complex operation that may involve multiple transactions.
+  Parameters:
+    - params: An object containing all necessary parameters for position initialization and liquidity addition.
+  Returns: Promise<Transaction | Transaction[]>
+```
+
+----------------------------------------
+
+TITLE: Run Quote Tests
+DESCRIPTION: Executes all tests within the 'commons' crate. This command is used to verify the functionality of the common components of the SDK.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/README.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+cargo t -p commons --test '*'
+```
+
+----------------------------------------
+
+TITLE: Initialize DLMM Client Instance
+DESCRIPTION: Initializes the DLMM client by providing a pool address and an RPC endpoint. This creates a DLMM object instance for interacting with the DLMM protocol.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/python-client/dlmm/README.md#_snippet_1
+
+LANGUAGE: python
+CODE:
+```
+from dlmm import DLMM_CLIENT
+from solders.pubkey import Pubkey
+
+RPC = "https://api.devnet.solana.com"
+pool_address = Pubkey.from_string("3W2HKgUa96Z69zzG3LK1g8KdcRAWzAttiLiHfYnKuPw5") # You can get your desired pool address from the API https://dlmm-api.meteora.ag/pair/all
+dlmm = DLMM_CLIENT.create(pool_address, RPC) # Returns DLMM object instance
+```
+
+----------------------------------------
+
+TITLE: Liquidity Management API
+DESCRIPTION: Methods for managing liquidity within positions, including adding liquidity, removing it, and closing positions.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_19
+
+LANGUAGE: APIDOC
+CODE:
+```
+addLiquidityByStrategy:
+  Description: Add liquidity to an existing position.
+  Returns: Promise<Transaction | Transaction[]>
+
+removeLiquidity:
+  Description: Remove liquidity from a position, with options to claim rewards and close the position.
+  Returns: Promise<Transaction | Transaction[]>
+
+closePosition:
+  Description: Closes a position.
+  Returns: Promise<Transaction | Transaction[]>
+```
+
+----------------------------------------
+
+TITLE: DLMM Instance Bin Data Retrieval
+DESCRIPTION: Functions for querying and retrieving bin data, including bins around the active bin, within price ranges, and between specific bin IDs.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_15
+
+LANGUAGE: APIDOC
+CODE:
+```
+getBinsAroundActiveBin()
+  Description: Retrieves a specified number of bins to the left and right of the active bin, returning them along with the active bin ID.
+  Returns: Promise<{ activeBin: number; bins: BinLiquidity[] }>
+
+getBinsBetweenMinAndMaxPrice()
+  Description: Retrieves a list of bins that fall within a specified price range.
+  Returns: Promise<{ activeBin: number; bins: BinLiquidity[] }>
+
+getBinsBetweenLowerAndUpperBound()
+  Description: Retrieves a list of bins between a specified lower and upper bin ID, returning the active bin ID and the list of bins.
+  Returns: Promise<{ activeBin: number; bins: BinLiquidity[] }>
+```
+
+----------------------------------------
+
+TITLE: DLMM Instance Active Bin Information
+DESCRIPTION: Functions to retrieve information about the currently active bin within the DLMM instance.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+getActiveBin()
+  Description: Retrieves the ID of the currently active bin and its corresponding price.
+  Returns: Promise<{ binId: number; price: string }>
+```
+
+----------------------------------------
+
+TITLE: Remove Liquidity - DLMM SDK
+DESCRIPTION: Demonstrates how to remove liquidity from a DLMM pool. It identifies user positions, calculates bins to remove, and constructs a transaction to remove liquidity and claim fees.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_8
+
+LANGUAGE: ts
+CODE:
+```
+const userPosition = userPositions.find(({ publicKey }) =>
+  publicKey.equals(newBalancePosition.publicKey)
+);
+// Remove Liquidity
+const binIdsToRemove = userPosition.positionData.positionBinData.map(
+  (bin) => bin.binId
+);
+const removeLiquidityTx = await dlmmPool.removeLiquidity({
+  position: userPosition.publicKey,
+  user: user.publicKey,
+  fromBinId: binIdsToRemove[0],
+  toBinId: binIdsToRemove[binIdsToRemove.length - 1],
+  liquiditiesBpsToRemove: new Array(binIdsToRemove.length).fill(
+    new BN(100 * 100)
+  ), // 100% (range from 0 to 100)
+  shouldClaimAndClose: true, // should claim swap fee and close position together
+});
+
+try {
+  for (let tx of Array.isArray(removeLiquidityTx)
+    ? removeLiquidityTx
+    : [removeLiquidityTx]) {
+    const removeBalanceLiquidityTxHash = await sendAndConfirmTransaction(
+      connection,
+      tx,
+      [user],
+      { skipPreflight: false, preflightCommitment: "singleGossip" }
+    );
+  }
+} catch (error) {}
+```
+
+----------------------------------------
+
+TITLE: DLMM Instance Fee Information
+DESCRIPTION: Functions to retrieve fee-related data for a DLMM instance, including static and dynamic fee structures.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+getFeeInfo()
+  Description: Retrieves the LbPair's fee information, including the base fee, protocol fee, and maximum fee.
+  Returns: FeeInfo
+
+getDynamicFee()
+  Description: Retrieves the LbPair's dynamic fee, which may change based on market conditions.
+  Returns: Decimal
+```
+
+----------------------------------------
+
+TITLE: Set DLMM Toolchain for M1 Chip
+DESCRIPTION: Configures the DLMM toolchain for M1 chips, specifying both the channel version and the target triple. This is essential for cross-compilation or native builds on Apple Silicon.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/cli/README.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+channel = 1.76.0
+target triple = x86_64-apple-darwin
+# Eg: 1.76.0-x86_64-apple-darwin
+```
+
+----------------------------------------
+
+TITLE: Create One-Sided Position
+DESCRIPTION: Shows how to create a liquidity position focused on a single token by setting the other token's amount to zero. This is useful for providing liquidity on one side of the active price.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_5
+
+LANGUAGE: typescript
+CODE:
+```
+import { BN } from '@project-serum/anchor';
+import { Keypair } from '@solana/web3.js';
+import { StrategyType } from '@meteora-ag/dlmm';
+
+// Assuming 'connection', 'user', 'baseMint', 'activeBin' are defined
+const minBinId = activeBin.binId;
+const maxBinId = activeBin.binId + TOTAL_RANGE_INTERVAL * 2; // Example: wider range on one side
+
+const totalXAmount = new BN(100 * 10 ** baseMint.decimals);
+const totalYAmount = new BN(0);
+const newOneSidePosition = new Keypair();
+
+// Create Position Transaction
+const createPositionTx = await dlmmPool.initializePositionAndAddLiquidityByStrategy({
+  positionPubKey: newOneSidePosition.publicKey,
+  user: user.publicKey,
+  totalXAmount,
+  totalYAmount,
+  strategy: {
+    maxBinId,
+    minBinId,
+    strategyType: StrategyType.Spot, // or StrategyType.BidAsk, StrategyType.Curve
+  },
+});
+
+try {
+  // Assuming 'sendAndConfirmTransaction' is available
+  const createOneSidePositionTxHash = await sendAndConfirmTransaction(
+    connection,
+    createPositionTx,
+    [user, newOneSidePosition]
+  );
+} catch (error) {}
+```
+
+----------------------------------------
+
+TITLE: Set DLMM Toolchain Channel
+DESCRIPTION: Configures the DLMM toolchain by setting the specific channel version. This ensures consistency in the development environment.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/cli/README.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+channel = 1.76.0
+```
+
+----------------------------------------
+
+TITLE: Create Imbalanced Position
+DESCRIPTION: Illustrates creating an imbalanced liquidity position, typically when one token amount is zero or significantly less than the other. This is useful for single-sided liquidity provision.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_4
+
+LANGUAGE: typescript
+CODE:
+```
+import { BN } from '@project-serum/anchor';
+import { Keypair } from '@solana/web3.js';
+import { StrategyType } from '@meteora-ag/dlmm';
+
+// Assuming 'connection', 'user', 'baseMint', 'activeBin' are defined
+const TOTAL_RANGE_INTERVAL = 10; // 10 bins on each side
+const minBinId = activeBin.binId - TOTAL_RANGE_INTERVAL;
+const maxBinId = activeBin.binId + TOTAL_RANGE_INTERVAL;
+
+const totalXAmount = new BN(100 * 10 ** baseMint.decimals);
+const totalYAmount = new BN(0.5 * 10 ** 9); // Example: SOL amount
+const newImbalancePosition = new Keypair();
+
+// Create Position Transaction
+const createPositionTx = await dlmmPool.initializePositionAndAddLiquidityByStrategy({
+  positionPubKey: newImbalancePosition.publicKey,
+  user: user.publicKey,
+  totalXAmount,
+  totalYAmount,
+  strategy: {
+    maxBinId,
+    minBinId,
+    strategyType: StrategyType.Spot, // or StrategyType.BidAsk, StrategyType.Curve
+  },
+});
+
+try {
+  // Assuming 'sendAndConfirmTransaction' is available
+  const createBalancePositionTxHash = await sendAndConfirmTransaction(
+    connection,
+    createPositionTx,
+    [user, newImbalancePosition]
+  );
+} catch (error) {}
+```
+
+----------------------------------------
+
+TITLE: Close Position - DLMM SDK
+DESCRIPTION: Illustrates the process of closing a specific position within a DLMM pool. This involves creating a transaction to close the position and then confirming it.
+
+SOURCE: https://github.com/meteoraag/dlmm-sdk/blob/main/ts-client/README.md#_snippet_10
+
+LANGUAGE: ts
+CODE:
+```
+const closePositionTx = await dlmmPool.closePosition({
+  owner: user.publicKey,
+  position: newBalancePosition.publicKey,
+});
+
+try {
+  const closePositionTxHash = await sendAndConfirmTransaction(
+    connection,
+    closePositionTx,
+    [user],
+    { skipPreflight: false, preflightCommitment: "singleGossip" }
+  );
+} catch (error) {}
+```

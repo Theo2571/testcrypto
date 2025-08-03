@@ -1,0 +1,1150 @@
+========================
+CODE SNIPPETS
+========================
+TITLE: DEX Screener API Google Sheets Integration Example
+DESCRIPTION: Provides a link to an example Google Sheet demonstrating DEX Screener API formulas for integration. This serves as a practical guide for users wanting to leverage DEX Screener data within spreadsheets.
+
+SOURCE: https://docs.dexscreener.com/api/google-sheets-integration
+
+LANGUAGE: APIDOC
+CODE:
+```
+Google Sheets Integration Example:
+
+Access the example spreadsheet to see DEX Screener API formulas in action:
+https://docs.google.com/spreadsheets/d/1Btv4a87CItKpyaB2vuQ_GJQynxZ0u9sYXecOew423GU/edit?usp=sharing
+
+This example sheet is designed to help users quickly understand how to implement custom formulas for fetching DEX Screener data.
+```
+
+----------------------------------------
+
+TITLE: DEX Screener API Reference
+DESCRIPTION: Provides details on various DEX Screener API endpoints, including their functionality, HTTP methods, paths, rate limits, and example requests/responses.
+
+SOURCE: https://docs.dexscreener.com/api/reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+DEX Screener API Endpoints:
+
+1. Get Latest Token Profiles
+   - Description: Retrieves the latest token profiles.
+   - Rate Limit: 60 requests per minute.
+   - Endpoint: GET https://api.dexscreener.com/token-profiles/latest/v1
+   - Example Request:
+     ```
+     GET /token-profiles/latest/v1 HTTP/1.1
+     Host: api.dexscreener.com
+     Accept: */*
+     ```
+   - Example Response (200 OK):
+     ```json
+     {
+       "url": "https://example.com",
+       "chainId": "text",
+       "tokenAddress": "text",
+       "icon": "https://example.com",
+       "header": "https://example.com",
+       "description": "text",
+       "links": [
+         {
+           "type": "text",
+           "label": "text",
+           "url": "https://example.com"
+         }
+       ]
+     }
+     ```
+
+2. Get Latest Boosted Tokens
+   - Description: Retrieves the latest boosted tokens.
+   - Rate Limit: 60 requests per minute.
+   - Endpoint: GET https://api.dexscreener.com/token-boosts/latest/v1
+   - Example Request:
+     ```
+     GET /token-boosts/latest/v1 HTTP/1.1
+     Host: api.dexscreener.com
+     Accept: */*
+     ```
+   - Example Response (200 OK):
+     ```json
+     {
+       "url": "https://example.com",
+       "chainId": "text",
+       "tokenAddress": "text",
+       "amount": 1,
+       "totalAmount": 1,
+       "icon": "https://example.com",
+       "header": "https://example.com",
+       "description": "text",
+       "links": [
+         {
+           "type": "text",
+           "label": "text",
+           "url": "https://example.com"
+         }
+       ]
+     }
+     ```
+
+3. Get Tokens with Most Active Boosts
+   - Description: Retrieves tokens with the most active boosts.
+   - Rate Limit: 60 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-token-boosts-top-v1
+
+4. Check Orders Paid for of Token
+   - Description: Checks orders paid for of a specific token.
+   - Rate Limit: 60 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-orders-v1-chainid-tokenaddress
+
+5. Get One or Multiple Pairs by Chain and Pair Address
+   - Description: Retrieves one or multiple trading pairs using chain ID and pair address.
+   - Rate Limit: 300 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-latest-dex-pairs-chainid-pairid
+
+6. Search for Pairs Matching Query
+   - Description: Searches for trading pairs based on a query.
+   - Rate Limit: 300 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-latest-dex-search
+
+7. Get Pools of a Given Token Address
+   - Description: Retrieves all trading pools associated with a specific token address.
+   - Rate Limit: 300 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-token-pairs-v1-chainid-tokenaddress
+
+8. Get One or Multiple Pairs by Token Address
+   - Description: Retrieves one or multiple trading pairs using a token address.
+   - Rate Limit: 300 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-tokens-v1-chainid-tokenaddresses
+
+```
+
+----------------------------------------
+
+TITLE: DEX Screener API Reference
+DESCRIPTION: Provides details on various DEX Screener API endpoints, including their functionality, HTTP methods, paths, rate limits, and example requests/responses.
+
+SOURCE: https://docs.dexscreener.com/api
+
+LANGUAGE: APIDOC
+CODE:
+```
+DEX Screener API Endpoints:
+
+1. Get Latest Token Profiles
+   - Description: Retrieves the latest token profiles.
+   - Rate Limit: 60 requests per minute.
+   - Endpoint: GET https://api.dexscreener.com/token-profiles/latest/v1
+   - Example Request:
+     ```
+     GET /token-profiles/latest/v1 HTTP/1.1
+     Host: api.dexscreener.com
+     Accept: */*
+     ```
+   - Example Response (200 OK):
+     ```json
+     {
+       "url": "https://example.com",
+       "chainId": "text",
+       "tokenAddress": "text",
+       "icon": "https://example.com",
+       "header": "https://example.com",
+       "description": "text",
+       "links": [
+         {
+           "type": "text",
+           "label": "text",
+           "url": "https://example.com"
+         }
+       ]
+     }
+     ```
+
+2. Get Latest Boosted Tokens
+   - Description: Retrieves the latest boosted tokens.
+   - Rate Limit: 60 requests per minute.
+   - Endpoint: GET https://api.dexscreener.com/token-boosts/latest/v1
+   - Example Request:
+     ```
+     GET /token-boosts/latest/v1 HTTP/1.1
+     Host: api.dexscreener.com
+     Accept: */*
+     ```
+   - Example Response (200 OK):
+     ```json
+     {
+       "url": "https://example.com",
+       "chainId": "text",
+       "tokenAddress": "text",
+       "amount": 1,
+       "totalAmount": 1,
+       "icon": "https://example.com",
+       "header": "https://example.com",
+       "description": "text",
+       "links": [
+         {
+           "type": "text",
+           "label": "text",
+           "url": "https://example.com"
+         }
+       ]
+     }
+     ```
+
+3. Get Tokens with Most Active Boosts
+   - Description: Retrieves tokens with the most active boosts.
+   - Rate Limit: 60 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-token-boosts-top-v1
+
+4. Check Orders Paid for of Token
+   - Description: Checks orders paid for of a specific token.
+   - Rate Limit: 60 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-orders-v1-chainid-tokenaddress
+
+5. Get One or Multiple Pairs by Chain and Pair Address
+   - Description: Retrieves one or multiple trading pairs using chain ID and pair address.
+   - Rate Limit: 300 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-latest-dex-pairs-chainid-pairid
+
+6. Search for Pairs Matching Query
+   - Description: Searches for trading pairs based on a query.
+   - Rate Limit: 300 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-latest-dex-search
+
+7. Get Pools of a Given Token Address
+   - Description: Retrieves all trading pools associated with a specific token address.
+   - Rate Limit: 300 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-token-pairs-v1-chainid-tokenaddress
+
+8. Get One or Multiple Pairs by Token Address
+   - Description: Retrieves one or multiple trading pairs using a token address.
+   - Rate Limit: 300 requests per minute.
+   - Endpoint: https://docs.dexscreener.com/api/reference#get-tokens-v1-chainid-tokenaddresses
+
+```
+
+----------------------------------------
+
+TITLE: DEX Screener Google Sheets Integration Contributing Guide
+DESCRIPTION: Information on how to contribute to the DEX Screener Google Sheets integration project, including a link to the GitHub repository and instructions for making code changes.
+
+SOURCE: https://docs.dexscreener.com/api/google-sheets-integration
+
+LANGUAGE: APIDOC
+CODE:
+```
+Google Sheets Integration Contributing:
+
+Contribute to the DEX Screener Google Sheets integration by visiting the GitHub repository:
+https://github.com/dex-screener/google-sheets
+
+To make code changes:
+1. Duplicate the example spreadsheet.
+2. Navigate to Extensions -> Apps Scripts to access and modify the script.
+```
+
+----------------------------------------
+
+TITLE: Dexscreener API: Get Token Pairs
+DESCRIPTION: Retrieves trading pools for a specific token address on a given chain. Supports rate-limiting of 300 requests per minute. Requires chainId and tokenAddress path parameters. Returns an array of pair objects.
+
+SOURCE: https://docs.dexscreener.com/api/reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /token-pairs/v1/{chainId}/{tokenAddress}
+Description: Get the pools of a given token address (rate-limit 300 requests per minute)
+Path Parameters:
+  chainId (string, Required): The identifier for the blockchain, e.g., `solana`
+  tokenAddress (string, Required): The contract address of the token.
+Responses:
+  200 OK (application/json): Returns an array of trading pairs for the token.
+    Schema:
+      array of objects
+        object properties:
+          chainId: string
+          dexId: string
+          url: string
+          pairAddress: string
+          labels: array of strings
+          baseToken: object (address, name, symbol)
+          quoteToken: object (address, name, symbol)
+          priceNative: string
+          priceUsd: string
+          txns: object (buys, sells)
+          volume: object
+          priceChange: object
+          liquidity: object (usd, base, quote)
+          fdv: number
+          marketCap: number
+          pairCreatedAt: number
+          info: object (imageUrl, websites, socials)
+          boosts: object (active)
+Example Request (cURL):
+curl -X GET "https://api.dexscreener.com/token-pairs/v1/solana/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN" -H "Accept: */*"
+```
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /token-pairs/v1/{chainId}/{tokenAddress} HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: cURL
+CODE:
+```
+curl -X GET "https://api.dexscreener.com/token-pairs/v1/solana/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN" -H "Accept: */*"
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+const chainId = 'solana';
+const tokenAddress = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
+fetch(`https://api.dexscreener.com/token-pairs/v1/${chainId}/${tokenAddress}`, {
+  method: 'GET',
+  headers: {
+    'Accept': '*/*'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+```
+
+LANGUAGE: Python
+CODE:
+```
+import requests
+
+chainId = 'solana'
+tokenAddress = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN'
+url = f"https://api.dexscreener.com/token-pairs/v1/{chainId}/{tokenAddress}"
+headers = {
+    "Accept": "*/*"
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+----------------------------------------
+
+TITLE: Dexscreener API: Get Tokens by Address
+DESCRIPTION: Retrieves one or multiple token pairs by specifying the chain ID and a comma-separated list of token addresses. Supports up to 30 addresses per request. Rate-limited to 300 requests per minute.
+
+SOURCE: https://docs.dexscreener.com/api/reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /tokens/v1/{chainId}/{tokenAddresses}
+Host: api.dexscreener.com
+Rate-limit: 300 requests per minute
+
+Parameters:
+  chainId (string, required): The identifier for the blockchain network (e.g., `solana`).
+  tokenAddresses (string, required): One or more comma-separated token addresses (up to 30 addresses).
+
+Responses:
+  200 OK (application/json): An array of token pair objects.
+    - chainId (string): The chain ID.
+    - dexId (string): The DEX identifier.
+    - url (string): URL to the pair on Dexscreener.
+    - pairAddress (string): The address of the trading pair.
+    - labels (array of strings): Labels associated with the pair.
+    - baseToken (object): Information about the base token.
+      - address (string): Token address.
+      - name (string): Token name.
+      - symbol (string): Token symbol.
+    - quoteToken (object): Information about the quote token.
+      - address (string): Token address.
+      - name (string): Token name.
+      - symbol (string): Token symbol.
+    - priceNative (string): Price in native currency.
+    - priceUsd (string): Price in USD.
+    - txns (object): Transaction statistics.
+      - ANY_ADDITIONAL_PROPERTY (object): Statistics for a specific transaction type.
+        - buys (integer): Number of buys.
+        - sells (integer): Number of sells.
+    - volume (object): Trading volume.
+      - ANY_ADDITIONAL_PROPERTY (integer): Volume for a specific period.
+    - priceChange (object): Price change statistics.
+      - ANY_ADDITIONAL_PROPERTY (integer): Price change for a specific period.
+    - liquidity (object): Liquidity information.
+      - usd (integer): Liquidity in USD.
+      - base (integer): Liquidity in base token.
+      - quote (integer): Liquidity in quote token.
+    - fdv (integer): Fully Diluted Valuation.
+    - marketCap (integer): Market Capitalization.
+    - pairCreatedAt (integer): Timestamp when the pair was created.
+    - info (object): Additional information.
+      - imageUrl (string): URL for the token image.
+      - websites (array of objects): List of website URLs.
+        - url (string): Website URL.
+      - socials (array of objects): List of social media links.
+        - platform (string): Social media platform.
+        - handle (string): Social media handle.
+    - boosts (object): Boost information.
+      - active (integer): Indicates if boosts are active.
+```
+
+LANGUAGE: cURL
+CODE:
+```
+curl -X GET "https://api.dexscreener.com/tokens/v1/solana/So11111111111111111111111111111111111111112,EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" \
+     -H "Accept: application/json"
+```
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /tokens/v1/solana/So11111111111111111111111111111111111111112,EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v HTTP/1.1
+Host: api.dexscreener.com
+Accept: application/json
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+async function getTokensByAddress(chainId, tokenAddresses) {
+  const url = `https://api.dexscreener.com/tokens/v1/${chainId}/${tokenAddresses}`;
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching tokens:', error);
+    return null;
+  }
+}
+
+// Example usage:
+// getTokensByAddress('solana', 'So11111111111111111111111111111111111111112,EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
+//   .then(data => console.log(data));
+```
+
+LANGUAGE: Python
+CODE:
+```
+import requests
+
+def get_tokens_by_address(chain_id, token_addresses):
+    url = f"https://api.dexscreener.com/tokens/v1/{chain_id}/{token_addresses}"
+    headers = {
+        "Accept": "application/json"
+    }
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching tokens: {e}")
+        return None
+
+# Example usage:
+# chain = 'solana'
+# tokens = 'So11111111111111111111111111111111111111112,EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+# token_data = get_tokens_by_address(chain, tokens)
+# if token_data:
+#     print(token_data)
+```
+
+----------------------------------------
+
+TITLE: Dexscreener API: Get Token Pairs
+DESCRIPTION: Retrieves trading pools for a specific token address on a given chain. Supports rate-limiting of 300 requests per minute. Requires chainId and tokenAddress path parameters. Returns an array of pair objects.
+
+SOURCE: https://docs.dexscreener.com/api
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /token-pairs/v1/{chainId}/{tokenAddress}
+Description: Get the pools of a given token address (rate-limit 300 requests per minute)
+Path Parameters:
+  chainId (string, Required): The identifier for the blockchain, e.g., `solana`
+  tokenAddress (string, Required): The contract address of the token.
+Responses:
+  200 OK (application/json): Returns an array of token pairs.
+    Schema:
+      array of objects
+        object properties:
+          chainId: string
+          dexId: string
+          url: string
+          pairAddress: string
+          labels: array of strings
+          baseToken: object (address, name, symbol)
+          quoteToken: object (address, name, symbol)
+          priceNative: string
+          priceUsd: string
+          txns: object (buys, sells)
+          volume: object
+          priceChange: object
+          liquidity: object (usd, base, quote)
+          fdv: number
+          marketCap: number
+          pairCreatedAt: number
+          info: object (imageUrl, websites, socials)
+          boosts: object (active)
+Example Request (cURL):
+curl -X GET "https://api.dexscreener.com/token-pairs/v1/solana/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN" -H "Accept: */*"
+```
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /token-pairs/v1/{chainId}/{tokenAddress} HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: cURL
+CODE:
+```
+curl -X GET "https://api.dexscreener.com/token-pairs/v1/solana/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN" -H "Accept: */*"
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+const chainId = 'solana';
+const tokenAddress = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
+fetch(`https://api.dexscreener.com/token-pairs/v1/${chainId}/${tokenAddress}`, {
+  method: 'GET',
+  headers: {
+    'Accept': '*/*'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+```
+
+LANGUAGE: Python
+CODE:
+```
+import requests
+
+chainId = 'solana'
+tokenAddress = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN'
+url = f"https://api.dexscreener.com/token-pairs/v1/{chainId}/{tokenAddress}"
+headers = {
+    "Accept": "*/*"
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+----------------------------------------
+
+TITLE: Dexscreener API: Get Tokens by Address
+DESCRIPTION: Retrieves one or multiple token pairs by specifying the chain ID and a comma-separated list of token addresses. Supports up to 30 addresses per request. Rate-limited to 300 requests per minute.
+
+SOURCE: https://docs.dexscreener.com/api
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /tokens/v1/{chainId}/{tokenAddresses}
+Host: api.dexscreener.com
+Rate-limit: 300 requests per minute
+
+Parameters:
+  chainId (string, required): The identifier for the blockchain network (e.g., `solana`).
+  tokenAddresses (string, required): One or more comma-separated token addresses (up to 30 addresses).
+
+Responses:
+  200 OK (application/json): An array of token pair objects.
+    - chainId (string): The chain ID.
+    - dexId (string): The DEX identifier.
+    - url (string): URL to the pair on Dexscreener.
+    - pairAddress (string): The address of the trading pair.
+    - labels (array of strings): Labels associated with the pair.
+    - baseToken (object): Information about the base token.
+      - address (string): Token address.
+      - name (string): Token name.
+      - symbol (string): Token symbol.
+    - quoteToken (object): Information about the quote token.
+      - address (string): Token address.
+      - name (string): Token name.
+      - symbol (string): Token symbol.
+    - priceNative (string): Price in native currency.
+    - priceUsd (string): Price in USD.
+    - txns (object): Transaction statistics.
+      - ANY_ADDITIONAL_PROPERTY (object): Statistics for a specific transaction type.
+        - buys (integer): Number of buys.
+        - sells (integer): Number of sells.
+    - volume (object): Trading volume.
+      - ANY_ADDITIONAL_PROPERTY (integer): Volume for a specific period.
+    - priceChange (object): Price change statistics.
+      - ANY_ADDITIONAL_PROPERTY (integer): Price change for a specific period.
+    - liquidity (object): Liquidity information.
+      - usd (integer): Liquidity in USD.
+      - base (integer): Liquidity in base token.
+      - quote (integer): Liquidity in quote token.
+    - fdv (integer): Fully Diluted Valuation.
+    - marketCap (integer): Market Capitalization.
+    - pairCreatedAt (integer): Timestamp when the pair was created.
+    - info (object): Additional information.
+      - imageUrl (string): URL for the token image.
+      - websites (array of objects): List of website URLs.
+        - url (string): Website URL.
+      - socials (array of objects): List of social media links.
+        - platform (string): Social media platform.
+        - handle (string): Social media handle.
+    - boosts (object): Boost information.
+      - active (integer): Indicates if boosts are active.
+```
+
+LANGUAGE: cURL
+CODE:
+```
+curl -X GET "https://api.dexscreener.com/tokens/v1/solana/So11111111111111111111111111111111111111112,EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" \
+     -H "Accept: application/json"
+```
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /tokens/v1/solana/So11111111111111111111111111111111111111112,EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v HTTP/1.1
+Host: api.dexscreener.com
+Accept: application/json
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+async function getTokensByAddress(chainId, tokenAddresses) {
+  const url = `https://api.dexscreener.com/tokens/v1/${chainId}/${tokenAddresses}`;
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching tokens:', error);
+    return null;
+  }
+}
+
+// Example usage:
+// getTokensByAddress('solana', 'So11111111111111111111111111111111111111112,EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
+//   .then(data => console.log(data));
+```
+
+LANGUAGE: Python
+CODE:
+```
+import requests
+
+def get_tokens_by_address(chain_id, token_addresses):
+    url = f"https://api.dexscreener.com/tokens/v1/{chain_id}/{token_addresses}"
+    headers = {
+        "Accept": "application/json"
+    }
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching tokens: {e}")
+        return None
+
+# Example usage:
+# chain = 'solana'
+# tokens = 'So11111111111111111111111111111111111111112,EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+# token_data = get_tokens_by_address(chain, tokens)
+# if token_data:
+#     print(token_data)
+```
+
+----------------------------------------
+
+TITLE: Get Token Boosts Top v1 API
+DESCRIPTION: Retrieves a list of tokens with the most active boosts. This endpoint is rate-limited to 60 requests per minute. It returns detailed information about each boosted token, including its URL, chain ID, token address, amounts, icons, and associated links.
+
+SOURCE: https://docs.dexscreener.com/api/reference
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /token-boosts/top/v1 HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "url": "https://example.com",
+  "chainId": "text",
+  "tokenAddress": "text",
+  "amount": 1,
+  "totalAmount": 1,
+  "icon": "https://example.com",
+  "header": "https://example.com",
+  "description": "text",
+  "links": [
+    {
+      "type": "text",
+      "label": "text",
+      "url": "https://example.com"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Get Token Orders v1 API
+DESCRIPTION: Checks orders paid for a specific token on a given chain. This endpoint is rate-limited to 60 requests per minute and requires `chainId` and `tokenAddress` as path parameters. It returns an array of order objects, each indicating type, status, and payment timestamp.
+
+SOURCE: https://docs.dexscreener.com/api
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /orders/v1/{chainId}/{tokenAddress} HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: JSON
+CODE:
+```
+[
+  {
+    "type": "tokenProfile",
+    "status": "processing",
+    "paymentTimestamp": 1
+  }
+]
+```
+
+----------------------------------------
+
+TITLE: Get Token Boosts Top v1 API
+DESCRIPTION: Retrieves a list of tokens with the most active boosts. This endpoint is rate-limited to 60 requests per minute. It returns detailed information about each boosted token, including its URL, chain ID, token address, amounts, icons, and associated links.
+
+SOURCE: https://docs.dexscreener.com/api
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /token-boosts/top/v1 HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "url": "https://example.com",
+  "chainId": "text",
+  "tokenAddress": "text",
+  "amount": 1,
+  "totalAmount": 1,
+  "icon": "https://example.com",
+  "header": "https://example.com",
+  "description": "text",
+  "links": [
+    {
+      "type": "text",
+      "label": "text",
+      "url": "https://example.com"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Get Token Orders v1 API
+DESCRIPTION: Checks orders paid for a specific token on a given chain. This endpoint is rate-limited to 60 requests per minute and requires `chainId` and `tokenAddress` as path parameters. It returns an array of order objects, each indicating type, status, and payment timestamp.
+
+SOURCE: https://docs.dexscreener.com/api/reference
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /orders/v1/{chainId}/{tokenAddress} HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: JSON
+CODE:
+```
+[
+  {
+    "type": "tokenProfile",
+    "status": "processing",
+    "paymentTimestamp": 1
+  }
+]
+```
+
+----------------------------------------
+
+TITLE: Get Latest DEX Pairs API
+DESCRIPTION: Retrieves details for one or multiple DEX trading pairs identified by chain and pair address. This endpoint has a higher rate limit of 300 requests per minute. It requires `chainId` and `pairId` as path parameters and returns comprehensive pair data including prices, volumes, liquidity, and token information.
+
+SOURCE: https://docs.dexscreener.com/api/reference
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /latest/dex/pairs/{chainId}/{pairId} HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "schemaVersion": "text",
+  "pairs": [
+    {
+      "chainId": "text",
+      "dexId": "text",
+      "url": "https://example.com",
+      "pairAddress": "text",
+      "labels": [
+        "text"
+      ],
+      "baseToken": {
+        "address": "text",
+        "name": "text",
+        "symbol": "text"
+      },
+      "quoteToken": {
+        "address": "text",
+        "name": "text",
+        "symbol": "text"
+      },
+      "priceNative": "text",
+      "priceUsd": "text",
+      "txns": {
+        "ANY_ADDITIONAL_PROPERTY": {
+          "buys": 1,
+          "sells": 1
+        }
+      },
+      "volume": {
+        "ANY_ADDITIONAL_PROPERTY": 1
+      },
+      "priceChange": {
+        "ANY_ADDITIONAL_PROPERTY": 1
+      },
+      "liquidity": {
+        "usd": 1,
+        "base": 1,
+        "quote": 1
+      },
+      "fdv": 1,
+      "marketCap": 1,
+      "pairCreatedAt": 1,
+      "info": {
+        "imageUrl": "https://example.com",
+        "websites": [
+          {
+            "url": "https://example.com"
+          }
+        ],
+        "socials": [
+          {
+            "platform": "text",
+            "handle": "text"
+          }
+        ]
+      },
+      "boosts": {
+        "active": 1
+      }
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Get Latest DEX Pairs API
+DESCRIPTION: Retrieves details for one or multiple DEX trading pairs identified by chain and pair address. This endpoint has a higher rate limit of 300 requests per minute. It requires `chainId` and `pairId` as path parameters and returns comprehensive pair data including prices, volumes, liquidity, and token information.
+
+SOURCE: https://docs.dexscreener.com/api
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /latest/dex/pairs/{chainId}/{pairId} HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "schemaVersion": "text",
+  "pairs": [
+    {
+      "chainId": "text",
+      "dexId": "text",
+      "url": "https://example.com",
+      "pairAddress": "text",
+      "labels": [
+        "text"
+      ],
+      "baseToken": {
+        "address": "text",
+        "name": "text",
+        "symbol": "text"
+      },
+      "quoteToken": {
+        "address": "text",
+        "name": "text",
+        "symbol": "text"
+      },
+      "priceNative": "text",
+      "priceUsd": "text",
+      "txns": {
+        "ANY_ADDITIONAL_PROPERTY": {
+          "buys": 1,
+          "sells": 1
+        }
+      },
+      "volume": {
+        "ANY_ADDITIONAL_PROPERTY": 1
+      },
+      "priceChange": {
+        "ANY_ADDITIONAL_PROPERTY": 1
+      },
+      "liquidity": {
+        "usd": 1,
+        "base": 1,
+        "quote": 1
+      },
+      "fdv": 1,
+      "marketCap": 1,
+      "pairCreatedAt": 1,
+      "info": {
+        "imageUrl": "https://example.com",
+        "websites": [
+          {
+            "url": "https://example.com"
+          }
+        ],
+        "socials": [
+          {
+            "platform": "text",
+            "handle": "text"
+          }
+        ]
+      },
+      "boosts": {
+        "active": 1
+      }
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Dexscreener API: Search Pairs
+DESCRIPTION: Searches for trading pairs matching a query. Supports rate-limiting of 300 requests per minute. Requires a query parameter 'q'. Returns a list of pairs with detailed information.
+
+SOURCE: https://docs.dexscreener.com/api
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /latest/dex/search
+Description: Search for pairs matching query (rate-limit 300 requests per minute)
+Query Parameters:
+  q (string, Required): The search query, e.g., `SOL/USDC`
+Responses:
+  200 OK (application/json): Returns a list of matching pairs.
+    Schema:
+      schemaVersion: string
+      pairs: array of objects
+        object properties:
+          chainId: string
+          dexId: string
+          url: string
+          pairAddress: string
+          labels: array of strings
+          baseToken: object (address, name, symbol)
+          quoteToken: object (address, name, symbol)
+          priceNative: string
+          priceUsd: string
+          txns: object (buys, sells)
+          volume: object
+          priceChange: object
+          liquidity: object (usd, base, quote)
+          fdv: number
+          marketCap: number
+          pairCreatedAt: number
+          info: object (imageUrl, websites, socials)
+          boosts: object (active)
+Example Request (cURL):
+curl -X GET "https://api.dexscreener.com/latest/dex/search?q=SOL/USDC" -H "Accept: */*"
+```
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /latest/dex/search HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: cURL
+CODE:
+```
+curl -X GET "https://api.dexscreener.com/latest/dex/search?q=SOL%2FUSDC" -H "Accept: */*"
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+fetch('https://api.dexscreener.com/latest/dex/search?q=SOL%2FUSDC', {
+  method: 'GET',
+  headers: {
+    'Accept': '*/*'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+```
+
+LANGUAGE: Python
+CODE:
+```
+import requests
+
+url = "https://api.dexscreener.com/latest/dex/search"
+params = {
+    "q": "SOL/USDC"
+}
+headers = {
+    "Accept": "*/*"
+}
+
+response = requests.get(url, params=params, headers=headers)
+print(response.json())
+```
+
+----------------------------------------
+
+TITLE: Dexscreener API: Search Pairs
+DESCRIPTION: Searches for trading pairs matching a query. Supports rate-limiting of 300 requests per minute. Requires a query parameter 'q'. Returns a list of pairs with detailed information.
+
+SOURCE: https://docs.dexscreener.com/api/reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /latest/dex/search
+Description: Search for pairs matching query (rate-limit 300 requests per minute)
+Query Parameters:
+  q (string, Required): The search query, e.g., `SOL/USDC`
+Responses:
+  200 OK (application/json): Returns a list of matching pairs.
+    Schema:
+      schemaVersion: string
+      pairs: array of objects
+        object properties:
+          chainId: string
+          dexId: string
+          url: string
+          pairAddress: string
+          labels: array of strings
+          baseToken: object (address, name, symbol)
+          quoteToken: object (address, name, symbol)
+          priceNative: string
+          priceUsd: string
+          txns: object (buys, sells)
+          volume: object
+          priceChange: object
+          liquidity: object (usd, base, quote)
+          fdv: number
+          marketCap: number
+          pairCreatedAt: number
+          info: object (imageUrl, websites, socials)
+          boosts: object (active)
+Example Request (cURL):
+curl -X GET "https://api.dexscreener.com/latest/dex/search?q=SOL/USDC" -H "Accept: */*"
+```
+
+LANGUAGE: HTTP
+CODE:
+```
+GET /latest/dex/search HTTP/1.1
+Host: api.dexscreener.com
+Accept: */*
+```
+
+LANGUAGE: cURL
+CODE:
+```
+curl -X GET "https://api.dexscreener.com/latest/dex/search?q=SOL%2FUSDC" -H "Accept: */*"
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+fetch('https://api.dexscreener.com/latest/dex/search?q=SOL%2FUSDC', {
+  method: 'GET',
+  headers: {
+    'Accept': '*/*'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+```
+
+LANGUAGE: Python
+CODE:
+```
+import requests
+
+url = "https://api.dexscreener.com/latest/dex/search"
+params = {
+    "q": "SOL/USDC"
+}
+headers = {
+    "Accept": "*/*"
+}
+
+response = requests.get(url, params=params, headers=headers)
+print(response.json())
+```

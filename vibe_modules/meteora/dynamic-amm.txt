@@ -1,0 +1,676 @@
+========================
+CODE SNIPPETS
+========================
+TITLE: Installing Meteora Dynamic AMM SDK
+DESCRIPTION: Provides commands to install the Meteora Dynamic AMM SDK and its essential dependencies using npm or yarn. These packages are crucial for interacting with Solana and Anchor programs.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+# NPM
+npm i @meteora-ag/dynamic-amm-sdk @coral-xyz/anchor @solana/web3.js @solana/spl-token
+# YARN
+yarn add @meteora-ag/dynamic-amm-sdk @coral-xyz/anchor @solana/web3.js @solana/spl-token
+# Or, use any package manager of your choice.
+```
+
+----------------------------------------
+
+TITLE: Creating a Dynamic AMM Pool (Shell)
+DESCRIPTION: This example demonstrates how to use the Mercurial Dynamic AMM CLI to create a new liquidity pool. It requires specifying the RPC URL, priority fee, keypair path, token mints for both assets, the trade fee in basis points, and the initial amounts for each token. The backslash indicates a line continuation for a single command.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/rust-client/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+$cli --rpc-url $rpc --priority-fee $priority_fee --keypair-path $root_keypair dynamic-amm create-pool\
+ --token-a-mint $token_a_mint --token-b-mint $token_b_mint --trade-fee-bps $trade_fee_bps --token-a-amount $token_a_amount --token-b-amount $token_b_amount
+```
+
+----------------------------------------
+
+TITLE: Building Mercurial Dynamic AMM CLI (Shell)
+DESCRIPTION: This command compiles the `cli` package of the Mercurial Dynamic AMM project using Cargo, the Rust package manager. It's a prerequisite for running the CLI examples and ensures the executable is available.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/rust-client/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+cargo build -p cli
+```
+
+----------------------------------------
+
+TITLE: Performing a Token Swap on a Stable Pool (TypeScript)
+DESCRIPTION: This example shows how to execute a token swap on a stable pool. It first obtains a swap quote using `getSwapQuote` by specifying the input token's address, amount, and slippage. The calculated minimum output amount is then used in the `swap` function to perform the actual token exchange.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_18
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const inAmountLamport = new BN(0.1 * 10 ** stablePool.tokenB.decimals);
+
+const { minSwapOutAmount } = stablePool.getSwapQuote(
+  new PublicKey(stablePool.tokenB.address),
+  inAmountLamport,
+  slippage,
+);
+
+const swapTx = await stablePool.swap(
+  mockWallet.publicKey,
+  new PublicKey(stablePool.tokenB.address),
+  inAmountLamport,
+  minSwapOutAmount,
+);
+const swapResult = await provider.sendAndConfirm(swapTx);
+```
+
+----------------------------------------
+
+TITLE: Creating a Permissionless Constant Product Memecoin Pool (with M3M3 Vault) - TypeScript
+DESCRIPTION: This snippet extends the memecoin pool creation by integrating an M3M3 vault. It defines parameters for fee duration, number of stakers, fee claim start time, and cooldown duration, then passes these as `feeVault` options to the `createPermissionlessConstantProductMemecoinPoolWithConfig` method. This allows for custom fee distribution and staking mechanisms.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_5
+
+LANGUAGE: TypeScript
+CODE:
+```
+// with M3M3 vault
+const feeDurationInDays = 7;
+const numOfStakers = 1000;
+const feeClaimStartTime = roundToNearestMinutes(new Date(), {
+  nearestTo: 30,
+});
+const cooldownDurationInHours = 6;
+
+const transactions = await AmmImpl.createPermissionlessConstantProductMemecoinPoolWithConfig(
+  provider.connection,
+  mockWallet.publicKey, // payer
+  memecoinMint,
+  tokenBMint,
+  memecoinAmount,
+  tokenBAmount,
+  feeConfig.publicKey,
+  { isMinted: true },
+  {
+    feeVault: {
+      secondsToFullUnlock: feeDurationInDays ? new BN(feeDurationInDays * 86400) : new BN(0),
+      topListLength: numOfStakers || 0,
+      startFeeDistributeTimestamp: feeClaimStartTime ? new BN(feeClaimStartTime.getTime() / 1000) : null,
+      unstakeLockDuration: cooldownDurationInHours ? new BN(cooldownDurationInHours * 3600) : new BN(0),
+    },
+    // other options
+  },
+);
+```
+
+----------------------------------------
+
+TITLE: Performing a Double-Sided Imbalanced Deposit into a Stable Pool (TypeScript)
+DESCRIPTION: This example illustrates how to perform an imbalanced deposit into a stable pool by providing specific amounts for both token A and token B. The `balance` flag is set to false to indicate an imbalanced deposit, allowing for custom input ratios. The deposit quote is obtained, and the transaction is executed.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_14
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const balance = false;
+const inAmountALamport = new BN(0.1 * 10 ** stablePool.tokenA.decimals);
+const inAmountBLamport = new BN(0.1 * 10 ** stablePool.tokenB.decimals);
+
+const { poolTokenAmountOut, tokenAInAmount, tokenBInAmount } = stablePool.getDepositQuote(
+  inAmountALamport,
+  inAmountBLamport,
+  balance,
+  slippage,
+); // Web3 Transaction Object
+const depositTx = await stablePool.deposit(mockWallet.publicKey, tokenAInAmount, tokenBInAmount, poolTokenAmountOut);
+const depositResult = await provider.sendAndConfirm(depositTx); // Transaction hash
+```
+
+----------------------------------------
+
+TITLE: Getting LP Supply - TypeScript
+DESCRIPTION: This snippet demonstrates how to retrieve the latest LP (Liquidity Provider) token supply for a given pool. It calls the `getLpSupply()` method on a `pool` object, which is an instance of a Meteora AMM pool. Alternatively, the `AmmImpl.poolState.lpSupply` property can be used for direct access if the pool state is already updated.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_7
+
+LANGUAGE: TypeScript
+CODE:
+```
+// To refetch the pool's latest supply
+// Alternatively, use `AmmImpl.poolState.lpSupply`
+const lpSupply = await pool.getLpSupply();
+```
+
+----------------------------------------
+
+TITLE: Initializing AmmImpl Instance in TypeScript
+DESCRIPTION: Demonstrates how to establish a connection to the Solana mainnet, set up a mock wallet and Anchor provider, and initialize AmmImpl instances for various pool types, including creating single or multiple instances.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+import AmmImpl, { MAINNET_POOL } from '@meteora-ag/dynamic-amm-sdk';
+import { Connection, Keypair, PublicKey } from '@solana/web3.js';
+import { AnchorProvider, Wallet } from '@coral-xyz/anchor';
+
+// Connection, Wallet, and AnchorProvider to interact with the network
+const mainnetConnection = new Connection('https://api.mainnet-beta.solana.com');
+const mockWallet = new Wallet(new Keypair());
+const provider = new AnchorProvider(mainnetConnection, mockWallet, {
+  commitment: 'confirmed',
+});
+// Alternatively, to use Solana Wallet Adapter
+
+// Create single instance
+const constantProductPool = await AmmImpl.create(mainnetConnection, MAINNET_POOL.USDC_SOL);
+const stablePool = await AmmImpl.create(mainnetConnection, MAINNET_POOL.USDT_USDC);
+// Or with any other pool address, refer to the pool creation section below
+const pool = await AmmImpl.create(mainnetConnection, new PublicKey('...'));
+
+// If you need to create multiple, can consider using `createMultiple`
+const pools = [MAINNET_POOL.USDC_SOL, MAINNET_POOL.USDT_USDC];
+const [constantProductPool, stablePool] = await AmmImpl.createMultiple(mainnetConnection, pools);
+```
+
+----------------------------------------
+
+TITLE: Creating Constant Product Pool in TypeScript
+DESCRIPTION: Illustrates the process of creating a permissionless constant product pool. It involves defining token mints, a configuration address, initial token amounts, deriving the pool address, and sending the creation transactions. It also shows an option to set an activation point.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_2
+
+LANGUAGE: typescript
+CODE:
+```
+import AmmImpl, { PROGRAM_ID } from '@meteora-ag/dynamic-amm-sdk';
+import { derivePoolAddressWithConfig } from '@meteora-ag/dynamic-amm-sdk/dist/cjs/src/amm/utils';
+import { BN } from 'bn.js';
+
+// Token A/B address of the pool.
+const tokenAMint = new PublicKey('...');
+const tokenBMint = new PublicKey('...');
+
+// Configuration address for the pool. It will decide the fees of the pool.
+const config = new PublicKey('...');
+
+// Amount of token A and B to be deposited to the pool.
+const tokenAAmount = new BN(100_000);
+const tokenBAmount = new BN(500_000);
+
+// Get pool address
+const programId = new PublicKey(PROGRAM_ID);
+const poolPubkey = derivePoolAddressWithConfig(tokenAMint, tokenBMint, config, programId);
+
+// Create pool
+const transactions = await AmmImpl.createPermissionlessConstantProductPoolWithConfig(
+  provider.connection,
+  mockWallet.publicKey, // payer
+  tokenAMint,
+  tokenBMint,
+  tokenAAmount,
+  tokenBAmount,
+  config,
+);
+
+// Or if you need to set the activation point earlier than the default derived from the config
+const startTime = '...';
+const transactions = await AmmImpl.createPermissionlessConstantProductPoolWithConfig2(
+  provider.connection,
+  mockWallet.publicKey, // payer
+  tokenAMint,
+  tokenBMint,
+  tokenAAmount,
+  tokenBAmount,
+  config,
+  {
+    activationPoint: startTime !== 'now' ? new BN(Math.floor(new UTCDate(startTime).getTime() / 1000)) : undefined,
+  },
+);
+
+for (const transaction of transactions) {
+  transaction.sign(mockWallet.payer);
+  const txHash = await provider.connection.sendRawTransaction(transaction.serialize());
+  await provider.connection.confirmTransaction(txHash, 'finalized');
+  console.log('transaction %s', txHash);
+}
+```
+
+----------------------------------------
+
+TITLE: Performing a Token Swap in Dynamic AMM SDK (TypeScript)
+DESCRIPTION: This snippet illustrates how to execute a token swap. It first defines slippage and the input amount, then obtains a swap quote to determine the minimum expected output. Finally, it constructs and sends the swap transaction using the `memecoinPool` object and confirms the result.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_21
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const inAmountLamport = new BN(0.1 * 10 ** memecoinPool.tokenB.decimals);
+
+const { minSwapOutAmount } = memecoinPool.getSwapQuote(
+  new PublicKey(memecoinPool.tokenB.address),
+  inAmountLamport,
+  slippage,
+);
+
+const swapTx = await memecoinPool.swap(
+  mockWallet.publicKey,
+  new PublicKey(memecoinPool.tokenB.address),
+  inAmountLamport,
+  minSwapOutAmount,
+);
+const swapResult = await provider.sendAndConfirm(swapTx);
+```
+
+----------------------------------------
+
+TITLE: Creating a Permissionless Constant Product Memecoin Pool (Basic) - TypeScript
+DESCRIPTION: This snippet demonstrates how to create a permissionless constant product memecoin pool using the Meteora Dynamic AMM SDK. It initializes token mints, calculates the pool address, fetches fee configurations, and then calls `createPermissionlessConstantProductMemecoinPoolWithConfig` to create the pool. It assumes `provider` and `mockWallet` are already defined.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_4
+
+LANGUAGE: TypeScript
+CODE:
+```
+import AmmImpl, { PROGRAM_ID } from '@meteora-ag/dynamic-amm-sdk';
+import { derivePoolAddressWithConfig } from '@meteora-ag/dynamic-amm-sdk/dist/cjs/src/amm/utils';
+import { BN } from 'bn.js';
+import { roundToNearestMinutes } from 'date-fns';
+
+// Token A/B address of the pool.
+const memecoinMint = new PublicKey('...');
+const tokenBMint = new PublicKey('...');
+
+const memecoinAmount = new BN(100_000);
+const tokenBAmount = new BN(500_000);
+
+// Get pool address
+const poolAddress = derivePoolAddressWithConfig(memecoinMint, tokenBMint, feeConfig.publicKey, programId);
+
+// Create pool
+const programId = new PublicKey(PROGRAM_ID);
+
+const isNow = true;
+const CONFIG_KEY = new PublicKey('..');
+const feeConfigurations = await AmmImpl.getFeeConfigurations(provider.connection, {
+  programId,
+});
+const feeConfig = feeConfigurations.find(({ publicKey }) => publicKey.equals(CONFIG_KEY));
+
+const transactions = await AmmImpl.createPermissionlessConstantProductMemecoinPoolWithConfig(
+  provider.connection,
+  mockWallet.publicKey, // payer
+  memecoinMint,
+  tokenBMint,
+  memecoinAmount,
+  tokenBAmount,
+  feeConfig.publicKey,
+  { isMinted: true },
+);
+```
+
+----------------------------------------
+
+TITLE: Depositing into a Constant Product Pool - TypeScript
+DESCRIPTION: This snippet outlines the process of depositing liquidity into a constant product pool. It first calculates a deposit quote using `getDepositQuote` based on an input amount, slippage, and balance flag. Then, it executes the deposit transaction using `deposit` with the calculated token amounts and sends/confirms the transaction.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_10
+
+LANGUAGE: TypeScript
+CODE:
+```
+const balance = true;
+const slippage = 0.1; // Max to 2 decimal place
+const inAmountALamport = new BN(1 * 10 ** constantProductPool.tokenAMint.decimals);
+
+// Get deposit quote
+const { poolTokenAmountOut, tokenAInAmount, tokenBInAmount } = constantProductPool.getDepositQuote(
+  inAmountALamport,
+  new BN(0),
+  balance,
+  slippage,
+);
+
+const depositTx = await constantProductPool.deposit(
+  mockWallet.publicKey,
+  tokenAInAmount,
+  tokenBInAmount,
+  poolTokenAmountOut,
+); // Web3 Transaction Object
+const depositResult = await provider.sendAndConfirm(depositTx); // Transaction hash
+```
+
+----------------------------------------
+
+TITLE: Sending and Confirming Transactions - TypeScript
+DESCRIPTION: This snippet shows the common pattern for signing and sending transactions generated by the Meteora AMM SDK. It iterates through a list of transactions, signs each with the `mockWallet.payer`, sends the raw transaction to the connection, and then confirms the transaction's finalization. This ensures the on-chain operations are successfully processed.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_6
+
+LANGUAGE: TypeScript
+CODE:
+```
+for (const transaction of transactions) {
+  transaction.sign(mockWallet.payer);
+  const txHash = await provider.connection.sendRawTransaction(transaction.serialize());
+  await provider.connection.confirmTransaction(txHash, 'finalized');
+  console.log('transaction %s', txHash);
+}
+```
+
+----------------------------------------
+
+TITLE: Performing a Deposit into a Memecoin Pool (TypeScript)
+DESCRIPTION: This snippet demonstrates how to deposit into a memecoin pool. Similar to stable pool deposits, it uses `getDepositQuote` to determine the required token amounts for a balanced deposit and then executes the deposit transaction. This highlights the flexibility of the SDK across different pool types.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_19
+
+LANGUAGE: TypeScript
+CODE:
+```
+const balance = true;
+const slippage = 0.1; // Max to 2 decimal place
+const inAmountALamport = new BN(1 * 10 ** memecoinPool.tokenA.decimals);
+
+// Get deposit quote for constant product
+const { poolTokenAmountOut, tokenAInAmount, tokenBInAmount } = memecoinPool.getDepositQuote(
+  inAmountALamport,
+  new BN(0),
+  balance,
+  slippage,
+);
+
+const depositTx = await memecoinPool.deposit(mockWallet.publicKey, tokenAInAmount, tokenBInAmount, poolTokenAmountOut); // Web3 Transaction Object
+const depositResult = await provider.sendAndConfirm(depositTx); // Transaction hash
+```
+
+----------------------------------------
+
+TITLE: Creating Stable Pool in TypeScript
+DESCRIPTION: Details the creation of a permissionless stable pool. It involves defining token mints, decimals, a fee basis points, deriving the pool address, and executing the creation transactions.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_3
+
+LANGUAGE: typescript
+CODE:
+```
+import AmmImpl, { derivePoolAddress } from '@meteora-ag/dynamic-amm-sdk';
+import { BN } from 'bn.js';
+
+// Token A/B address of the pool.
+const tokenAMint = new PublicKey('...');
+const tokenBMint = new PublicKey('...');
+
+const tokenADecimal = 6;
+const tokenBDecimal = 6;
+
+const feeBps = new BN(1); // 0.01%
+
+// Get pool address
+const poolPubkey = derivePoolAddress(
+  provider.connection,
+  tokenAMint,
+  tokenBMint,
+  tokenADecimal,
+  tokenBDecimal,
+  true, // stable
+  feeBps,
+);
+
+// Create pool
+const transactions = await AmmImpl.createPermissionlessPool(
+  provider.connection,
+  mockWallet.publicKey, // payer
+  tokenAMint,
+  tokenBMint,
+  tokenAAmount,
+  tokenBAmount,
+  true, // stable,
+  feeBps,
+);
+
+for (const transaction of transactions) {
+  transaction.sign(mockWallet.payer);
+  const txHash = await provider.connection.sendRawTransaction(transaction.serialize());
+  await provider.connection.confirmTransaction(txHash, 'finalized');
+  console.log('transaction %s', txHash);
+}
+```
+
+----------------------------------------
+
+TITLE: Swapping Tokens in a Constant Product Pool - TypeScript
+DESCRIPTION: This snippet illustrates how to perform a token swap within a constant product pool. It first obtains a swap quote using `getSwapQuote` to determine the minimum expected output amount based on the input token, input amount, and slippage. Finally, it executes the swap transaction using `swap` and confirms it.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_12
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const inAmountLamport = new BN(0.1 * 10 ** constantProductPool.tokenB.decimals);
+
+const { minSwapOutAmount } = constantProductPool.getSwapQuote(
+  new PublicKey(constantProductPool.tokenB.address),
+  inAmountLamport,
+  slippage,
+);
+
+const swapTx = await constantProductPool.swap(
+  mockWallet.publicKey,
+  new PublicKey(constantProductPool.tokenB.address),
+  inAmountLamport,
+  minSwapOutAmount,
+);
+const swapResult = await provider.sendAndConfirm(swapTx);
+```
+
+----------------------------------------
+
+TITLE: Withdrawing from a Constant Product Pool - TypeScript
+DESCRIPTION: This snippet demonstrates how to withdraw liquidity from a constant product pool. It calculates a withdrawal quote using `getWithdrawQuote` based on the desired output LP token amount and slippage. Subsequently, it constructs and sends the withdrawal transaction using `withdraw` with the calculated token amounts.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_11
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const outTokenAmountLamport = new BN(0.1 * 10 ** constantProductPool.decimals);
+
+const { poolTokenAmountIn, tokenAOutAmount, tokenBOutAmount } = constantProductPool.getWithdrawQuote(
+  outTokenAmountLamport,
+  slippage,
+); // use lp balance for full withdrawal
+const withdrawTx = await constantProductPool.withdraw(
+  mockWallet.publicKey,
+  poolTokenAmountIn,
+  tokenAOutAmount,
+  tokenBOutAmount,
+); // Web3 Transaction Object
+const withdrawResult = await provider.sendAndConfirm(withdrawTx); // Transaction hash
+```
+
+----------------------------------------
+
+TITLE: Performing a Balanced Deposit into a Stable Pool (TypeScript)
+DESCRIPTION: This snippet demonstrates how to perform a balanced deposit into a stable pool. It calculates the required token amounts based on a single input amount and ensures the deposit maintains the pool's balance by setting `balance` to true. The transaction is then sent and confirmed.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_13
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const balance = true;
+const inAmountALamport = new BN(0.1 * 10 ** stablePool.tokenA.decimals);
+
+const { poolTokenAmountOut, tokenAInAmount, tokenBInAmount } = stablePool.getDepositQuote(
+  inAmountALamport,
+  new BN(0),
+  balance,
+  slippage,
+);
+
+const depositTx = await stablePool.deposit(mockWallet.publicKey, tokenAInAmount, tokenBInAmount, poolTokenAmountOut); // Web3 Transaction Object
+const depositResult = await provider.sendAndConfirm(depositTx); // Transaction hash
+```
+
+----------------------------------------
+
+TITLE: Performing a Withdrawal from a Memecoin Pool (TypeScript)
+DESCRIPTION: This code illustrates the process of withdrawing from a memecoin pool. It calculates the token amounts to be received based on a specified amount of pool tokens and a slippage tolerance. The `getWithdrawQuote` and `withdraw` methods are used to facilitate the transaction, mirroring the withdrawal process for stable pools.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_20
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const outTokenAmountLamport = new BN(0.1 * 10 ** memecoinPool.decimals);
+
+const { poolTokenAmountIn, tokenAOutAmount, tokenBOutAmount } = memecoinPool.getWithdrawQuote(
+  outTokenAmountLamport,
+  slippage,
+); // use lp balance for full withdrawal
+const withdrawTx = await memecoinPool.withdraw(
+  mockWallet.publicKey,
+  poolTokenAmountIn,
+  tokenAOutAmount,
+  tokenBOutAmount,
+); // Web3 Transaction Object
+const withdrawResult = await provider.sendAndConfirm(withdrawTx); // Transaction hash
+```
+
+----------------------------------------
+
+TITLE: Checking User's LP Balance - TypeScript
+DESCRIPTION: This snippet illustrates how to check a user's LP (Liquidity Provider) token balance for a specific pool. It uses the `getUserBalance()` method of the `pool` object, passing the user's public key (`mockWallet.publicKey`) as an argument. This returns the user's associated token account (ATA) LP balance.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_8
+
+LANGUAGE: TypeScript
+CODE:
+```
+// Get the user's ATA LP balance
+const userLpBalance = await pool.getUserBalance(mockWallet.publicKey);
+```
+
+----------------------------------------
+
+TITLE: Performing a Balanced Withdrawal from a Stable Pool (TypeScript)
+DESCRIPTION: This code illustrates how to perform a balanced withdrawal from a stable pool. It calculates the proportional amounts of token A and token B to withdraw based on a specified amount of pool tokens. The `getWithdrawQuote` method is used to determine the output amounts, and the `withdraw` function executes the transaction.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_16
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const outTokenAmountLamport = new BN(0.1 * 10 ** stablePool.decimals);
+
+const { poolTokenAmountIn, tokenAOutAmount, tokenBOutAmount } = stablePool.getWithdrawQuote(
+  outTokenAmountLamport,
+  slippage,
+); // use lp balance for full withdrawal
+const withdrawTx = await stablePool.withdraw(mockWallet.publicKey, poolTokenAmountIn, tokenAOutAmount, tokenBOutAmount); // Web3 Transaction Object
+const withdrawResult = await provider.sendAndConfirm(withdrawTx);
+```
+
+----------------------------------------
+
+TITLE: Performing a Single-Sided Imbalanced Deposit into a Stable Pool (TypeScript)
+DESCRIPTION: This snippet demonstrates a single-sided imbalanced deposit into a stable pool, where only one token (token A in this case) is provided. The `balance` flag is set to false, and the second token's input amount is set to zero. This allows users to deposit only one asset into the pool.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_15
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const balance = false;
+const inAmountALamport = new BN(0.1 * 10 ** stablePool.tokenA.decimals);
+
+const { poolTokenAmountOut, tokenAInAmount, tokenBInAmount } = stablePool.getDepositQuote(
+  inAmountALamport,
+  new BN(0),
+  balance,
+  slippage,
+); // Web3 Transaction Object
+const depositTx = await stablePool.deposit(mockWallet.publicKey, tokenAInAmount, tokenBInAmount, poolTokenAmountOut);
+const depositResult = await provider.sendAndConfirm(depositTx); // Transaction hash
+```
+
+----------------------------------------
+
+TITLE: Performing an Imbalanced Withdrawal from a Stable Pool (TypeScript)
+DESCRIPTION: This snippet demonstrates how to perform an imbalanced withdrawal from a stable pool, allowing the user to specify which token to receive. By passing the `PublicKey` of the desired token's mint to `getWithdrawQuote`, the withdrawal will prioritize that token, potentially resulting in a non-proportional distribution of assets.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_17
+
+LANGUAGE: TypeScript
+CODE:
+```
+const slippage = 0.1; // Max to 2 decimal place
+const outTokenAmountLamport = new BN(0.1 * 10 ** stablePool.decimals);
+
+const { poolTokenAmountIn, tokenAOutAmount, tokenBOutAmount } = stablePool.getWithdrawQuote(
+  outTokenAmountLamport,
+  slippage,
+  new PublicKey(stablePool.tokenA.address), // Pass in token A/B mint to perform imbalanced withdraw
+);
+const withdrawTx = await stablePool.withdraw(mockWallet.publicKey, poolTokenAmountIn, tokenAOutAmount, tokenBOutAmount); // Web3 Transaction Object
+const withdrawResult = await provider.sendAndConfirm(withdrawTx);
+```
+
+----------------------------------------
+
+TITLE: Running Quote Test in Rust
+DESCRIPTION: This command executes the `test_quote` function within the `dynamic-amm-quote` package using `cargo t`. It is used to run specific unit tests for the quote functionality of the dynamic AMM program.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/README.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+cargo t -p dynamic-amm-quote test_quote
+```
+
+----------------------------------------
+
+TITLE: Defining Allowed Trade Fee Basis Points (Rust)
+DESCRIPTION: This Rust array literal defines the valid basis point values for the `trade_fee_bps` parameter when creating a dynamic AMM pool. These values correspond to specific percentage trade fees: 0.25%, 1%, 4%, and 6%.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/rust-client/README.md#_snippet_2
+
+LANGUAGE: Rust
+CODE:
+```
+// 0.25%, 1%, 4%, 6%
+&[25, 100, 400, 600]
+```
+
+----------------------------------------
+
+TITLE: Updating Pool State - TypeScript
+DESCRIPTION: This snippet shows how to update the local state of a pool object to reflect the latest on-chain data. Calling `await pool.updateState()` refreshes the pool's internal properties. It is recommended to perform this operation before any quotation or transaction to ensure calculations are based on the most current pool conditions.
+
+SOURCE: https://github.com/meteoraag/dynamic-amm-sdk/blob/main/ts-client/README.md#_snippet_9
+
+LANGUAGE: TypeScript
+CODE:
+```
+await pool.updateState();
+```

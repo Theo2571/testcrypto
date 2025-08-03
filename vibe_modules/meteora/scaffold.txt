@@ -1,0 +1,90 @@
+========================
+CODE SNIPPETS
+========================
+TITLE: Installing Dependencies using pnpm
+DESCRIPTION: This command installs all necessary project dependencies using the pnpm package manager. It should be run once after cloning the repository to set up the development environment.
+
+SOURCE: https://github.com/meteoraag/meteora-scaffold/blob/main/scripts/dbc/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+pnpm install
+```
+
+----------------------------------------
+
+TITLE: Installing Dependencies - pnpm
+DESCRIPTION: This command uses pnpm to install all necessary project dependencies as defined in the `package.json` file. It is a crucial step before running the application and ensures all required packages are available.
+
+SOURCE: https://github.com/meteoraag/meteora-scaffold/blob/main/templates/fun-launch/README.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+pnpm install
+```
+
+----------------------------------------
+
+TITLE: Running Meteora DBC Examples with pnpm
+DESCRIPTION: These commands demonstrate how to execute specific Meteora Dynamic Bonding Curve examples using pnpm. Replace <file-name> with the desired example script name, such as create-config, to run a particular functionality.
+
+SOURCE: https://github.com/meteoraag/meteora-scaffold/blob/main/scripts/dbc/README.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+pnpm run <file-name>
+# e.g. pnpm run create-config
+```
+
+----------------------------------------
+
+TITLE: Cloning the Repository - Bash
+DESCRIPTION: This snippet provides the commands to clone the 'meteora-scaffold' repository from GitHub and navigate into the 'templates/fun-launch' directory, which is the starting point for the Fun Launch project.
+
+SOURCE: https://github.com/meteoraag/meteora-scaffold/blob/main/templates/fun-launch/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+git clone https://github.com/MeteoraAg/meteora-scaffold.git
+cd templates/fun-launch
+```
+
+----------------------------------------
+
+TITLE: Running Development Server - pnpm
+DESCRIPTION: This command initiates the development server for the Fun Launch application using pnpm. It enables local development and testing of the platform, typically making the application accessible via a local URL.
+
+SOURCE: https://github.com/meteoraag/meteora-scaffold/blob/main/templates/fun-launch/README.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+pnpm dev
+```
+
+----------------------------------------
+
+TITLE: Setting Up Environment Variables - .env
+DESCRIPTION: This snippet outlines the required environment variables for the project, including Cloudflare R2 storage credentials, a Solana RPC URL, and a pool configuration key. These variables must be set in a `.env` file in the root directory for the application to function correctly.
+
+SOURCE: https://github.com/meteoraag/meteora-scaffold/blob/main/templates/fun-launch/README.md#_snippet_2
+
+LANGUAGE: env
+CODE:
+```
+# Cloudflare R2 Storage
+R2_ACCESS_KEY_ID=your_r2_access_key_id
+R2_SECRET_ACCESS_KEY=your_r2_secret_access_key
+R2_ACCOUNT_ID=your_r2_account_id
+R2_BUCKET=your_r2_bucket_name
+
+# Solana RPC URL
+RPC_URL=your_rpc_url
+
+# Pool Configuration
+POOL_CONFIG_KEY=your_pool_config_key
+```

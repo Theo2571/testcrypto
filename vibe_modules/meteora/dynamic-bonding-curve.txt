@@ -1,0 +1,1251 @@
+========================
+CODE SNIPPETS
+========================
+TITLE: Example: Creating a Config and Pool (TypeScript)
+DESCRIPTION: This example demonstrates how to use the `client.pool.createConfigAndPool` method to set up a new token pool. It requires various parameters such as payer, mints, and detailed fee and curve configurations, utilizing `PublicKey` for addresses and `BN` for large numbers. The transaction is awaited to ensure the pool creation is complete.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_32
+
+LANGUAGE: typescript
+CODE:
+```
+const transaction = await client.pool.createConfigAndPool({
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    leftoverReceiver: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+    poolFees: {
+        baseFee: {
+            cliffFeeNumerator: new BN('2500000'),
+            numberOfPeriod: 0,
+            reductionFactor: new BN('0'),
+            periodFrequency: new BN('0'),
+            feeSchedulerMode: FeeSchedulerMode.Linear,
+        },
+        dynamicFee: {
+            binStep: 1,
+            binStepU128: new BN('1844674407370955'),
+            filterPeriod: 10,
+            decayPeriod: 120,
+            reductionFactor: 1000,
+            variableFeeControl: 100000,
+            maxVolatilityAccumulator: 100000,
+        },
+    },
+    activationType: 0,
+    collectFeeMode: 0,
+    migrationOption: 0,
+    tokenType: 0,
+    tokenDecimal: 9,
+    migrationQuoteThreshold: new BN('1000000000'),
+    partnerLpPercentage: 25,
+    creatorLpPercentage: 25,
+    partnerLockedLpPercentage: 25,
+    creatorLockedLpPercentage: 25,
+    sqrtStartPrice: new BN('58333726687135158'),
+    lockedVesting: {
+        amountPerPeriod: new BN('0'),
+        cliffDurationFromMigrationTime: new BN('0'),
+        frequency: new BN('0'),
+        numberOfPeriod: new BN('0'),
+        cliffUnlockAmount: new BN('0'),
+    },
+    migrationFeeOption: 0,
+    tokenSupply: {
+        preMigrationTokenSupply: new BN('10000000000000000000'),
+        postMigrationTokenSupply: new BN('10000000000000000000'),
+    },
+    creatorTradingFeePercentage: 0,
+    padding0: [],
+    padding1: [],
+    curve: [
+        {
+            sqrtPrice: new BN('233334906748540631'),
+            liquidity: new BN('622226417996106429201027821619672729'),
+        },
+        {
+            sqrtPrice: new BN('79226673521066979257578248091'),
+            liquidity: new BN('1'),
+        }
+    ],
+    createPoolParam: {
+        baseMint: new PublicKey('0987654321zyxwvutsrqponmlkjihgfedcba'),
+        name: 'Meteora',
+        symbol: 'MET',
+        uri: 'https://launch.meteora.ag/icons/logo.svg',
+        poolCreator: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz')
+    }
+})
+```
+
+----------------------------------------
+
+TITLE: Installing Meteora Dynamic Bonding Curve SDK
+DESCRIPTION: This snippet provides commands to install the Meteora Dynamic Bonding Curve SDK using common JavaScript package managers: npm, pnpm, or yarn. These commands add the SDK as a dependency to your project, making its functionalities available for use.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm install @meteora-ag/dynamic-bonding-curve-sdk
+```
+
+LANGUAGE: bash
+CODE:
+```
+pnpm install @meteora-ag/dynamic-bonding-curve-sdk
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn add @meteora-ag/dynamic-bonding-curve-sdk
+```
+
+----------------------------------------
+
+TITLE: Example: Building and Creating Curve Configuration (TypeScript)
+DESCRIPTION: This example demonstrates the usage of `buildCurveWithLiquidityWeights` to generate a `curveConfig` object, including the dynamic calculation of `liquidityWeights`. It then shows how this configuration is used with a `client.partner.createConfig` call, along with `PublicKey` instances for various roles, to initiate a transaction for creating a new liquidity pool configuration.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_23
+
+LANGUAGE: typescript
+CODE:
+```
+let liquidityWeights: number[] = []
+for (let i = 0; i < 16; i++) {
+    liquidityWeights[i] = new Decimal(1.2).pow(new Decimal(i)).toNumber()
+}
+
+const curveConfig = buildCurveWithLiquidityWeights({
+    totalTokenSupply: 1000000000,
+    initialMarketCap: 5000,
+    migrationMarketCap: 1000000,
+    migrationOption: MigrationOption.MET_DAMM_V2,
+    tokenBaseDecimal: TokenDecimal.SIX,
+    tokenQuoteDecimal: TokenDecimal.SIX,
+    lockedVestingParam: {
+        totalLockedVestingAmount: 0,
+        numberOfVestingPeriod: 0,
+        cliffUnlockAmount: 0,
+        totalVestingDuration: 0,
+        cliffDurationFromMigrationTime: 0,
+    },
+    feeSchedulerParam: {
+        startingFeeBps: 100,
+        endingFeeBps: 100,
+        numberOfPeriod: 0,
+        totalDuration: 0,
+        feeSchedulerMode: FeeSchedulerMode.Linear,
+    },
+    dynamicFeeEnabled: true,
+    activationType: ActivationType.Slot,
+    collectFeeMode: CollectFeeMode.OnlyQuote,
+    migrationFeeOption: MigrationFeeOption.FixedBps100,
+    tokenType: TokenType.SPL,
+    partnerLpPercentage: 100,
+    creatorLpPercentage: 0,
+    partnerLockedLpPercentage: 0,
+    creatorLockedLpPercentage: 0,
+    creatorTradingFeePercentage: 0,
+    leftover: 1000000,
+    liquidityWeights,
+})
+
+const transaction = await client.partner.createConfig({
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    leftoverReceiver: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+    ...curveConfig,
+})
+```
+
+----------------------------------------
+
+TITLE: Example Usage of createDammV2MigrationMetadata - TypeScript
+DESCRIPTION: Provides an example of how to call the `createDammV2MigrationMetadata` function using the `client.migration` object. It demonstrates passing `PublicKey` instances for `payer`, `virtualPool`, and `config` to generate a transaction.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_60
+
+LANGUAGE: TypeScript
+CODE:
+```
+const transaction = await client.migration.createDammV2MigrationMetadata({
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    virtualPool: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890'),
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+})
+```
+
+----------------------------------------
+
+TITLE: Example Configuration and Creation of a Curve in TypeScript
+DESCRIPTION: This example demonstrates how to configure a curve using the `buildCurve` function with various parameters, including supply, migration thresholds, and fee settings. It then shows how to use the generated `curveConfig` object to create a new configuration on the client, specifying public keys for different roles and the quote mint. This illustrates the end-to-end process of defining and deploying a curve.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_14
+
+LANGUAGE: typescript
+CODE:
+```
+const curveConfig = buildCurve({
+    totalTokenSupply: 1000000000,
+    percentageSupplyOnMigration: 10,
+    migrationQuoteThreshold: 300,
+    migrationOption: MigrationOption.MET_DAMM,
+    tokenBaseDecimal: TokenDecimal.SIX,
+    tokenQuoteDecimal: TokenDecimal.NINE,
+    lockedVestingParam: {
+        totalLockedVestingAmount: 0,
+        numberOfVestingPeriod: 0,
+        cliffUnlockAmount: 0,
+        totalVestingDuration: 0,
+        cliffDurationFromMigrationTime: 0,
+    },
+    feeSchedulerParam: {
+        startingFeeBps: 100,
+        endingFeeBps: 100,
+        numberOfPeriod: 0,
+        totalDuration: 0,
+        feeSchedulerMode: FeeSchedulerMode.Linear,
+    },
+    dynamicFeeEnabled: true,
+    activationType: ActivationType.Slot,
+    collectFeeMode: CollectFeeMode.OnlyQuote,
+    migrationFeeOption: MigrationFeeOption.FixedBps100,
+    tokenType: TokenType.SPL,
+    partnerLpPercentage: 0,
+    creatorLpPercentage: 0,
+    partnerLockedLpPercentage: 100,
+    creatorLockedLpPercentage: 0,
+    creatorTradingFeePercentage: 0,
+    leftover: 10000,
+})
+
+const transaction = await client.partner.createConfig({
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    leftoverReceiver: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+    ...curveConfig,
+})
+```
+
+----------------------------------------
+
+TITLE: Example of Creating Partner Metadata in TypeScript
+DESCRIPTION: This snippet provides an example of how to call the `client.partner.createPartnerMetadata` method. It demonstrates passing the required parameters such as `name`, `website`, `logo`, `feeClaimer`, and `payer` to create a new partner metadata account, which will be associated with a wallet address holding configuration keys.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_5
+
+LANGUAGE: typescript
+CODE:
+```
+const transaction = await client.partner.createPartnerMetadata({
+    name: 'Meteora',
+    website: 'https://meteora.ag',
+    logo: 'https://launch.meteora.ag',
+    feeClaimer: wallet.publicKey,
+    payer: wallet.publicKey,
+})
+```
+
+----------------------------------------
+
+TITLE: Example: Building Curve with Market Cap and Creating Config (TypeScript)
+DESCRIPTION: This example demonstrates how to use the `buildCurveWithMarketCap` function to generate a `curveConfig` object, specifying various parameters like total supply, market caps, vesting, and fees. It then shows how to utilize this `curveConfig` along with `PublicKey` instances to create a new configuration via `client.partner.createConfig`, illustrating the integration of the curve definition into a transaction.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_17
+
+LANGUAGE: typescript
+CODE:
+```
+const curveConfig = buildCurveWithMarketCap({
+    totalTokenSupply: 1000000000,
+    initialMarketCap: 100,
+    migrationMarketCap: 3000,
+    migrationOption: MigrationOption.MET_DAMM,
+    tokenBaseDecimal: TokenDecimal.SIX,
+    tokenQuoteDecimal: TokenDecimal.NINE,
+    lockedVestingParam: {
+        totalLockedVestingAmount: 0,
+        numberOfVestingPeriod: 0,
+        cliffUnlockAmount: 0,
+        totalVestingDuration: 0,
+        cliffDurationFromMigrationTime: 0,
+    },
+    feeSchedulerParam: {
+        startingFeeBps: 100,
+        endingFeeBps: 100,
+        numberOfPeriod: 0,
+        totalDuration: 0,
+        feeSchedulerMode: FeeSchedulerMode.Linear,
+    },
+    dynamicFeeEnabled: true,
+    activationType: ActivationType.Slot,
+    collectFeeMode: CollectFeeMode.OnlyQuote,
+    migrationFeeOption: MigrationFeeOption.FixedBps100,
+    tokenType: TokenType.SPL,
+    partnerLpPercentage: 0,
+    creatorLpPercentage: 0,
+    partnerLockedLpPercentage: 100,
+    creatorLockedLpPercentage: 0,
+    creatorTradingFeePercentage: 0,
+    leftover: 0,
+})
+
+const transaction = await client.partner.createConfig({
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    leftoverReceiver: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+    ...curveConfig,
+})
+```
+
+----------------------------------------
+
+TITLE: Example: Creating Pool Metadata Account (TypeScript)
+DESCRIPTION: This example demonstrates how to invoke the `createPoolMetadata` function with specific values for each required parameter. It shows how to define the `virtualPool`, `creator`, `name`, `website`, `logo`, `feeClaimer`, and `payer` using `PublicKey` and string literals.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_66
+
+LANGUAGE: TypeScript
+CODE:
+```
+const transaction = await client.creator.createPoolMetadata({
+    virtualPool: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890'),
+    creator: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    name: 'Meteora',
+    website: 'https://launch.meteora.ag',
+    logo: 'https://launch.meteora.ag/icons/logo.svg',
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+})
+```
+
+----------------------------------------
+
+TITLE: Example: Building and Creating a Two-Segment Curve Configuration (TypeScript)
+DESCRIPTION: This example demonstrates the usage of `buildCurveWithTwoSegments` to generate a `curveConfig` object based on specified parameters like total supply, market caps, and fee settings. The generated configuration is then used with `client.partner.createConfig` to construct a transaction for deploying the curve on the blockchain, requiring `PublicKey` instances for various addresses.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_20
+
+LANGUAGE: typescript
+CODE:
+```
+const curveConfig = buildCurveWithTwoSegments({
+    totalTokenSupply: 1000000000,
+    initialMarketCap: 5000,
+    migrationMarketCap: 1000000,
+    percentageSupplyOnMigration: 10,
+    migrationOption: MigrationOption.MET_DAMM_V2,
+    tokenBaseDecimal: TokenDecimal.SIX,
+    tokenQuoteDecimal: TokenDecimal.SIX,
+    lockedVestingParam: {
+        totalLockedVestingAmount: 0,
+        numberOfVestingPeriod: 0,
+        cliffUnlockAmount: 0,
+        totalVestingDuration: 0,
+        cliffDurationFromMigrationTime: 0,
+    },
+    feeSchedulerParam: {
+        startingFeeBps: 100,
+        endingFeeBps: 100,
+        numberOfPeriod: 0,
+        totalDuration: 0,
+        feeSchedulerMode: FeeSchedulerMode.Linear,
+    },
+    dynamicFeeEnabled: true,
+    activationType: ActivationType.Slot,
+    collectFeeMode: CollectFeeMode.OnlyQuote,
+    migrationFeeOption: MigrationFeeOption.FixedBps100,
+    tokenType: TokenType.SPL,
+    partnerLpPercentage: 100,
+    creatorLpPercentage: 0,
+    partnerLockedLpPercentage: 0,
+    creatorLockedLpPercentage: 0,
+    creatorTradingFeePercentage: 0,
+    leftover: 1000000,
+})
+
+const transaction = await client.partner.createConfig({
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    leftoverReceiver: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+    ...curveConfig,
+})
+```
+
+----------------------------------------
+
+TITLE: Install Dynamic Bonding Curve SDK with pnpm (Bash)
+DESCRIPTION: Installs the Meteora Dynamic Bonding Curve SDK package using the pnpm package manager. This command adds the SDK as a dependency to your project.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/README.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+pnpm install @meteora-ag/dynamic-bonding-curve-sdk
+```
+
+----------------------------------------
+
+TITLE: Install Dynamic Bonding Curve SDK with npm (Bash)
+DESCRIPTION: Installs the Meteora Dynamic Bonding Curve SDK package using the npm package manager. This command adds the SDK as a dependency to your project.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm install @meteora-ag/dynamic-bonding-curve-sdk
+```
+
+----------------------------------------
+
+TITLE: Running Tests for Meteora Dynamic Bonding Curve SDK
+DESCRIPTION: This snippet provides commands to run the test suite for the Meteora Dynamic Bonding Curve SDK using the 'bun' package manager. The first command installs project dependencies, and the second executes the tests, ensuring the SDK's functionality is working as expected.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/README.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+bun install
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun test
+```
+
+----------------------------------------
+
+TITLE: Example Usage of claimDammV1LpToken - TypeScript
+DESCRIPTION: Provides an example of how to call the `claimDammV1LpToken` function using the `client.migration` object. It demonstrates passing `PublicKey` instances for `payer`, `virtualPool`, and `dammConfig`, along with a boolean for `isPartner`, to generate a transaction.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_57
+
+LANGUAGE: TypeScript
+CODE:
+```
+const transaction = await client.migration.claimDammV1LpToken({
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    virtualPool: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890'),
+    dammConfig: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    isPartner: true,
+})
+```
+
+----------------------------------------
+
+TITLE: Install Dynamic Bonding Curve SDK with yarn (Bash)
+DESCRIPTION: Installs the Meteora Dynamic Bonding Curve SDK package using the yarn package manager. This command adds the SDK as a dependency to your project.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/README.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+yarn add @meteora-ag/dynamic-bonding-curve-sdk
+```
+
+----------------------------------------
+
+TITLE: Example of Creating a Pool (TypeScript)
+DESCRIPTION: This example demonstrates how to call the `client.pool.createPool` method with a `CreatePoolParam` object. It shows the required `PublicKey` values for `baseMint`, `config`, `payer`, and `poolCreator`, along with string values for `name`, `symbol`, and `uri`. The resulting transaction requires signatures from the payer, baseMint keypair, and poolCreator.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_29
+
+LANGUAGE: typescript
+CODE:
+```
+const transaction = await client.pool.createPool({
+    baseMint: new PublicKey('0987654321zyxwvutsrqponmlkjihgfedcba'),
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    name: 'Meteora',
+    symbol: 'MET',
+    uri: 'https://launch.meteora.ag',
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    poolCreator: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+})
+```
+
+----------------------------------------
+
+TITLE: Getting a Swap Quotation (TypeScript)
+DESCRIPTION: This example demonstrates how to obtain a swap quotation using the `client.pool.swapQuote` method. It first retrieves the virtual pool and pool configuration states, then uses these along with swap parameters like amount in, slippage, and referral flag to get an estimated swap result.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_44
+
+LANGUAGE: typescript
+CODE:
+```
+const virtualPoolState = await client.state.getPool(poolAddress)
+const poolConfigState = await client.state.getPoolConfig(
+    virtualPoolState.config
+)
+
+const quote = await client.pool.swapQuote({
+    virtualPool: virtualPoolState, // The virtual pool state
+    config: poolConfigState, // The pool config state
+    swapBaseForQuote: false, // Whether to swap base for quote
+    amountIn: new BN(100000000), // The amount of tokens to swap
+    slippageBps: 100, // The slippage in basis points (optional)
+    hasReferral: false, // Whether to include a referral fee
+    currentPoint: new BN(0), // The current point
+})
+```
+
+----------------------------------------
+
+TITLE: Example Usage of lockDammV1LpToken - TypeScript
+DESCRIPTION: Provides an example of how to call the `lockDammV1LpToken` function using the `client.migration` object. It demonstrates passing `PublicKey` instances for `payer`, `virtualPool`, and `dammConfig`, along with a boolean for `isPartner`, to generate a transaction.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_55
+
+LANGUAGE: TypeScript
+CODE:
+```
+const transaction = await client.migration.lockDammV1LpToken({
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    virtualPool: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890'),
+    dammConfig: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    isPartner: true,
+})
+```
+
+----------------------------------------
+
+TITLE: Performing a Token Swap (TypeScript)
+DESCRIPTION: This example demonstrates how to execute a token swap using the `client.pool.swap` method. It specifies the owner, input amount, minimum output, swap direction (quote for base in this case), pool address, and an optional referral token account, generating a transaction for the swap.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_41
+
+LANGUAGE: typescript
+CODE:
+```
+const transaction = await client.pool.swap({
+    owner: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    amountIn: new BN(1000000000),
+    minimumAmountOut: new BN(0),
+    swapBaseForQuote: false,
+    poolAddress: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890'),
+    referralTokenAccount: null,
+})
+```
+
+----------------------------------------
+
+TITLE: Example: Withdrawing Creator Surplus (TypeScript)
+DESCRIPTION: This example demonstrates how to call the `creatorWithdrawSurplus` function using the Meteora client. It requires the `creator` and `virtualPool` public keys to construct the transaction, which can then be signed and sent to the network. The creator specified must match the pool's actual creator.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_72
+
+LANGUAGE: typescript
+CODE:
+```
+const transaction = await client.creator.creatorWithdrawSurplus({
+    creator: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    virtualPool: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890'),
+})
+```
+
+----------------------------------------
+
+TITLE: Interface for Creating Config and Pool with First Buy in Meteora AG TS SDK
+DESCRIPTION: This interface defines all the necessary parameters for the `createConfigAndPoolWithFirstBuy` function. It includes details for the payer, fee recipients, token mints, various fee structures (base and dynamic), activation types, collection modes, migration options, token decimals, LP allocations, starting price, optional locked vesting, migration fee options, token supply details, curve points, pool creation parameters, and initial swap buy parameters. This comprehensive structure ensures all aspects of pool creation and initial trading are covered.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_34
+
+LANGUAGE: TypeScript
+CODE:
+```
+interface CreateConfigAndPoolWithFirstBuyParam {
+    payer: PublicKey // The wallet paying for the transaction
+    config: PublicKey // The config account address (generated by the partner)
+    feeClaimer: PublicKey // The wallet that will be able to claim the fee
+    leftoverReceiver: PublicKey // The wallet that will receive the bonding curve leftover
+    quoteMint: PublicKey // The quote mint address
+    poolFees: {
+        baseFee: {
+            cliffFeeNumerator: BN // Initial fee numerator (base fee)
+            numberOfPeriod: number // The number of reduction periods
+            reductionFactor: BN // How much fee reduces in each period
+            periodFrequency: BN // How often fees change
+            feeSchedulerMode: number // 0: Linear, 1: Exponential
+        }
+        dynamicFee: {
+            // Optional dynamic fee
+            binStep: number // u16 value representing the bin step in bps
+            binStepU128: BN // u128 value for a more accurate bin step
+            filterPeriod: number // Minimum time that must pass between fee updates
+            decayPeriod: number // Period after the volatility starts decaying (must be > filterPeriod)
+            reductionFactor: number // Controls how quickly volatility decys over time
+            variableFeeControl: number // Multiplier that determines how much volatility affects fees
+            maxVolatilityAccumulator: number // Caps the maximum volatility that can be accumulated
+        } | null
+    }
+    activationType: number // 0: Slot, 1: Timestamp
+    collectFeeMode: number // 0: Only Quote, 1: Both
+    migrationOption: number // 0: DAMM V1, 1: DAMM v2
+    tokenType: number // 0: SPL, 1: Token2022
+    tokenDecimal: number // The number of decimals for the token
+    migrationQuoteThreshold: BN // The quote threshold for migration
+    partnerLpPercentage: number // The percentage of the pool that will be allocated to the partner (0-100)
+    creatorLpPercentage: number // The percentage of the pool that will be allocated to the creator (0-100)
+    partnerLockedLpPercentage: number // The percentage of the pool that will be allocated to the partner locked (0-100)
+    creatorLockedLpPercentage: number // The percentage of the pool that will be allocated to the creator locked (0-100)
+    sqrtStartPrice: BN // The starting price of the pool
+    lockedVesting: {
+        // Optional locked vesting (BN (0) for all fields for no vesting)
+        amountPerPeriod: BN // The amount of tokens that will be vested per period
+        cliffDurationFromMigrationTime: BN // The duration of the cliff period
+        frequency: BN // The frequency of the vesting
+        numberOfPeriod: BN // The number of periods
+        cliffUnlockAmount: BN // The amount of tokens that will be unlocked at the cliff
+    }
+    migrationFeeOption: number // 0: Fixed 25bps, 1: Fixed 30bps, 2: Fixed 100bps, 3: Fixed 200bps, 4: Fixed 400bps, 5: Fixed 600bps
+    tokenSupply: {
+        // Optional token supply
+        preMigrationTokenSupply: BN // The token supply before migration
+        postMigrationTokenSupply: BN // The token supply after migration
+    } | null
+    creatorTradingFeePercentage: number // The percentage of the trading fee that will be allocated to the creator
+    padding0: []
+    padding1: []
+    curve: {
+        // The curve of the pool
+        sqrtPrice: BN // The square root of the curve point price
+        liquidity: BN // The liquidity of the curve point
+    }[]
+    createPoolParam: {
+        baseMint: PublicKey // The base mint address (generated by you)
+        name: string // The name of the pool
+        symbol: string // The symbol of the pool
+        uri: string // The uri of the pool
+        poolCreator: PublicKey // The pool creator of the transaction
+    }
+    swapBuyParam: {
+        buyAmount: BN // The amount of tokens to buy
+        minimumAmountOut: BN // The minimum amount of tokens to receive
+        quoteMintTokenAccount: PublicKey // The quote mint token account (ATA)
+        referralTokenAccount: PublicKey | null // The referral token account (optional)
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Example Usage of claimPartnerTradingFee in TypeScript
+DESCRIPTION: Demonstrates how to call the `claimPartnerTradingFee` function using the `client.partner` object. It shows the instantiation of `PublicKey` and `BN` objects for the required parameters, including optional `receiver` and `tempWSolAcc` fields, to generate a transaction for claiming fees.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_8
+
+LANGUAGE: TypeScript
+CODE:
+```
+const transaction = await client.partner.claimPartnerTradingFee({
+    pool: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    payer: new PublicKey('payer1234567890abcdefghijklmnopqrstuvwxyz'),
+    maxBaseAmount: new BN(1000000),
+    maxQuoteAmount: new BN(1000000),
+    receiver: new PublicKey('receiver1234567890abcdefghijklmnopqrstuvwxyz'),
+    tempWSolAcc: new PublicKey(
+        'tempWSolAcc1234567890abcdefghijklmnopqrstuvwxyz'
+    )
+})
+```
+
+----------------------------------------
+
+TITLE: Example: Claiming Creator Trading Fee (TypeScript)
+DESCRIPTION: This example illustrates how to call the `claimCreatorTradingFee` function, providing all necessary parameters including `creator`, `payer`, `pool`, `maxBaseAmount`, `maxQuoteAmount`, and optional `receiver` and `tempWSolAcc`. It demonstrates setting `BN` values for token amounts and `PublicKey` for addresses. Note that `maxBaseAmount` or `maxQuoteAmount` can be set to 0 to skip claiming specific tokens.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_69
+
+LANGUAGE: TypeScript
+CODE:
+```
+const transaction = await client.creator.claimCreatorTradingFee({
+    creator: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    payer: new PublicKey('payer1234567890abcdefghijklmnopqrstuvwxyz'),
+    pool: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890'),
+    maxBaseAmount: new BN(1000000000),
+    maxQuoteAmount: new BN(1000000000),
+    receiver: new PublicKey('receiver1234567890abcdefghijklmnopqrstuvwxyz'),
+    tempWSolAcc: new PublicKey(
+        'tempWSolAcc1234567890abcdefghijklmnopqrstuvwxyz'
+    ),
+})
+```
+
+----------------------------------------
+
+TITLE: Creating Config and Pool with First Buy in Meteora TS SDK (TypeScript)
+DESCRIPTION: This example demonstrates how to use the `createConfigAndPoolWithFirstBuy` method to initialize a new liquidity pool, configure its parameters, and execute an immediate token purchase. It requires extensive parameters including payer, fee structures (base and dynamic), token details, vesting, supply, and initial curve points. The payer must match the `createPoolParam` payer, and the `poolCreator` is required to sign the transaction. It does not handle SOL wrapping/unwrapping or ATA creation, which may require `prepareTokenAccountTx` and `cleanUpTokenAccountTx`.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_35
+
+LANGUAGE: TypeScript
+CODE:
+```
+const transaction = await client.pool.createConfigAndPoolWithFirstBuy({
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    leftoverReceiver: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+    poolFees: {
+        baseFee: {
+            cliffFeeNumerator: new BN('2500000'),
+            numberOfPeriod: 0,
+            reductionFactor: new BN('0'),
+            periodFrequency: new BN('0'),
+            feeSchedulerMode: FeeSchedulerMode.Linear,
+        },
+        dynamicFee: {
+            binStep: 1,
+            binStepU128: new BN('1844674407370955'),
+            filterPeriod: 10,
+            decayPeriod: 120,
+            reductionFactor: 1000,
+            variableFeeControl: 100000,
+            maxVolatilityAccumulator: 100000,
+        },
+    },
+    activationType: 0,
+    collectFeeMode: 0,
+    migrationOption: 0,
+    tokenType: 0,
+    tokenDecimal: 9,
+    migrationQuoteThreshold: new BN('1000000000'),
+    partnerLpPercentage: 25,
+    creatorLpPercentage: 25,
+    partnerLockedLpPercentage: 25,
+    creatorLockedLpPercentage: 25,
+    sqrtStartPrice: new BN('58333726687135158'),
+    lockedVesting: {
+        amountPerPeriod: new BN('0'),
+        cliffDurationFromMigrationTime: new BN('0'),
+        frequency: new BN('0'),
+        numberOfPeriod: new BN('0'),
+        cliffUnlockAmount: new BN('0'),
+    },
+    migrationFeeOption: 0,
+    tokenSupply: {
+        preMigrationTokenSupply: new BN('10000000000000000000'),
+        postMigrationTokenSupply: new BN('10000000000000000000'),
+    },
+    creatorTradingFeePercentage: 0,
+    padding0: [],
+    padding1: [],
+    curve: [
+        {
+            sqrtPrice: new BN('233334906748540631'),
+            liquidity: new BN('622226417996106429201027821619672729'),
+        },
+        {
+            sqrtPrice: new BN('79226673521066979257578248091'),
+            liquidity: new BN('1'),
+        }
+    ],
+    createPoolParam: {
+        baseMint: new PublicKey('0987654321zyxwvutsrqponmlkjihgfedcba'),
+        name: 'Meteora',
+        symbol: 'MET',
+        uri: 'https://launch.meteora.ag/icons/logo.svg',
+        poolCreator: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    },
+    swapBuyParam: {
+        buyAmount: new BN(0.1 * 1e9),
+        minimumAmountOut: new BN(1),
+        quoteMintTokenAccount: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+        referralTokenAccount: null,
+    },
+})
+```
+
+----------------------------------------
+
+TITLE: Example Usage of partnerWithdrawSurplus in TypeScript
+DESCRIPTION: Illustrates how to invoke the `partnerWithdrawSurplus` function via `client.partner`. It demonstrates providing the `feeClaimer` and `virtualPool` as `PublicKey` instances to construct a transaction for withdrawing partner surplus from the specified pool.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_11
+
+LANGUAGE: TypeScript
+CODE:
+```
+const transaction = await client.partner.partnerWithdrawSurplus({
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    virtualPool: new PublicKey('abcdefghijklmnopqrstuvwxyz1234567890')
+})
+```
+
+----------------------------------------
+
+TITLE: Creating Pool and Buying Tokens (TypeScript)
+DESCRIPTION: This example demonstrates how to create a new Dynamic Bonding Curve pool and simultaneously buy tokens using the Meteora SDK. It specifies pool configuration parameters like base mint, config, name, symbol, URI, payer, and pool creator, along with the buy amount and minimum amount out to protect against slippage.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_38
+
+LANGUAGE: typescript
+CODE:
+```
+const transaction = await client.pool.createPoolAndBuy({
+    createPoolParam: {
+        baseMint: new PublicKey('0987654321zyxwvutsrqponmlkjihgfedcba'),
+        config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+        name: 'Meteora',
+        symbol: 'MET',
+        uri: 'https://launch.meteora.ag/icons/logo.svg',
+        payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+        poolCreator: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    },
+    buyAmount: new BN(0.1 * 1e9),
+    minimumAmountOut: new BN(1),
+    referralTokenAccount: null,
+})
+```
+
+----------------------------------------
+
+TITLE: Getting Base Fee Parameters in TypeScript
+DESCRIPTION: This function calculates the base fee parameters for a specific pool, incorporating fee scheduler logic. It requires starting and ending fees in basis points, the fee scheduler mode (Linear or Exponential), the number of periods, and the total duration. It returns a `BaseFeeParams` object. The `totalDuration` is the total duration of the fee scheduler, denominated in 400ms (slot) if `ActivationType.Slot` or 1000ms (timestamp) if `ActivationType.Timestamp`.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_96
+
+LANGUAGE: TypeScript
+CODE:
+```
+function getBaseFeeParams(
+    startingFeeBps: number,
+    endingFeeBps: number,
+    feeSchedulerMode: number,
+    numberOfPeriod: number,
+    totalDuration: number
+): BaseFeeParams
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+startingFeeBps: number // The starting fee in basis points
+endingFeeBps: number // The ending fee in basis points
+feeSchedulerMode: number // 0: Linear, 1: Exponential
+numberOfPeriod: number // The number of periods
+totalDuration: number // The total duration of the fee scheduler
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+const baseFeeParams = getBaseFeeParams(
+    startingFeeBps: 5000,
+    endingFeeBps: 100,
+    feeSchedulerMode: 1,
+    numberOfPeriod: 600,
+    totalDuration: 600
+)
+```
+
+----------------------------------------
+
+TITLE: Example Usage of getLockedVestingParams in TypeScript
+DESCRIPTION: This snippet provides a practical example of how to invoke the `getLockedVestingParams` function with sample values. It demonstrates the typical input structure and how to assign the returned `LockedVestingParams` object to a constant.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_100
+
+LANGUAGE: TypeScript
+CODE:
+```
+const lockedVestingParams = getLockedVestingParams(
+    totalLockedVestingAmount: 100000000,
+    numberOfVestingPeriod: 600,
+    cliffUnlockAmount: 1000,
+    totalVestingDuration: 600,
+    cliffDurationFromMigrationTime: 600,
+    tokenBaseDecimal: 6,
+)
+```
+
+----------------------------------------
+
+TITLE: Initializing Dynamic Bonding Curve Client in TypeScript
+DESCRIPTION: This snippet demonstrates how to initialize the DynamicBondingCurveClient in TypeScript. It requires a Solana Connection object, typically pointing to a network like mainnet-beta, and a commitment level for transactions. This setup is crucial for interacting with the Meteora Dynamic Bonding Curve program on the Solana blockchain.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/README.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+import { Connection } from '@solana/web3.js'
+import { DynamicBondingCurveClient } from '@meteora-ag/dynamic-bonding-curve-sdk'
+
+const connection = new Connection('https://api.mainnet-beta.solana.com')
+const client = new DynamicBondingCurveClient(connection, 'confirmed')
+```
+
+----------------------------------------
+
+TITLE: Defining CreateConfigParam Interface in TypeScript
+DESCRIPTION: This TypeScript interface defines the comprehensive set of parameters required to create a new configuration within the Meteora TS SDK. It specifies details for the payer, fee claimer, leftover receiver, quote mint, various pool fee structures (base and optional dynamic), activation and collection modes, migration options, token type and decimals, LP percentages for partners and creators, starting price, and optional locked vesting and token supply parameters. It also includes padding and a curve definition.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+interface CreateConfigParam {
+    payer: PublicKey // The wallet paying for the transaction
+    config: PublicKey // The config account address (generated by the partner)
+    feeClaimer: PublicKey // The wallet that will be able to claim the fee
+    leftoverReceiver: PublicKey // The wallet that will receive the bonding curve leftover
+    quoteMint: PublicKey // The quote mint address
+    poolFees: {
+        baseFee: {
+            cliffFeeNumerator: BN // Initial fee numerator (base fee)
+            numberOfPeriod: number // The number of reduction periods
+            reductionFactor: BN // How much fee reduces in each period
+            periodFrequency: BN // How often fees change
+            feeSchedulerMode: number // 0: Linear, 1: Exponential
+        }
+        dynamicFee: {
+            // Optional dynamic fee
+            binStep: number // u16 value representing the bin step in bps
+            binStepU128: BN // u128 value for a more accurate bin step
+            filterPeriod: number // Minimum time that must pass between fee updates
+            decayPeriod: number // Period after the volatility starts decaying (must be > filterPeriod)
+            reductionFactor: number // Controls how quickly volatility decys over time
+            variableFeeControl: number // Multiplier that determines how much volatility affects fees
+            maxVolatilityAccumulator: number // Caps the maximum volatility that can be accumulated
+        } | null
+    }
+    activationType: number // 0: Slot, 1: Timestamp
+    collectFeeMode: number // 0: Only Quote, 1: Both
+    migrationOption: number // 0: DAMM V1, 1: DAMM v2
+    tokenType: number // 0: SPL, 1: Token2022
+    tokenDecimal: number // The number of decimals for the token
+    migrationQuoteThreshold: BN // The quote threshold for migration
+    partnerLpPercentage: number // The percentage of the LP that will be allocated to the partner in the graduated pool (0-100)
+    creatorLpPercentage: number // The percentage of the LP that will be allocated to the creator in the graduated pool (0-100)
+    partnerLockedLpPercentage: number // The percentage of the locked LP that will be allocated to the partner in the graduated pool (0-100)
+    creatorLockedLpPercentage: number // The percentage of the locked LP that will be allocated to the creator in the graduated pool (0-100)
+    sqrtStartPrice: BN // The starting price of the pool
+    lockedVesting: {
+        // Optional locked vesting (BN (0) for all fields for no vesting)
+        amountPerPeriod: BN // The amount of tokens that will be vested per period
+        cliffDurationFromMigrationTime: BN // The duration of the waiting time before the vesting starts
+        frequency: BN // The frequency of the vesting
+        numberOfPeriod: BN // The number of periods of the vesting
+        cliffUnlockAmount: BN // The amount of tokens that will be unlocked when vesting starts
+    }
+    migrationFeeOption: number // 0: Fixed 25bps, 1: Fixed 30bps, 2: Fixed 100bps, 3: Fixed 200bps, 4: Fixed 400bps, 5: Fixed 600bps
+    tokenSupply: {
+        // Optional token supply
+        preMigrationTokenSupply: BN // The token supply before migration
+        postMigrationTokenSupply: BN // The token supply after migration
+    } | null
+    creatorTradingFeePercentage: number // The percentage of the trading fee that will be allocated to the creator
+    padding0: []
+    padding1: []
+    curve: {
+        // The curve of the pool
+        sqrtPrice: BN // The square root of the curve point price
+        liquidity: BN // The liquidity of the curve point
+    }[]
+}
+```
+
+----------------------------------------
+
+TITLE: Creating Dynamic Bonding Curve Configuration in TypeScript
+DESCRIPTION: This snippet demonstrates how to create a new configuration for a dynamic bonding curve using the `client.partner.createConfig` method. It requires numerous parameters such as payer, config, fee claimer, quote mint, detailed pool fees (base and dynamic), activation type, collect fee mode, migration options, token details, LP percentages, price, curve points, locked vesting, and token supply. Several validations are performed on these parameters, including positive cliff fee numerator, valid collect fee mode (0 or 1), specific migration and token types, valid activation type (0 or 1), valid migration fee options, token decimals between 6 and 9, LP percentages summing to 100%, positive migration quote threshold, sqrt start price within range, curve points validation (at least one, ascending order, positive liquidity, within range), and locked vesting/token supply validations.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_2
+
+LANGUAGE: typescript
+CODE:
+```
+const transaction = await client.partner.createConfig({
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    leftoverReceiver: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+    poolFees: {
+        baseFee: {
+            cliffFeeNumerator: new BN('2500000'),
+            numberOfPeriod: 0,
+            reductionFactor: new BN('0'),
+            periodFrequency: new BN('0'),
+            feeSchedulerMode: FeeSchedulerMode.Linear,
+        },
+        dynamicFee: {
+            binStep: 1,
+            binStepU128: new BN('1844674407370955'),
+            filterPeriod: 10,
+            decayPeriod: 120,
+            reductionFactor: 1000,
+            variableFeeControl: 100000,
+            maxVolatilityAccumulator: 100000,
+        },
+    },
+    activationType: 0,
+    collectFeeMode: 0,
+    migrationOption: 0,
+    tokenType: 0,
+    tokenDecimal: 9,
+    migrationQuoteThreshold: new BN('1000000000'),
+    partnerLpPercentage: 25,
+    creatorLpPercentage: 25,
+    partnerLockedLpPercentage: 25,
+    creatorLockedLpPercentage: 25,
+    sqrtStartPrice: new BN('58333726687135158'),
+    lockedVesting: {
+        amountPerPeriod: new BN('0'),
+        cliffDurationFromMigrationTime: new BN('0'),
+        frequency: new BN('0'),
+        numberOfPeriod: new BN('0'),
+        cliffUnlockAmount: new BN('0'),
+    },
+    migrationFeeOption: 0,
+    tokenSupply: {
+        preMigrationTokenSupply: new BN('10000000000000000000'),
+        postMigrationTokenSupply: new BN('10000000000000000000'),
+    },
+    creatorTradingFeePercentage: 0,
+    padding0: [],
+    padding1: [],
+    curve: [
+        {
+            sqrtPrice: new BN('233334906748540631'),
+            liquidity: new BN('622226417996106429201027821619672729'),
+        },
+        {
+            sqrtPrice: new BN('79226673521066979257578248091'),
+            liquidity: new BN('1'),
+        }
+    ]
+})
+```
+
+----------------------------------------
+
+TITLE: Retrieving Single Pool Details (TypeScript)
+DESCRIPTION: This function signature describes how to get the detailed information for a specific virtual pool. It takes a `poolAddress` (PublicKey or string) and returns a Promise resolving to either a `VirtualPool` object or `null` if the pool is not found.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_76
+
+LANGUAGE: typescript
+CODE:
+```
+async getPool(poolAddress: PublicKey | string): Promise<VirtualPool | null>
+```
+
+LANGUAGE: typescript
+CODE:
+```
+poolAddress: PublicKey | string // The address of the pool
+```
+
+LANGUAGE: typescript
+CODE:
+```
+const pool = await client.state.getPool(poolAddress)
+```
+
+----------------------------------------
+
+TITLE: Getting Pool Curve Progress (TypeScript)
+DESCRIPTION: This function signature describes how to calculate the progress of a pool's curve. It takes a `poolAddress` (PublicKey or string) and returns a Promise resolving to a number between 0 and 1, indicating the curve's progress by comparing current quote reserve to the migration threshold.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_81
+
+LANGUAGE: typescript
+CODE:
+```
+async getPoolCurveProgress(poolAddress: PublicKey | string): Promise<number>
+```
+
+LANGUAGE: typescript
+CODE:
+```
+poolAddress: PublicKey | string // The address of the pool
+```
+
+LANGUAGE: typescript
+CODE:
+```
+const progress = await client.state.getPoolCurveProgress(poolAddress)
+```
+
+----------------------------------------
+
+TITLE: Getting Pool Metadata (TypeScript)
+DESCRIPTION: This function signature defines how to retrieve metadata associated with a specific pool. It accepts a `poolAddress` (PublicKey or string) and returns a Promise resolving to an array of `VirtualPoolMetadata` objects, containing the pool's metadata.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_82
+
+LANGUAGE: typescript
+CODE:
+```
+async getPoolMetadata(poolAddress: PublicKey | string): Promise<VirtualPoolMetadata[]>
+```
+
+LANGUAGE: typescript
+CODE:
+```
+poolAddress: PublicKey | string // The address of the pool
+```
+
+LANGUAGE: typescript
+CODE:
+```
+const metadata = await client.state.getPoolMetadata(poolAddress)
+```
+
+----------------------------------------
+
+TITLE: Getting Dynamic Fee Parameters in TypeScript
+DESCRIPTION: This function calculates dynamic fee parameters for a pool based on a minimum base fee, capped at 20% of the base fee. It takes the base fee in basis points and the maximum price change in basis points (must be less than or equal to 1500, or 15%). It returns a `DynamicFeeParams` object.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_97
+
+LANGUAGE: TypeScript
+CODE:
+```
+function getDynamicFeeParams(
+    baseFeeBps: number,
+    maxPriceChangeBps: number
+): DynamicFeeParams
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+baseFeeBps: number // The base fee in basis points
+maxPriceChangeBps: number // The maximum price change in basis points
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+const dynamicFeeParams = getDynamicFeeParams(
+    baseFeeBps: 5000,
+    maxPriceChangeBps: 1500
+)
+```
+
+----------------------------------------
+
+TITLE: Getting Pool Migration Quote Threshold (TypeScript)
+DESCRIPTION: This function signature defines how to retrieve the migration quote threshold for a specific pool. It accepts a `poolAddress` (PublicKey or string) and returns a Promise resolving to a `BN` object, representing the threshold value.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_80
+
+LANGUAGE: typescript
+CODE:
+```
+async getPoolMigrationQuoteThreshold(poolAddress: PublicKey | string): Promise<BN>
+```
+
+LANGUAGE: typescript
+CODE:
+```
+poolAddress: PublicKey | string // The address of the pool
+```
+
+LANGUAGE: typescript
+CODE:
+```
+const threshold = await client.state.getPoolMigrationQuoteThreshold(poolAddress)
+```
+
+----------------------------------------
+
+TITLE: Building Curve with Creator First Buy in TypeScript
+DESCRIPTION: This asynchronous function constructs a constant product curve structure, incorporating a creator's first buy option. It calculates the necessary parameters for the curve based on initial and migration market caps, liquidity weights, and various other configuration settings, returning a `ConfigParameters` object.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_24
+
+LANGUAGE: TypeScript
+CODE:
+```
+async buildCurveWithCreatorFirstBuy(buildCurveWithCreatorFirstBuyParam: BuildCurveWithCreatorFirstBuyParam): Promise<ConfigParameters>
+```
+
+----------------------------------------
+
+TITLE: Building Curve Configuration and Creating Config (TypeScript)
+DESCRIPTION: This snippet demonstrates how to build a curve configuration using `buildCurveWithCreatorFirstBuy` and then use it to create a config account via `client.partner.createConfig`. It highlights parameters like `totalTokenSupply`, `initialMarketCap`, `migrationOption`, and specific `creatorFirstBuyOption` details for immediate token purchase. It also notes the importance of calculating `totalVestingDuration` and `totalDuration` based on `activationType`.
+
+SOURCE: https://github.com/meteoraag/ts-sdk/blob/main/packages/dynamic-bonding-curve/docs.md#_snippet_26
+
+LANGUAGE: typescript
+CODE:
+```
+let liquidityWeights: number[] = []
+for (let i = 0; i < 16; i++) {
+    liquidityWeights[i] = new Decimal(1.2).pow(new Decimal(i)).toNumber()
+}
+
+const curveConfig = buildCurveWithCreatorFirstBuy({
+    totalTokenSupply: 1000000000,
+    initialMarketCap: 5000,
+    migrationMarketCap: 1000000,
+    migrationOption: MigrationOption.MET_DAMM_V2,
+    tokenBaseDecimal: TokenDecimal.SIX,
+    tokenQuoteDecimal: TokenDecimal.SIX,
+    lockedVestingParam: {
+        totalLockedVestingAmount: 0,
+        numberOfVestingPeriod: 0,
+        cliffUnlockAmount: 0,
+        totalVestingDuration: 0,
+        cliffDurationFromMigrationTime: 0,
+    },
+    feeSchedulerParam: {
+        startingFeeBps: 100,
+        endingFeeBps: 100,
+        numberOfPeriod: 0,
+        totalDuration: 0,
+        feeSchedulerMode: FeeSchedulerMode.Linear,
+    },
+    dynamicFeeEnabled: true,
+    activationType: ActivationType.Slot,
+    collectFeeMode: CollectFeeMode.OnlyQuote,
+    migrationFeeOption: MigrationFeeOption.FixedBps100,
+    tokenType: TokenType.SPL,
+    partnerLpPercentage: 100,
+    creatorLpPercentage: 0,
+    partnerLockedLpPercentage: 0,
+    creatorLockedLpPercentage: 0,
+    creatorTradingFeePercentage: 0,
+    leftover: 1000000,
+    liquidityWeights,
+    creatorFirstBuyOption: {
+        quoteAmount: 0.01,
+        baseAmount: 10000000,
+    },
+})
+
+const transaction = await client.partner.createConfig({
+    config: new PublicKey('1234567890abcdefghijklmnopqrstuvwxyz'),
+    feeClaimer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    leftoverReceiver: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    payer: new PublicKey('boss1234567890abcdefghijklmnopqrstuvwxyz'),
+    quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+    ...curveConfig,
+})
+```
