@@ -1,0 +1,1196 @@
+========================
+CODE SNIPPETS
+========================
+TITLE: Fetch and Run Pre-built Installer via Bootstrap Script
+DESCRIPTION: This snippet demonstrates how to download and execute a pre-built installer using a `curl` command piped to `sh`. It fetches the `agave-install-init.sh` script from GitHub, which then checks for the latest release and runs the `agave-install-init` binary. This is the easiest installation method for supported platforms. The second example shows how to pass additional arguments to the installer.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/implemented-proposals/installer.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+$ curl -sSf https://raw.githubusercontent.com/jito-foundation/jito-solana/v1.0.0/install/agave-install-init.sh | sh
+```
+
+LANGUAGE: bash
+CODE:
+```
+$ init_args=.... # arguments for `agave-install-init ...`
+$ curl -sSf https://raw.githubusercontent.com/jito-foundation/jito-solana/v1.0.0/install/agave-install-init.sh | sh -s - ${init_args}
+```
+
+----------------------------------------
+
+TITLE: Solana CLI Install Tool Success Output Example
+DESCRIPTION: This text snippet illustrates the expected output upon a successful installation or update of the Solana CLI using the `agave-install` tool. It confirms the configuration file location, the active release directory, and the specific version of the Solana release that has been installed, indicating a complete setup.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_1
+
+LANGUAGE: text
+CODE:
+```
+downloading LATEST_AGAVE_RELEASE_VERSION installer
+Configuration: /home/solana/.config/solana/install/config.yml
+Active release directory: /home/solana/.local/share/solana/install/active_release
+* Release version: LATEST_AGAVE_RELEASE_VERSION
+* Release URL: https://github.com/jito-foundation/jito-solana/releases/download/LATEST_AGAVE_RELEASE_VERSION/solana-release-x86_64-unknown-linux-gnu.tar.bz2
+Update successful
+```
+
+----------------------------------------
+
+TITLE: Example Solana CLI Configuration Output
+DESCRIPTION: Illustrates the expected output after successfully configuring the Solana CLI with a new keypair, showing the updated RPC URL, WebSocket URL, Keypair Path, and Commitment level.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_14
+
+LANGUAGE: text
+CODE:
+```
+Config File: /home/solana/.config/solana/cli/config.yml
+RPC URL: http://api.devnet.solana.com
+WebSocket URL: ws://api.devnet.solana.com/ (computed)
+Keypair Path: /home/solana/validator-keypair.json
+Commitment: confirmed
+```
+
+----------------------------------------
+
+TITLE: Google Cloud BigTable Emulator Development Setup
+DESCRIPTION: Commands required to start the Google Cloud BigTable emulator, configure the necessary environment variables, and initialize the emulator's schema for local development and testing purposes.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/storage-bigtable/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+gcloud beta emulators bigtable start
+```
+
+LANGUAGE: Shell
+CODE:
+```
+$(gcloud beta emulators bigtable env-init)
+```
+
+LANGUAGE: Shell
+CODE:
+```
+./init-bigtable.sh
+```
+
+----------------------------------------
+
+TITLE: Quick Start: Create and Deploy GCE Testnet
+DESCRIPTION: A quick start guide to create a GCE testnet with specified validator and client nodes, configure metrics (optional), and deploy the network from the local workspace, starting processes on all nodes including `bench-tps` on the client node.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/net/README.md#_snippet_6
+
+LANGUAGE: bash
+CODE:
+```
+cd net/
+
+./gce.sh create -n 4 -c 1
+
+./init-metrics.sh -c testnet-dev-${USER} ${USER}
+
+RUST_LOG=info ./net.sh start
+```
+
+----------------------------------------
+
+TITLE: Solana C Program Entrypoint Example
+DESCRIPTION: An example C program demonstrating the required `entrypoint` function for Solana BPF programs. It shows how to deserialize input parameters using `sol_deserialize` and handle account information.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/platform-tools-sdk/sbf/c/README.md#_snippet_1
+
+LANGUAGE: c
+CODE:
+```
+#include <solana_sdk.h>
+
+extern uint64_t entrypoint(const uint8_t *input) {
+  SolAccountInfo ka[1];
+  SolParameters params = (SolParameters) { .ka = ka };
+
+  if (!sol_deserialize(input, &params, SOL_ARRAY_SIZE(ka))) {
+    return ERROR_INVALID_ARGUMENT;
+  }
+  return SUCCESS;
+}
+```
+
+----------------------------------------
+
+TITLE: Quick Start: Create GCE Testnet
+DESCRIPTION: Initial command in the quick start guide to create a Google Compute Engine (GCE) based test network. This example provisions 4 additional validator nodes and 1 client node, incurring billing costs.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/contributing/testnet.md#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+cd net/
+./gce.sh create -n 4 -c 1
+```
+
+----------------------------------------
+
+TITLE: Start Local Metrics Services
+DESCRIPTION: Execute this script to initialize and start the local InfluxDB and Grafana services, making them ready for metric collection and visualization.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/metrics/scripts/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+./start.sh
+```
+
+----------------------------------------
+
+TITLE: Start RPC Simulation Server
+DESCRIPTION: Command to start the `json-rpc-server` application, specifying the ledger path and accounts file for transaction simulation. This server accepts incoming RPC requests and performs transaction simulations.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/svm/examples/json-rpc/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+cargo run --manifest-path json-rpc-server/Cargo.toml -- -l test-ledger -a accounts.json
+```
+
+----------------------------------------
+
+TITLE: Verify Solana CLI Installation Version
+DESCRIPTION: This command is essential for confirming the successful installation of the Solana CLI and checking its current version across different operating systems. Executing `solana --version` provides immediate feedback, displaying the installed client version and ensuring the tools are ready for use. It helps in troubleshooting and verifying correct setup.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+solana --version
+```
+
+LANGUAGE: cmd
+CODE:
+```
+solana --version
+```
+
+----------------------------------------
+
+TITLE: Setup and Run Jito-Solana Benchmarks
+DESCRIPTION: Installs the Rust nightly toolchain, which is necessary for running `cargo bench` due to its reliance on unstable features, and then executes the performance benchmarks for the Jito-Solana project.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/README.md#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+rustup install nightly
+```
+
+LANGUAGE: bash
+CODE:
+```
+cargo +nightly bench
+```
+
+----------------------------------------
+
+TITLE: Enable and Start Solana Validator Systemd Service
+DESCRIPTION: Command to enable the Solana validator systemd service to start automatically on boot and immediately start it for the current session.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_24
+
+LANGUAGE: bash
+CODE:
+```
+sudo systemctl enable --now sol
+```
+
+----------------------------------------
+
+TITLE: Jito-Solana Vortexor Command-Line Parameters
+DESCRIPTION: Detailed documentation of the command-line arguments used to configure the Jito-Solana Vortexor. Each parameter's purpose, required input, and typical examples are provided to guide users in setting up the Vortexor correctly.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/vortexor/Readme.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Vortexor CLI Parameters:
+  --identity: Path to the identity keypair file for the Vortexor.
+  --destination: The validator's receiver address where verified packets will be sent (e.g., 10.138.0.136:8100).
+  --dynamic-port-range: The port range used by the Vortexor for TPU traffic (e.g., 9200-9300).
+  --rpc-server: The RPC server address to fetch cluster information (e.g., http://10.138.0.137:8899).
+  --websocket-server: The WebSocket server address to fetch stake information (e.g., ws://10.138.0.137:8900).
+```
+
+----------------------------------------
+
+TITLE: Build and Run Installer from Source Code
+DESCRIPTION: This snippet provides instructions for building the installer from its source code. It involves cloning the `jito-solana` repository, navigating to the `install` directory, and then using `cargo run` to build and execute the installer. This is an alternative when pre-built binaries are not available for a specific platform.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/implemented-proposals/installer.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+$ git clone https://github.com/jito-foundation/jito-solana.git
+$ cd jito-solana/install
+$ cargo run -- --help
+```
+
+----------------------------------------
+
+TITLE: Example: Query Published Solana Validator Info
+DESCRIPTION: An example command to retrieve and display the currently published validator information from the Solana blockchain. This command fetches the details associated with the current validator's keypair.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-info.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+solana validator-info get
+```
+
+----------------------------------------
+
+TITLE: Quick Start: Deploy and Start Test Network
+DESCRIPTION: Final command in the quick start sequence to deploy the test network from the local workspace and initiate all processes on the nodes, including `bench-tps` on the client node. `RUST_LOG` is set to `info` for logging.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/contributing/testnet.md#_snippet_7
+
+LANGUAGE: bash
+CODE:
+```
+RUST_LOG=info ./net.sh start
+```
+
+----------------------------------------
+
+TITLE: Apply Linux Sysctl Configuration
+DESCRIPTION: Loads the newly configured sysctl parameters from the Solana validator-specific configuration file, applying the system optimizations immediately without requiring a reboot.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+sudo sysctl -p /etc/sysctl.d/21-agave-validator.conf
+```
+
+----------------------------------------
+
+TITLE: Generate Solana Vanity Keypair
+DESCRIPTION: Generates a Solana keypair whose public key starts with a specified string. This process can be computationally intensive, especially when also generating a mnemonic.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_12
+
+LANGUAGE: bash
+CODE:
+```
+solana-keygen grind --starts-with e1v1s:1
+```
+
+LANGUAGE: bash
+CODE:
+```
+solana-keygen grind --use-mnemonic --starts-with e1v1s:1
+```
+
+----------------------------------------
+
+TITLE: Display agave-install Information
+DESCRIPTION: Explains the `info` subcommand, which displays details about the current `agave-install` setup. It includes an option to only show local information without checking the cluster for new updates.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/implemented-proposals/installer.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+agave-install info
+displays information about the current installation
+
+USAGE:
+    agave-install info [FLAGS]
+
+FLAGS:
+    -h, --help     Prints help information
+    -l, --local    only display local information, don't check the cluster for new updates
+```
+
+----------------------------------------
+
+TITLE: Apply Logrotate Configuration for Solana Validator
+DESCRIPTION: Commands to copy the generated logrotate configuration file to the system's logrotate directory and then restart the logrotate service to ensure the new configuration is active.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_26
+
+LANGUAGE: bash
+CODE:
+```
+sudo cp logrotate.sol /etc/logrotate.d/sol
+systemctl restart logrotate.service
+```
+
+----------------------------------------
+
+TITLE: Quick Start: Initialize Metrics for Testnet
+DESCRIPTION: Optional step in the quick start guide to configure the metrics database for the newly created testnet. This command initializes InfluxDB settings using the current user's name, and can be skipped if metrics are not desired.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/contributing/testnet.md#_snippet_6
+
+LANGUAGE: bash
+CODE:
+```
+./init-metrics.sh -c testnet-dev-${USER} ${USER}
+```
+
+----------------------------------------
+
+TITLE: Download and Execute Pre-built Installer from GitHub Release
+DESCRIPTION: This snippet shows how to directly download a specific pre-built binary from a GitHub release URL using `curl`. After downloading, it sets execute permissions using `chmod` and then runs the installer with the `--help` flag to display usage information. This method is suitable when a specific release URL is known.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/implemented-proposals/installer.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+$ curl -o agave-install-init https://github.com/jito-foundation/jito-solana/releases/download/v1.0.0/agave-install-init-x86_64-apple-darwin
+$ chmod +x ./agave-install-init
+$ ./agave-install-init --help
+```
+
+----------------------------------------
+
+TITLE: Solana Benchmarking Tool Command-Line Arguments
+DESCRIPTION: Example command-line arguments used when starting the `solana-bench-tps` tool from a client machine. These arguments configure the number of transactions to simulate and the sleep duration between thread batches.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/clusters/metrics.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+--tx_count=50000 --thread-batch-sleep 1000
+```
+
+----------------------------------------
+
+TITLE: Configure Solana CLI to Devnet
+DESCRIPTION: Sets the default RPC URL for Solana CLI commands to the Devnet cluster. This simplifies subsequent CLI interactions by pre-configuring the target network.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+solana config set --url http://api.devnet.solana.com
+```
+
+----------------------------------------
+
+TITLE: Enable and Start Solana Validator System Service
+DESCRIPTION: Command to enable and immediately start the Solana validator as a system service. This ensures the validator automatically runs on system boot and can be managed using standard systemctl commands, improving reliability and ease of management.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/setup-a-validator.md#_snippet_35
+
+LANGUAGE: bash
+CODE:
+```
+sudo systemctl enable --now sol
+```
+
+----------------------------------------
+
+TITLE: Install Solana CLI on Windows using Agave Install Tool
+DESCRIPTION: This snippet details the two-step process for installing the Solana CLI on Windows via the `agave-install` tool. First, it downloads the installer executable using `curl` into a temporary directory. Second, it executes this installer to set up the specified Agave release version, streamlining the installation for Windows users.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_2
+
+LANGUAGE: cmd
+CODE:
+```
+cmd /c "curl https://release.jito.wtf/LATEST_AGAVE_RELEASE_VERSION/agave-install-init-x86_64-pc-windows-msvc.exe --output C:\agave-install-tmp\agave-install-init.exe --create-dirs"
+```
+
+LANGUAGE: cmd
+CODE:
+```
+C:\agave-install-tmp\agave-install-init.exe LATEST_AGAVE_RELEASE_VERSION
+```
+
+----------------------------------------
+
+TITLE: Initialize Agave Installation
+DESCRIPTION: This command initializes the Agave installation, providing the same outcome as using prebuilt binaries. It should be run after building Jito Solana from source.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+agave-install init
+```
+
+----------------------------------------
+
+TITLE: Execute Solana Validator Startup Script
+DESCRIPTION: This command directly executes the `validator.sh` script to start the `agave-validator` process. This step is used for initial testing to ensure the script runs without errors and the validator process initiates correctly.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/setup-a-validator.md#_snippet_28
+
+LANGUAGE: bash
+CODE:
+```
+/home/sol/bin/validator.sh
+```
+
+----------------------------------------
+
+TITLE: Example: Publish Solana Validator Info with Website and Icon
+DESCRIPTION: An example command demonstrating how to publish validator information, including a custom name, a website URL, and an icon URL. The icon is recommended to be 360x360px PNG.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-info.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+solana validator-info publish "Elvis Validator" -w "https://elvis-validates.com" -i "https://elvis-validates.com/my-icon.png"
+```
+
+----------------------------------------
+
+TITLE: Build Jito Solana from Source and Configure PATH
+DESCRIPTION: These commands are used to build the Jito Solana project from its source code after all prerequisites are installed. The first command executes a script to install all necessary components, and the second command adds the newly built binaries to the system's PATH environment variable for easy access.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_9
+
+LANGUAGE: bash
+CODE:
+```
+./scripts/cargo-install-all.sh .
+export PATH=$PWD/bin:$PATH
+```
+
+----------------------------------------
+
+TITLE: Initialize agave-install Tool
+DESCRIPTION: Details the `init` subcommand for `agave-install`, used to set up a new installation. It allows specifying the data directory, the JSON RPC URL for the Solana cluster, and the public key of the update manifest.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/implemented-proposals/installer.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+agave-install-init
+initializes a new installation
+
+USAGE:
+    agave-install init [OPTIONS]
+
+FLAGS:
+    -h, --help    Prints help information
+
+OPTIONS:
+    -d, --data_dir <PATH>    Directory to store install data [default: .../Library/Application Support/solana]
+    -u, --url <URL>          JSON RPC URL for the solana cluster [default: http://api.devnet.solana.com]
+    -p, --pubkey <PUBKEY>    Public key of the update manifest [default: 9XX329sPuskWhH4DQh6k16c87dHKhXLBZTL3Gxmve8Gp]
+```
+
+----------------------------------------
+
+TITLE: Criterion C Unit Test for Solana Programs
+DESCRIPTION: An example of a unit test file using the Criterion test framework for Solana C programs. It demonstrates how to include the program source and define a basic test case with an assertion.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/platform-tools-sdk/sbf/c/README.md#_snippet_2
+
+LANGUAGE: c
+CODE:
+```
+#include <criterion/criterion.h>
+#include "../src/program.c"
+
+Test(test_suite_name, test_case_name) {
+  cr_assert(true);
+}
+```
+
+----------------------------------------
+
+TITLE: Check Solana CLI Version
+DESCRIPTION: Verify the Solana Command Line Interface (CLI) installation by checking its version. This command confirms that the CLI is accessible in your system's PATH and ready for use, displaying the installed version number.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/setup-a-validator.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+solana --version
+```
+
+----------------------------------------
+
+TITLE: Configure Linux Security Limits for File Descriptors
+DESCRIPTION: Creates a security limits configuration file to increase the global process file descriptor count limit for all users, ensuring the Solana validator has sufficient resources.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_6
+
+LANGUAGE: bash
+CODE:
+```
+sudo bash -c "cat >/etc/security/limits.d/90-solana-nofiles.conf <<EOF
+# Increase process file descriptor count limit
+* - nofile 1000000
+EOF"
+```
+
+----------------------------------------
+
+TITLE: Get Help for a Specific Solana CLI Command
+DESCRIPTION: To understand the usage, parameters, and options of a particular Solana CLI command, replace `<COMMAND>` with the desired command name and execute this. It provides detailed documentation for that specific command.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/intro.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+solana <COMMAND> --help
+```
+
+----------------------------------------
+
+TITLE: agave-install CLI Overview
+DESCRIPTION: Provides a general overview of the `agave-install` command-line interface, including global options and available subcommands for managing Solana cluster software. This is the main help output for the tool.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/implemented-proposals/installer.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+agave-install 0.16.0
+The solana cluster software installer
+
+USAGE:
+    agave-install [OPTIONS] <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <PATH>    Configuration file to use [default: .../Library/Preferences/solana/install.yml]
+
+SUBCOMMANDS:
+    deploy    deploys a new update
+    help      Prints this message or the help of the given subcommand(s)
+    info      displays information about the current installation
+    init      initializes a new installation
+    run       Runs a program while periodically checking and applying software updates
+    update    checks for an update, and if available downloads and applies it
+```
+
+----------------------------------------
+
+TITLE: Get Help for Solana Validator Info Publish Command
+DESCRIPTION: Displays detailed help information for the `solana validator-info publish` command. Use this to understand all available optional fields and their usage for `VALIDATOR_INFO_ARGS`.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-info.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+solana validator-info publish --help
+```
+
+----------------------------------------
+
+TITLE: Manually Install Solana CLI Prebuilt Binaries on Windows
+DESCRIPTION: This snippet describes how to manually install the Solana CLI on Windows by extracting prebuilt binaries. It involves navigating to the extracted `solana-release` directory in the Command Prompt and then using the `set PATH` command to add the binaries' location to the system's `PATH` environment variable. This allows `solana` commands to be run directly.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_6
+
+LANGUAGE: cmd
+CODE:
+```
+cd solana-release/
+set PATH=%cd%/bin;%PATH%
+```
+
+----------------------------------------
+
+TITLE: Prepare Directory and Script File for Solana Validator Startup
+DESCRIPTION: These commands create a `bin` directory within the `sol` user's home directory, create an empty `validator.sh` file inside it, and then make the script executable. This sets up the necessary environment for the validator's startup script.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/setup-a-validator.md#_snippet_25
+
+LANGUAGE: bash
+CODE:
+```
+mkdir -p /home/sol/bin
+touch /home/sol/bin/validator.sh
+chmod +x /home/sol/bin/validator.sh
+```
+
+----------------------------------------
+
+TITLE: Set Solana CLI Default Keypair
+DESCRIPTION: Configures the Solana CLI to use a specific keypair file as the default for all subsequent commands. This streamlines operations by avoiding repeated `--keypair` arguments.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_13
+
+LANGUAGE: bash
+CODE:
+```
+solana config set --keypair ~/validator-keypair.json
+```
+
+----------------------------------------
+
+TITLE: Run Jito-Solana Vortexor Command
+DESCRIPTION: Command to initiate the Jito-Solana Vortexor, specifying essential configuration parameters such as identity, destination address for verified packets, dynamic port range for TPU traffic, and addresses for RPC and WebSocket servers. This command starts the Vortexor process.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/vortexor/Readme.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+solana-vortexor --identity /path/to/id.json \
+    --destination <validator_receiver_address> \
+    --dynamic-port-range <port_range> \
+    --rpc-server <rpc_server_address> \
+    --websocket-server <websocket_server_address>
+```
+
+LANGUAGE: bash
+CODE:
+```
+solana-vortexor --identity /home/solana/.config/solana/id.json \
+    --destination 10.138.0.136:8100 \
+    --dynamic-port-range 9200-9300 \
+    --rpc-server http://10.138.0.137:8899 \
+    --websocket-server ws://10.138.0.137:8900
+```
+
+----------------------------------------
+
+TITLE: Query InfluxDB for Airdrop Measurements
+DESCRIPTION: An example of using the InfluxDB command-line client to query the 'testnet' database. This command retrieves all 'faucet-airdrop' measurements, demonstrating basic data retrieval.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/metrics/scripts/README.md#_snippet_4
+
+LANGUAGE: sh
+CODE:
+```
+influx -database testnet -username read -password read -execute 'SELECT * FROM "faucet-airdrop"'
+```
+
+----------------------------------------
+
+TITLE: Install Solana CLI on macOS and Linux using Agave Install Tool
+DESCRIPTION: This snippet provides the command to install the Solana CLI on macOS and Linux using the `agave-install` script. It leverages `curl` to download and execute the installer, offering the simplest and recommended method for setting up the Solana tools. The script automatically handles dependencies and places binaries in the correct system paths.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+sh -c "$(curl -sSfL https://release.jito.wtf/LATEST_AGAVE_RELEASE_VERSION/install)"
+```
+
+----------------------------------------
+
+TITLE: Manually Install Solana CLI Prebuilt Binaries on Linux
+DESCRIPTION: This snippet outlines the manual installation of Solana CLI on Linux by extracting prebuilt binaries. It involves decompressing the `.tar.bz2` archive, navigating into the extracted `solana-release` directory, and then updating the system's `PATH` environment variable. This ensures that the `solana` commands are globally accessible from the terminal.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+tar jxf solana-release-x86_64-unknown-linux-gnu.tar.bz2
+cd solana-release/
+export PATH=$PWD/bin:$PATH
+```
+
+----------------------------------------
+
+TITLE: Solana Validator Systemd Service Configuration
+DESCRIPTION: Defines a systemd unit file for running the Solana validator as a background service. It specifies service description, dependencies, restart policy, user, file limits, environment variables, and the execution command for the validator script.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_23
+
+LANGUAGE: Systemd Unit
+CODE:
+```
+[Unit]
+Description=Solana Validator
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=sol
+LimitNOFILE=1000000
+LogRateLimitIntervalSec=0
+Environment="PATH=/bin:/usr/bin:/home/sol/.local/share/solana/install/active_release/bin"
+ExecStart=/home/sol/bin/validator.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+----------------------------------------
+
+TITLE: Get Local Solana CLI Version
+DESCRIPTION: Retrieves and displays the version of the locally installed Solana command-line interface. This is useful for ensuring that your local CLI is up-to-date or compatible with the cluster.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/examples/choose-a-cluster.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+solana --version
+```
+
+----------------------------------------
+
+TITLE: Output of Solana Validator Info Get Command
+DESCRIPTION: Shows the structured output when querying validator information using `solana validator-info get`. It includes the validator's public key and a JSON string containing details like icon URL, name, and website. Older accounts might show `keybaseUsername` instead of `iconUrl`.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-info.md#_snippet_4
+
+LANGUAGE: text
+CODE:
+```
+Validator info from 8WdJvDz6obhADdxpGCiJKZsDYwTLNEDFizayqziDc9ah
+  Validator pubkey: 6dMH3u76qZ7XG4bVboVRnBHR2FfrxEqTTTyj4xmyDMWo
+  Info: {"iconUrl":"elvis","name":"Elvis Validator","website":"https://elvis-validates.com"}
+```
+
+----------------------------------------
+
+TITLE: Solana CLI: End-to-End SOL Transfer Example
+DESCRIPTION: This comprehensive example demonstrates the full lifecycle of a SOL transfer on Solana's devnet using the `solana` command-line interface. It covers creating a filesystem wallet, generating a paper wallet, requesting an airdrop of SOL, checking account balances, and finally, transferring SOL between the two wallets, including observation of transaction fees.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/examples/transfer-tokens.md#_snippet_7
+
+LANGUAGE: bash
+CODE:
+```
+$ solana-keygen new --outfile my_solana_wallet.json   # Creating my first wallet, a file system wallet
+Generating a new keypair
+For added security, enter a passphrase (empty for no passphrase):
+Wrote new keypair to my_solana_wallet.json
+==========================================================================
+pubkey: DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK                          # Here is the address of the first wallet
+==========================================================================
+Save this seed phrase to recover your new keypair:
+width enhance concert vacant ketchup eternal spy craft spy guard tag punch    # If this was a real wallet, never share these words on the internet like this!
+==========================================================================
+
+$ solana airdrop 1 DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK --url https://api.devnet.solana.com  # Airdropping 1 SOL to my wallet's address/pubkey
+Requesting airdrop of 1 SOL from 35.233.193.70:9900
+1 SOL
+
+$ solana balance DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK --url https://api.devnet.solana.com # Check the address's balance
+1 SOL
+
+$ solana-keygen new --no-outfile  # Creating a second wallet, a paper wallet
+Generating a new keypair
+For added security, enter a passphrase (empty for no passphrase):
+====================================================================
+pubkey: 7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv                   # Here is the address of the second, paper, wallet.
+====================================================================
+Save this seed phrase to recover your new keypair:
+clump panic cousin hurt coast charge engage fall eager urge win love   # If this was a real wallet, never share these words on the internet like this!
+====================================================================
+
+$ solana transfer --from my_solana_wallet.json 7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv 0.5 --allow-unfunded-recipient --url https://api.devnet.solana.com --fee-payer my_solana_wallet.json  # Transferring tokens to the public address of the paper wallet
+3gmXvykAd1nCQQ7MjosaHLf69Xyaqyq1qw2eu1mgPyYXd5G4v1rihhg1CiRw35b9fHzcftGKKEu4mbUeXY2pEX2z  # This is the transaction signature
+
+$ solana balance DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK --url https://api.devnet.solana.com
+0.499995 SOL  # The sending account has slightly less than 0.5 SOL remaining due to the 0.000005 SOL transaction fee payment
+
+$ solana balance 7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv --url https://api.devnet.solana.com
+0.5 SOL  # The second wallet has now received the 0.5 SOL transfer from the first wallet
+
+```
+
+----------------------------------------
+
+TITLE: Automated Solana Testnet Deployment Script
+DESCRIPTION: This script provides an example of automating the entire testnet deployment process. It creates a testnet with specified node types and counts, patches metrics configuration, and starts the network with a `bench-tps` workload, including source compilation.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/contributing/testnet.md#_snippet_14
+
+LANGUAGE: bash
+CODE:
+```
+# Create the testnet with reasonable node sizes for a small test
+# This particular one will have 7 nodes: 1 bootstrap validator, 4 regular validators, and 2 clients
+./gce.sh create -n4 -c2 --custom-machine-type "--machine-type n1-standard-16" --client-machine-type "--machine-type n1-standard-4"
+# Patch metrics config from env into config file
+./init-metrics.sh -e
+# Enable metrics and start the network (this will also build software)
+RUST_LOG=info ./net.sh start  -c bench-tps=2="--tx_count 25000"
+```
+
+----------------------------------------
+
+TITLE: Automated Testnet Deployment Script
+DESCRIPTION: An example bash script demonstrating how to automate the creation, metrics configuration, and start-up of a Solana testnet with specific node configurations and workload parameters.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/net/README.md#_snippet_13
+
+LANGUAGE: bash
+CODE:
+```
+# Create the testnet with reasonable node sizes for a small test
+# This particular one will have 7 nodes: 1 bootstrap validator, 4 regular validators, and 2 clients
+./gce.sh create -n4 -c2 --custom-machine-type "--machine-type n1-standard-16" --client-machine-type "--machine-type n1-standard-4"
+# Patch metrics config from env into config file
+./init-metrics.sh -e
+# Enable metrics and start the network (this will also build software)
+RUST_LOG=info ./net.sh start  -c bench-tps=2="--tx_count 25000"
+```
+
+----------------------------------------
+
+TITLE: Optimize Linux Sysctl for Solana Validator
+DESCRIPTION: Applies system-level kernel parameter optimizations for Solana validators on Linux. This configuration increases UDP buffer sizes, memory-mapped files limit, and open file descriptors to enhance performance.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+sudo bash -c "cat >/etc/sysctl.d/21-agave-validator.conf <<EOF
+# Increase max UDP buffer sizes
+net.core.rmem_max = 134217728
+net.core.wmem_max = 134217728
+
+# Increase memory mapped files limit
+vm.max_map_count = 1000000
+
+# Increase number of allowed open file descriptors
+fs.nr_open = 1000000
+EOF"
+```
+
+----------------------------------------
+
+TITLE: Solana Agave Validator Testnet Startup Script Content
+DESCRIPTION: This script defines the command to start the `agave-validator` process with various parameters, including identity and vote accounts, known validators, logging, ledger and accounts paths, RPC port, dynamic port range, entrypoints, expected genesis hash, and WAL recovery mode. This specific configuration is tailored for the Solana testnet.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/setup-a-validator.md#_snippet_27
+
+LANGUAGE: bash
+CODE:
+```
+#!/bin/bash
+exec agave-validator \
+    --identity /home/sol/validator-keypair.json \
+    --vote-account /home/sol/vote-account-keypair.json \
+    --known-validator 5D1fNXzvv5NjV1ysLjirC4WY92RNsVH18vjmcszZd8on \
+    --known-validator 7XSY3MrYnK8vq693Rju17bbPkCN3Z7KvvJx4kdrsSY \
+    --known-validator Ft5fbkqNa76vnsjYNwjDZUXoTWpP7VYm3mtsaQckQADN \
+    --known-validator 9QxCLckBiJc783jnMvXZubK4wH86Eqqvashtrwvcsgkv \
+    --only-known-rpc \
+    --log /home/sol/agave-validator.log \
+    --ledger /mnt/ledger \
+    --accounts /mnt/accounts \
+    --rpc-port 8899 \
+    --dynamic-port-range 8000-8020 \
+    --entrypoint entrypoint.testnet.solana.com:8001 \
+    --entrypoint entrypoint2.testnet.solana.com:8001 \
+    --entrypoint entrypoint3.testnet.solana.com:8001 \
+    --expected-genesis-hash 4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY \
+    --wal-recovery-mode skip_any_corrupted_record \
+    --limit-ledger-size
+```
+
+----------------------------------------
+
+TITLE: Reload Systemd Daemon
+DESCRIPTION: Reloads the systemd manager configuration, ensuring that any changes made to service files or global systemd settings, such as file descriptor limits, are applied.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+sudo systemctl daemon-reload
+```
+
+----------------------------------------
+
+TITLE: Install Agave Validator with `agave-install`
+DESCRIPTION: This command uses `agave-install` to quickly install a specific version of the Agave validator, such as `2.0.15`. It downloads the executable to a `.local` directory and requires the Solana CLI to be pre-installed. This method is useful for quick installations or testing new versions without building from source.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/best-practices/general.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+agave-install init 2.0.15
+```
+
+----------------------------------------
+
+TITLE: Run RPC Simulation Client
+DESCRIPTION: Command to execute the `json-rpc-client` program, configuring it with a YAML file, a keypair for the deployed program, and the server's address. This client sends transactions to the RPC server for simulation and prints the responses.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/svm/examples/json-rpc/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+cargo run --manifest-path json-rpc-client/Cargo.toml -- -C config.yml -k json-rpc-program/target/deploy/helloworld-keypair.json -u localhost
+```
+
+----------------------------------------
+
+TITLE: Install Build Dependencies on Debian and Other Linux Distributions
+DESCRIPTION: This command installs essential build tools and libraries required for compiling Jito Solana on Debian and other Linux distributions using the `apt-get` package manager. It includes `build-essential`, `pkg-config`, `libudev-dev`, `llvm`, `libclang-dev`, and `protobuf-compiler`.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_7
+
+LANGUAGE: bash
+CODE:
+```
+apt-get install \
+    build-essential \
+    pkg-config \
+    libudev-dev llvm libclang-dev \
+    protobuf-compiler
+```
+
+----------------------------------------
+
+TITLE: Check Solana Cluster Transaction Count
+DESCRIPTION: Verifies connectivity and responsiveness of the configured Solana cluster by fetching the current transaction count. This serves as a sanity check before deploying a validator.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+solana transaction-count
+```
+
+----------------------------------------
+
+TITLE: Create Solana Stake Account
+DESCRIPTION: Initializes a new stake account with a specified amount of SOL (1 SOL in this example). This account will hold the delegated stake before it is assigned to a validator's vote account.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-stake.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+solana create-stake-account ~/validator-stake-keypair.json 1
+```
+
+----------------------------------------
+
+TITLE: Example Output of Solana Public Key
+DESCRIPTION: An example of the string output representing a Solana public key (wallet address) generated by the `solana-keygen pubkey` command. This is a typical format for Solana addresses.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/wallets/file-system.md#_snippet_2
+
+LANGUAGE: text
+CODE:
+```
+ErRr1caKzK8L8nn4xmEWtimYRiTCAZXjBtVphuZ5vMKy
+```
+
+----------------------------------------
+
+TITLE: Open Solana Validator Startup Script for Editing
+DESCRIPTION: This command opens the `validator.sh` script file using the `nano` text editor, allowing the user to paste the validator startup configuration. Users can substitute `nano` with their preferred text editor.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/setup-a-validator.md#_snippet_26
+
+LANGUAGE: bash
+CODE:
+```
+nano /home/sol/bin/validator.sh
+```
+
+----------------------------------------
+
+TITLE: Connect Solana Validator to Cluster
+DESCRIPTION: This command initiates the `agave-validator` process, connecting your validator to the specified Solana cluster. It configures the validator with its identity, vote account, RPC port, entrypoint, ledger size limits, and logging preferences. Optional arguments allow for console logging or custom ledger locations.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_20
+
+LANGUAGE: bash
+CODE:
+```
+agave-validator \
+  --identity ~/validator-keypair.json \
+  --vote-account ~/vote-account-keypair.json \
+  --rpc-port 8899 \
+  --entrypoint entrypoint.devnet.solana.com:8001 \
+  --limit-ledger-size \
+  --log ~/agave-validator.log
+```
+
+----------------------------------------
+
+TITLE: Initialize Multinode Demo Genesis Ledger
+DESCRIPTION: Executes the setup script for the multinode demo, which is responsible for generating the genesis ledger. This step initializes the network and is a prerequisite for running validators and clients in a multinode testnet.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/contributing/benchmark.md#_snippet_6
+
+LANGUAGE: bash
+CODE:
+```
+./multinode-demo/setup.sh
+```
+
+----------------------------------------
+
+TITLE: Generate New Solana Validator Identity Keypair
+DESCRIPTION: Creates a new ed25519 keypair for the Solana validator identity and saves it to a specified file. This keypair uniquely identifies the validator on the network and is crucial for operation.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_8
+
+LANGUAGE: bash
+CODE:
+```
+solana-keygen new -o ~/validator-keypair.json
+```
+
+----------------------------------------
+
+TITLE: Increase Systemd File Descriptor Limits
+DESCRIPTION: Provides instructions for increasing the maximum number of open file descriptors for systemd services. This can be applied either to a specific service file or as a default for all services.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+LimitNOFILE=1000000
+```
+
+LANGUAGE: bash
+CODE:
+```
+DefaultLimitNOFILE=1000000
+```
+
+----------------------------------------
+
+TITLE: Manually Install Solana CLI Prebuilt Binaries on macOS
+DESCRIPTION: This snippet details the manual installation process for Solana CLI on macOS using prebuilt binaries. It covers extracting the downloaded archive, changing into the release directory, and modifying the PATH environment variable to ensure the Solana tools are discoverable by the system.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/install.md#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+tar jxf solana-release-x86_64-apple-darwin.tar.bz2
+cd solana-release/
+export PATH=$PWD/bin:$PATH
+```
+
+----------------------------------------
+
+TITLE: Update Ubuntu System Packages
+DESCRIPTION: Updates the list of available packages and upgrades all installed packages on an Ubuntu server to their latest versions. This ensures the system has the most recent security patches and software updates.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/setup-a-validator.md#_snippet_9
+
+LANGUAGE: bash
+CODE:
+```
+sudo apt update
+sudo apt upgrade
+```
+
+----------------------------------------
+
+TITLE: Check Solana Keygen Installation
+DESCRIPTION: Verifies that the `solana-keygen` command-line tool is correctly installed and accessible on the system by displaying its version. This is a crucial first step before proceeding with wallet operations.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/cli/wallets/paper.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+solana-keygen --version
+```
+
+----------------------------------------
+
+TITLE: Generate Solana Vote Account Keypair
+DESCRIPTION: This command generates a new keypair specifically for your validator's vote account. This keypair is essential for registering your validator's voting identity on the Solana network.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_18
+
+LANGUAGE: bash
+CODE:
+```
+solana-keygen new -o ~/vote-account-keypair.json
+```
+
+----------------------------------------
+
+TITLE: Start local Docusaurus development server
+DESCRIPTION: This command launches the Docusaurus local development server, which typically opens the documentation site in a browser window. Most changes made to the documentation files are reflected live without requiring a server restart.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/README.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+npm run start
+```
+
+----------------------------------------
+
+TITLE: Airdrop SOL to Solana Devnet/Testnet Account
+DESCRIPTION: This command allows users to receive test SOL on Devnet or Testnet for development and testing purposes. Airdrops are limited to 1 SOL per request and are not available on Mainnet.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_15
+
+LANGUAGE: bash
+CODE:
+```
+solana airdrop 1
+```
+
+----------------------------------------
+
+TITLE: Start PostgreSQL Server
+DESCRIPTION: Starts the PostgreSQL 14-main service on the system, which is a prerequisite for database operations.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/validator/geyser.md#_snippet_18
+
+LANGUAGE: bash
+CODE:
+```
+sudo systemctl start postgresql@14-main
+```
+
+----------------------------------------
+
+TITLE: Verify Solana Validator Network Connection
+DESCRIPTION: This command allows you to confirm that your validator is successfully connected and visible on the Solana network. If connected, your validator's public key and IP address will appear in the `solana gossip` output.
+
+SOURCE: https://github.com/jito-foundation/jito-solana/blob/master/docs/src/operations/guides/validator-start.md#_snippet_21
+
+LANGUAGE: bash
+CODE:
+```
+solana gossip
+```
