@@ -10,23 +10,23 @@
 
 ## 📱 Overview
 
-Solana Mobile SDK is a full-featured toolkit for building mobile applications on the Solana blockchain. The SDK provides a unified interface for wallet management, transaction execution, token operations, and integration with web wallets through Privy.
+Solana Mobile Vibe Kit is a full-featured toolkit for vibe coding mobile applications on the Solana blockchain. The SDK provides a unified interface for wallet management, transaction execution, token operations, and integration with web wallets through Privy.
 
 ### ✨ Key Features
 
-- 🔐 **Multi-platform Wallet Management** - Support for email authorization via Privy and demo wallets
-- 💸 **Transaction Management** - Send SOL, calculate fees, transaction history
-- 🪙 **Token Operations** - Get balances, transfer SPL tokens
-- 📱 **Cross-platform** - iOS, Android and web via Ionic/Capacitor
-- 🎨 **Modern UI** - Responsive design with Ionic components
-- 🔒 **Security** - Privy integration for secure authentication
-- 🌐 **Multi-network** - Support for mainnet, testnet, devnet
+- **Multi-platform Wallet Management** - Support for email authorization via Privy and demo wallets
+- **Transaction Management** - Send SOL, calculate fees, transaction history
+- **Token Operations** - Get balances, transfer SPL tokens
+- **Cross-platform** - iOS, Android and web via Ionic/Capacitor
+- **Modern UI** - Responsive design with Ionic components
+- **Security** - Privy integration for secure authentication
+- **Multi-network** - Support for mainnet, testnet, devnet
 
 ## 📁 Project Architecture
 
 ```
 src/
-├── sdk/                    # Core SDK
+├── sdk/                   # Core SDK
 │   ├── SolanaSDK.ts       # Main SDK class
 │   ├── wallet.ts          # Wallet management
 │   ├── transaction.ts     # Transactions
@@ -107,7 +107,7 @@ pod --version
 
 ```bash
 # Clone repository
-git clone https://github.com/your-repo/solana-mobile-sdk.git
+git clone brookunn/solana_mobile_vibe_kit.git
 cd solana-mobile-sdk
 
 # Install dependencies
@@ -400,7 +400,7 @@ npx cap build android
 
 ```
 my-solana-sdk/
-├── android/           # Android native part
+├── android/          # Android native part
 ├── ios/              # iOS native part
 ├── public/           # Static files
 ├── src/              # Source code
@@ -532,10 +532,6 @@ class SolanaWalletManager {
 
 Distributed under the MIT License. See `LICENSE` for details.
 
-## 👥 Authors
-
-- **Your Name** - *Lead Developer* - [@your-github](https://github.com/your-github)
-
 ## 🙏 Acknowledgments
 
 - [Solana Labs](https://solana.com/) - For the amazing blockchain
@@ -558,7 +554,3 @@ Distributed under the MIT License. See `LICENSE` for details.
 - [Capacitor Docs](https://capacitorjs.com/docs)
 - [Privy Docs](https://docs.privy.io/)
 - [React Docs](https://reactjs.org/docs)
-
----
-
-**Built with ❤️ for the Solana ecosystem** 
