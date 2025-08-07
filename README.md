@@ -1,4 +1,4 @@
-# Solana Mobile SDK
+# Solana Mobile Vibe Kit
 
 > **Comprehensive SDK for developing mobile Solana applications using Ionic, Capacitor, React and Privy integration**
 
