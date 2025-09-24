@@ -183,7 +183,10 @@ http://ionicframework.com/docs/theming/ */
 
     --ion-card-background: #1c1c1d;
   }
-
+  ion-content, .ion-page {
+    --background: transparent !important;
+    background: transparent !important;
+  }
   .ios ion-modal {
     --ion-background-color: var(--ion-color-step-100);
     --ion-toolbar-background: var(--ion-color-step-150);

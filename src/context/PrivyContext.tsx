@@ -1,5 +1,8 @@
-import React, { createContext, useContext, ReactNode } from 'react';
-import { PrivyProvider as PrivyProviderBase, usePrivy } from '@privy-io/react-auth';
+import React, { createContext, useContext, ReactNode } from "react";
+import {
+  PrivyProvider as PrivyProviderBase,
+  usePrivy,
+} from "@privy-io/react-auth";
 
 interface PrivyContextType {
   login: () => void;
@@ -19,17 +22,15 @@ const PrivyAuthWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { login, logout, authenticated, user, ready } = usePrivy();
 
   const value: PrivyContextType = {
-    login: () => login({ loginMethods: ['email'] }),
+    login: () => login({ loginMethods: ["email", "wallet"] }),
     logout,
     authenticated,
     user,
-    ready
+    ready,
   };
 
   return (
-    <PrivyContext.Provider value={value}>
-      {children}
-    </PrivyContext.Provider>
+    <PrivyContext.Provider value={value}>{children}</PrivyContext.Provider>
   );
 };
 
@@ -39,13 +40,13 @@ export const PrivyProvider: React.FC<PrivyProviderProps> = ({ children }) => {
       appId="cmbf1wlvo00d7jm0no9hnu50a"
       config={{
         appearance: {
-          theme: 'light',
-          accentColor: '#676FFF',
-          logo: 'https://your-logo-url.com/logo.png',
+          theme: "light",
+          accentColor: "#676FFF",
+          logo: "https://your-logo-url.com/logo.png",
         },
-        loginMethods: ['email'],
+        loginMethods: ["email", "wallet", "sms", "apple"],
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
+          createOnLogin: "users-without-wallets",
         },
       }}
     >
@@ -57,7 +58,7 @@ export const PrivyProvider: React.FC<PrivyProviderProps> = ({ children }) => {
 export const usePrivyAuth = (): PrivyContextType => {
   const context = useContext(PrivyContext);
   if (context === undefined) {
-    throw new Error('usePrivyAuth must be used within a PrivyProvider');
+    throw new Error("usePrivyAuth must be used within a PrivyProvider");
   }
   return context;
-}; 
+};

@@ -1,0 +1,381 @@
+/* Wallet Content */
+.walletContent {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Wallet Container */
+.walletContainer {
+    padding: 20px;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* Connection Banner */
+.connectionBanner {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    margin: 20px 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.connectionBanner h2 {
+    margin: 0 0 16px 0;
+    color: white;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.connectionBanner p {
+    margin: 0 0 20px 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+}
+
+/* Wallet Card */
+.walletCard {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 16px;
+}
+
+/* Balance Section */
+.balanceSection {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+    margin-bottom: 24px;
+}
+
+.balanceLabel {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.balanceAmount {
+    font-size: 36px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.balanceUsd {
+    font-size: 16px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Wallet Info */
+.walletInfo {
+    background: rgba(249, 250, 251, 0.8);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.walletAddress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.walletAddressLabel {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.walletAddressValue {
+    font-size: 14px;
+    color: #111827;
+    font-weight: 600;
+    font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.copyButton {
+    --color: #3b82f6;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    height: 32px;
+}
+
+.networkInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.networkLabel {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.networkChip {
+    height: 24px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Action Buttons */
+.actionButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.actionButton {
+    height: 48px;
+    --border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.actionButton.primary {
+    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.actionButton.secondary {
+    --background: rgba(249, 250, 251, 0.9);
+    --color: #374151;
+    --border-color: #d1d5db;
+    --border-width: 1px;
+}
+
+.actionButton:hover {
+    transform: translateY(-1px);
+}
+
+/* Login Section */
+.loginSection {
+    text-align: center;
+    padding: 32px 0;
+}
+
+.loginTitle {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.loginSubtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 24px;
+}
+
+.loginButton {
+    --background: rgba(255, 255, 255, 0.9);
+    --color: #374151;
+    --border-radius: 16px;
+    height: 56px;
+    font-size: 18px;
+    font-weight: 600;
+    min-width: 200px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.loginButton:hover {
+    --background: white;
+    transform: translateY(-1px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* User Info Card */
+.userInfoCard {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 16px;
+}
+
+.userHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.userAvatar {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-right: 16px;
+}
+
+.userDetails h3 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.userDetails p {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* Quick Actions */
+.quickActions {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.quickActionsTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 16px;
+}
+
+.quickActionsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.quickActionItem {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quickActionItem:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.quickActionIcon {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.quickActionLabel {
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .walletContainer {
+        padding: 16px;
+    }
+
+    .walletCard, .userInfoCard {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .balanceAmount {
+        font-size: 28px;
+    }
+
+    .actionButtons {
+        grid-template-columns: 1fr;
+    }
+
+    .quickActionsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .walletCard, .userInfoCard {
+        background: rgba(31, 41, 55, 0.95);
+        border: 1px solid rgba(75, 85, 99, 0.3);
+    }
+
+    .balanceAmount {
+        color: #f3f4f6;
+    }
+
+    .walletInfo {
+        background: rgba(55, 65, 81, 0.8);
+        border-color: rgba(75, 85, 99, 0.8);
+    }
+
+    .walletAddressValue {
+        color: #f3f4f6;
+    }
+
+    .walletAddressLabel,
+    .networkLabel,
+    .balanceLabel,
+    .balanceUsd {
+        color: #9ca3af;
+    }
+
+    .actionButton.secondary {
+        --background: #374151;
+        --color: #f3f4f6;
+        --border-color: #4b5563;
+    }
+
+    .userDetails h3 {
+        color: #f3f4f6;
+    }
+
+    .userDetails p {
+        color: #9ca3af;
+    }
+
+    .loginButton {
+        --background: rgba(31, 41, 55, 0.9);
+        --color: #f3f4f6;
+    }
+}
+
+/* Loading States */
+.loadingShimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}

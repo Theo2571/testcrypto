@@ -83,7 +83,6 @@
   background: rgba(249, 250, 251, 0.8);
   border-radius: 12px;
   padding: 16px;
-  margin-bottom: 24px;
   border: 1px solid rgba(229, 231, 235, 0.8);
 }
 
@@ -112,6 +111,33 @@
   --padding-start: 8px;
   --padding-end: 8px;
   height: 32px;
+}
+/* карточки */
+.user-card, .profile-card {
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+}
+
+.user-avatar {
+  width: 40px; height: 40px;
+  border-radius: 999px;
+  display: grid; place-items: center;
+  background: rgba(99,102,241,.15);
+}
+
+.wallet-row { margin-top: 4px; }
+.wallet-chip {
+  display:flex; justify-content:space-between;
+  padding:10px 12px; border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  background: rgba(255,255,255,.04);
+}
+.wallet-chip .chip-label { opacity:.8; font-size:12px; }
+.wallet-chip .chip-value { font-weight:600; }
+
+.profile-actions {
+  display:flex; gap:12px; margin-top:16px;
 }
 
 .network-info {
@@ -318,64 +344,62 @@
 }
 
 /* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .wallet-card, .user-info-card {
-    background: rgba(31, 41, 55, 0.95);
-    border: 1px solid rgba(75, 85, 99, 0.3);
-  }
-  
-  .balance-amount {
-    color: #f3f4f6;
-  }
-  
-  .wallet-info {
-    background: rgba(55, 65, 81, 0.8);
-    border-color: rgba(75, 85, 99, 0.8);
-  }
-  
-  .wallet-address-value {
-    color: #f3f4f6;
-  }
-  
-  .wallet-address-label,
-  .network-label,
-  .balance-label,
-  .balance-usd {
-    color: #9ca3af;
-  }
-  
-  .action-button.secondary {
-    --background: #374151;
-    --color: #f3f4f6;
-    --border-color: #4b5563;
-  }
-  
-  .user-details h3 {
-    color: #f3f4f6;
-  }
-  
-  .user-details p {
-    color: #9ca3af;
-  }
-  
-  .login-button {
-    --background: rgba(31, 41, 55, 0.9);
-    --color: #f3f4f6;
-  }
+body.dark-mode .wallet-content {
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
+  --background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
 }
 
-/* Loading States */
-.loading-shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+body.dark-mode .wallet-card,
+body.dark-mode .user-info-card {
+  background: rgba(31, 41, 55, 0.95);
+  border: 1px solid rgba(75, 85, 99, 0.3);
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+body.dark-mode .connection-banner {
+  background: rgba(31, 41, 55, 0.9);
+  border: 1px solid rgba(55, 65, 81, 0.8);
+}
+
+body.dark-mode .quick-actions {
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(55, 65, 81, 0.6);
+}
+
+body.dark-mode .quick-action-item {
+  background: rgba(55, 65, 81, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+}
+
+body.dark-mode .quick-action-item:hover {
+  background: rgba(75, 85, 99, 0.8);
+}
+
+body.dark-mode .balance-amount {
+  color: #f3f4f6;
+  background: none;
+  -webkit-text-fill-color: initial;
+}
+
+body.dark-mode .balance-label,
+body.dark-mode .balance-usd,
+body.dark-mode .wallet-address-label,
+body.dark-mode .network-label,
+body.dark-mode .user-details p {
+  color: #9ca3af;
+}
+
+body.dark-mode .user-details h3,
+body.dark-mode .quick-actions-title,
+body.dark-mode .quick-action-label {
+  color: #f3f4f6;
+}
+
+body.dark-mode .quick-action-icon {
+  color: #f3f4f6;
+}
+
+body.dark-mode .action-button.secondary {
+  --background: #374151;
+  --color: #f3f4f6;
+  --border-color: #4b5563;
 }

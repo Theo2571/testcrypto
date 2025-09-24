@@ -3,12 +3,24 @@ import React from "react";
 import { SearchBar } from "antd-mobile";
 import { useTheme } from "../../context/ThemeContext";
 
-const Search: React.FC = () => {
+interface Props {
+  value: string;
+  onChange: (v: string) => void;
+  onClear?: () => void;
+}
+
+const Search: React.FC<Props> = ({ value, onChange, onClear }) => {
   const { theme } = useTheme();
   return (
     <div style={{ marginBottom: 16 }}>
       <SearchBar
-        placeholder="Search tokens..."
+        value={value}
+        placeholder="Поиск "
+        onChange={onChange}
+        onClear={() => {
+          onClear?.();
+          onChange("");
+        }}
         style={{
           "--background": theme.surface,
           "--placeholder-color": theme.secondary,
