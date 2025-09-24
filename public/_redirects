@@ -1,1 +1,2 @@
-/api/*  https://launch.meme/api/:splat  200
+/api/*     https://launch.meme/api/:splat   200
+/*         /index.html                      200
