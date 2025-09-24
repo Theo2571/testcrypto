@@ -429,7 +429,7 @@ const Tab1: React.FC = () => {
                 <IonLabel position="stacked">Name</IonLabel>
                 <IonInput
                   value={name}
-                  placeholder="e.g. matveyDev"
+                  placeholder="Name"
                   onIonChange={(e) => setName(e.detail.value!)}
                 />
               </IonItem>
