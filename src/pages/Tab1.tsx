@@ -33,7 +33,10 @@ import { shortenAddress } from "../sdk/utils";
 import { useTheme } from "../context/ThemeContext";
 import "./Tab1.css";
 
-const api = axios.create({ baseURL: "/api", timeout: 20000 });
+const api = axios.create({
+  baseURL: "https://launch.meme/api",
+  timeout: 20000,
+});
 
 api.defaults.withCredentials = true;
 

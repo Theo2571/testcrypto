@@ -14,7 +14,9 @@ build/
 .vercel/
 
 # Local env files
-
+.env
+.env.local
+.env.*.local
 
 # Editor folders/files
 .vscode/

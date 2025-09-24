@@ -11,6 +11,7 @@ import { useTokens } from "../../hooks/useTokens";
 import CreateMemeModal from "../../components/CreateMeme/CreateMemeModal/CreateMemeModal";
 import { mockTokens } from "../../moc/mockTokens";
 import RewardsSection from "../../components/RewardsSection";
+import PortfolioTable from "../../components/Portfolio/PortfolioTable";
 
 const LS_KEY = "launchpad:main:searchQuery";
 
@@ -100,12 +101,7 @@ const MainPage: React.FC = () => {
           {activeView === "portfolio" && (
             <div>
               <h2 style={{ marginBottom: 16 }}>Portfolio</h2>
-              <TokenTable
-                tokens={mockTokens}
-                theme={theme}
-                darkMode={darkMode}
-              />{" "}
-              {/* 👈 моки */}
+              <PortfolioTable />
             </div>
           )}
 
