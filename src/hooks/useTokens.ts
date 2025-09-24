@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { mapTokenFromApi, mapTokenFromWs } from "../utils/mapTokenFromApi";
 
-const API_URL = "https://launch.meme/api";
+const API_URL = "/api";
 const WS_URL = "wss://launch.meme/connection/websocket?format=json";
 const TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMiLCJpYXQiOjE3NTcxNjY4ODh9.VEvlNmvIFS3ARM5R0jlNN4fwDDRz94WnKv8LDmtipNE";

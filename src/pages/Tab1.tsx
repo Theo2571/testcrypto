@@ -34,7 +34,7 @@ import { useTheme } from "../context/ThemeContext";
 import "./Tab1.css";
 
 const api = axios.create({
-  baseURL: "https://launch.meme/api",
+  baseURL: "/api",
   timeout: 20000,
 });
 
