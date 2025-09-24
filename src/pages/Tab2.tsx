@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   IonContent,
   IonHeader,
@@ -19,8 +19,8 @@ import {
   IonItem,
   IonSpinner,
   IonText,
-  IonSkeletonText
-} from '@ionic/react';
+  IonSkeletonText,
+} from "@ionic/react";
 import {
   refresh,
   send,
@@ -28,15 +28,15 @@ import {
   close,
   wallet,
   trendingUp,
-  swapHorizontal
-} from 'ionicons/icons';
-import { useSolana } from '../context/SolanaContext';
-import { usePrivyAuth } from '../context/PrivyContext';
-import { usePrivySolana } from '../hooks/usePrivySolana';
-import { TokenBalance, TokenInfo } from '../sdk/types';
-import { formatTokenAmount } from '../sdk/utils';
-import { PublicKey } from '@solana/web3.js';
-import './Tab2.css';
+  swapHorizontal,
+} from "ionicons/icons";
+import { useSolana } from "../context/SolanaContext";
+import { usePrivyAuth } from "../context/PrivyContext";
+import { usePrivySolana } from "../hooks/usePrivySolana";
+import { TokenBalance, TokenInfo } from "../sdk/types";
+import { formatTokenAmount } from "../sdk/utils";
+import { PublicKey } from "@solana/web3.js";
+import "./Tab2.css";
 
 const Tab2: React.FC = () => {
   const { sdk, walletState } = useSolana();
@@ -46,48 +46,51 @@ const Tab2: React.FC = () => {
   const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
   const [popularTokens, setPopularTokens] = useState<TokenInfo[]>([]);
   const [searchResults, setSearchResults] = useState<TokenInfo[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showAddTokenModal, setShowAddTokenModal] = useState(false);
   const [showSendTokenModal, setShowSendTokenModal] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenBalance | null>(null);
-  const [sendAddress, setSendAddress] = useState('');
-  const [sendAmount, setSendAmount] = useState('');
-  const [newTokenAddress, setNewTokenAddress] = useState('');
+  const [sendAddress, setSendAddress] = useState("");
+  const [sendAmount, setSendAmount] = useState("");
+  const [newTokenAddress, setNewTokenAddress] = useState("");
   const [isLoadingBalances, setIsLoadingBalances] = useState(false);
 
   // Popular tokens with real balance fetching
   const mockPopularTokens: TokenInfo[] = [
     {
-      symbol: 'USDC',
-      name: 'USD Coin',
-      mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      symbol: "USDC",
+      name: "USD Coin",
+      mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       decimals: 6,
-      logoUri: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png'
+      logoUri:
+        "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png",
     },
     {
-      symbol: 'USDT',
-      name: 'Tether USD',
-      mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+      symbol: "USDT",
+      name: "Tether USD",
+      mint: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
       decimals: 6,
-      logoUri: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.png'
+      logoUri:
+        "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.png",
     },
     {
-      symbol: 'BONK',
-      name: 'Bonk',
-      mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+      symbol: "BONK",
+      name: "Bonk",
+      mint: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
       decimals: 5,
-      logoUri: 'https://arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I'
+      logoUri:
+        "https://arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I",
     },
     {
-      symbol: 'JUP',
-      name: 'Jupiter',
-      mint: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+      symbol: "JUP",
+      name: "Jupiter",
+      mint: "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
       decimals: 6,
-      logoUri: 'https://static.jup.ag/jup/icon.png'
-    }
+      logoUri: "https://static.jup.ag/jup/icon.png",
+    },
   ];
 
   // Function to fetch SOL balance
@@ -95,42 +98,47 @@ const Tab2: React.FC = () => {
     try {
       const connection = sdk?.wallet?.getConnection();
       if (!connection) return 0;
-      
+
       const publicKey = new PublicKey(walletAddress);
       const balance = await connection.getBalance(publicKey);
       return balance / 1e9; // Convert lamports to SOL
     } catch (error) {
-      console.error('Error fetching SOL balance:', error);
+      console.error("Error fetching SOL balance:", error);
       return 0;
     }
   };
 
   // Function to fetch token balance for a specific mint
-  const fetchTokenBalance = async (walletAddress: string, mintAddress: string, decimals: number): Promise<number> => {
+  const fetchTokenBalance = async (
+    walletAddress: string,
+    mintAddress: string,
+    decimals: number,
+  ): Promise<number> => {
     try {
       const connection = sdk?.wallet?.getConnection();
       if (!connection) return 0;
-      
+
       const walletPublicKey = new PublicKey(walletAddress);
       const mintPublicKey = new PublicKey(mintAddress);
-      
+
       // Get token accounts for this mint
       const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
         walletPublicKey,
-        { mint: mintPublicKey }
+        { mint: mintPublicKey },
       );
-      
+
       if (tokenAccounts.value.length === 0) {
         return 0;
       }
-      
+
       // Sum all token account balances for this mint
       let totalBalance = 0;
       for (const account of tokenAccounts.value) {
-        const balance = account.account.data.parsed.info.tokenAmount.uiAmount || 0;
+        const balance =
+          account.account.data.parsed.info.tokenAmount.uiAmount || 0;
         totalBalance += balance;
       }
-      
+
       return totalBalance;
     } catch (error) {
       console.error(`Error fetching token balance for ${mintAddress}:`, error);
@@ -156,52 +164,58 @@ const Tab2: React.FC = () => {
     setIsLoading(true);
     setIsLoadingBalances(true);
     const walletAddress = walletState.publicKey.toString();
-    
+
     try {
       // Create SOL balance entry
       const solBalance = await fetchSolBalance(walletAddress);
       const solTokenBalance: TokenBalance = {
-        mint: 'So11111111111111111111111111111111111111112',
+        mint: "So11111111111111111111111111111111111111112",
         amount: (solBalance * 1e9).toString(),
         decimals: 9,
         uiAmount: solBalance,
         tokenInfo: {
-          mint: 'So11111111111111111111111111111111111111112',
-          symbol: 'SOL',
-          name: 'Solana',
+          mint: "So11111111111111111111111111111111111111112",
+          symbol: "SOL",
+          name: "Solana",
           decimals: 9,
-          logoUri: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'
-        }
+          logoUri:
+            "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
+        },
       };
 
       // Fetch token balances for popular tokens
       const tokenBalancesPromises = mockPopularTokens.map(async (token) => {
-        const balance = await fetchTokenBalance(walletAddress, token.mint, token.decimals);
-        
+        const balance = await fetchTokenBalance(
+          walletAddress,
+          token.mint,
+          token.decimals,
+        );
+
         if (balance > 0) {
           return {
             mint: token.mint,
             amount: (balance * Math.pow(10, token.decimals)).toString(),
             decimals: token.decimals,
             uiAmount: balance,
-            tokenInfo: token
+            tokenInfo: token,
           };
         }
         return null;
       });
 
       const resolvedTokenBalances = await Promise.all(tokenBalancesPromises);
-      const validTokenBalances = resolvedTokenBalances.filter(Boolean) as TokenBalance[];
+      const validTokenBalances = resolvedTokenBalances.filter(
+        Boolean,
+      ) as TokenBalance[];
 
       // Combine SOL balance with token balances
       const allBalances = [solTokenBalance, ...validTokenBalances];
-      
+
       setTokenBalances(allBalances);
       setPopularTokens(mockPopularTokens);
-      
     } catch (error) {
-      console.error('Failed to load token data:', error);
-      showToastMessage('Failed to load token data');
+      console.error("Failed to load token data:", error);
+      showToastMessage("Failed to load token data");
     } finally {
       setIsLoading(false);
       setIsLoadingBalances(false);
@@ -216,9 +230,10 @@ const Tab2: React.FC = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
-      const filtered = popularTokens.filter(token =>
-        token.symbol.toLowerCase().includes(query.toLowerCase()) ||
-        token.name.toLowerCase().includes(query.toLowerCase())
+      const filtered = popularTokens.filter(
+        (token) =>
+          token.symbol.toLowerCase().includes(query.toLowerCase()) ||
+          token.name.toLowerCase().includes(query.toLowerCase()),
       );
       setSearchResults(filtered);
     } else {
@@ -228,37 +243,39 @@ const Tab2: React.FC = () => {
 
   const handleAddToken = async () => {
     if (!newTokenAddress.trim()) {
-      showToastMessage('Please enter a token address');
+      showToastMessage("Please enter a token address");
       return;
     }
 
     try {
       // In a real app, you would validate and add the token
-      showToastMessage('Token added successfully!');
+      showToastMessage("Token added successfully!");
       setShowAddTokenModal(false);
-      setNewTokenAddress('');
+      setNewTokenAddress("");
       await loadTokenData();
     } catch (error) {
-      showToastMessage('Failed to add token');
+      showToastMessage("Failed to add token");
     }
   };
 
   const handleSendToken = async () => {
     if (!selectedToken || !sendAddress.trim() || !sendAmount.trim()) {
-      showToastMessage('Please fill in all fields');
+      showToastMessage("Please fill in all fields");
       return;
     }
 
     try {
       // In a real app, you would send the token transaction
-      showToastMessage(`Sent ${sendAmount} ${selectedToken.tokenInfo?.symbol} successfully!`);
+      showToastMessage(
+        `Sent ${sendAmount} ${selectedToken.tokenInfo?.symbol} successfully!`,
+      );
       setShowSendTokenModal(false);
-      setSendAddress('');
-      setSendAmount('');
+      setSendAddress("");
+      setSendAmount("");
       setSelectedToken(null);
       await loadTokenData();
     } catch (error) {
-      showToastMessage('Failed to send token');
+      showToastMessage("Failed to send token");
     }
   };
 
@@ -272,18 +289,27 @@ const Tab2: React.FC = () => {
     return tokenBalances.reduce((total, token) => {
       const amount = parseFloat(token.amount) / Math.pow(10, token.decimals);
       let mockPrice = 0;
-      
+
       // Use more realistic mock prices
       switch (token.tokenInfo?.symbol) {
-        case 'SOL': mockPrice = 180; break;
-        case 'USDC': 
-        case 'USDT': mockPrice = 1; break;
-        case 'BONK': mockPrice = 0.000025; break;
-        case 'JUP': mockPrice = 0.75; break;
-        default: mockPrice = 0.1;
+        case "SOL":
+          mockPrice = 180;
+          break;
+        case "USDC":
+        case "USDT":
+          mockPrice = 1;
+          break;
+        case "BONK":
+          mockPrice = 0.000025;
+          break;
+        case "JUP":
+          mockPrice = 0.75;
+          break;
+        default:
+          mockPrice = 0.1;
       }
-      
-      return total + (amount * mockPrice);
+
+      return total + amount * mockPrice;
     }, 0);
   };
 
@@ -300,36 +326,47 @@ const Tab2: React.FC = () => {
         </div>
       ) : (
         <div className="token-placeholder">
-          {token.tokenInfo?.symbol?.[0] || '?'}
+          {token.tokenInfo?.symbol ? token.tokenInfo.symbol[0] : "?"}
         </div>
       )}
-      
+
       <div className="token-info">
-        <h3 className="token-symbol">{token.tokenInfo?.symbol || 'Unknown'}</h3>
-        <p className="token-name">{token.tokenInfo?.name || 'Unknown Token'}</p>
+        <h3 className="token-symbol">{token.tokenInfo?.symbol || "Unknown"}</h3>
+        <p className="token-name">{token.tokenInfo?.name || "Unknown Token"}</p>
       </div>
-      
+
       <div className="token-balance">
         <div className="token-amount">
           {formatTokenAmount(token.amount, token.decimals)}
         </div>
         <div className="token-value">
-          ≈ ${(() => {
-            const amount = parseFloat(token.amount) / Math.pow(10, token.decimals);
+          ≈ $
+          {(() => {
+            const amount =
+              parseFloat(token.amount) / Math.pow(10, token.decimals);
             let mockPrice = 0;
             switch (token.tokenInfo?.symbol) {
-              case 'SOL': mockPrice = 180; break;
-              case 'USDC': 
-              case 'USDT': mockPrice = 1; break;
-              case 'BONK': mockPrice = 0.000025; break;
-              case 'JUP': mockPrice = 0.75; break;
-              default: mockPrice = 0.1;
+              case "SOL":
+                mockPrice = 180;
+                break;
+              case "USDC":
+              case "USDT":
+                mockPrice = 1;
+                break;
+              case "BONK":
+                mockPrice = 0.000025;
+                break;
+              case "JUP":
+                mockPrice = 0.75;
+                break;
+              default:
+                mockPrice = 0.1;
             }
             return (amount * mockPrice).toFixed(2);
           })()}
         </div>
       </div>
-      
+
       <div className="token-actions">
         <IonButton
           className="token-action-button"
@@ -341,7 +378,7 @@ const Tab2: React.FC = () => {
         <IonButton
           className="token-action-button"
           fill="clear"
-          onClick={() => showToastMessage('Swap coming soon!')}
+          onClick={() => showToastMessage("Swap coming soon!")}
         >
           <IonIcon icon={swapHorizontal} />
         </IonButton>
@@ -349,7 +386,7 @@ const Tab2: React.FC = () => {
     </div>
   );
 
-  const renderLoadingItems = () => (
+  const renderLoadingItems = () =>
     Array.from({ length: 3 }, (_, index) => (
       <div key={index} className="loading-item">
         <IonSkeletonText className="loading-avatar" animated />
@@ -358,8 +395,7 @@ const Tab2: React.FC = () => {
           <IonSkeletonText className="loading-text long" animated />
         </div>
       </div>
-    ))
-  );
+    ));
 
   const renderEmptyState = () => (
     <div className="empty-state">
@@ -380,7 +416,11 @@ const Tab2: React.FC = () => {
           <IonTitle>Tokens</IonTitle>
           <IonButtons slot="end">
             {walletState.connected && (
-              <IonButton fill="clear" onClick={loadTokenData} disabled={isLoading || isLoadingBalances}>
+              <IonButton
+                fill="clear"
+                onClick={loadTokenData}
+                disabled={isLoading || isLoadingBalances}
+              >
                 <IonIcon icon={refresh} />
               </IonButton>
             )}
@@ -424,7 +464,10 @@ const Tab2: React.FC = () => {
                   <div className="stat-item">
                     <div className="stat-value">
                       {isLoadingBalances ? (
-                        <IonSpinner name="dots" style={{ width: '20px', height: '20px' }} />
+                        <IonSpinner
+                          name="dots"
+                          style={{ width: "20px", height: "20px" }}
+                        />
                       ) : (
                         tokenBalances.length
                       )}
@@ -434,7 +477,10 @@ const Tab2: React.FC = () => {
                   <div className="stat-item">
                     <div className="stat-value">
                       {isLoadingBalances ? (
-                        <IonSpinner name="dots" style={{ width: '20px', height: '20px' }} />
+                        <IonSpinner
+                          name="dots"
+                          style={{ width: "20px", height: "20px" }}
+                        />
                       ) : (
                         `$${calculateTotalValue().toFixed(2)}`
                       )}
@@ -460,7 +506,7 @@ const Tab2: React.FC = () => {
                     Add Token
                   </IonButton>
                 </div>
-                
+
                 <IonSearchbar
                   className="token-searchbar"
                   value={searchQuery}
@@ -476,20 +522,21 @@ const Tab2: React.FC = () => {
                   <h2 className="token-list-title">Your Tokens</h2>
                   <span className="token-count">
                     {isLoadingBalances ? (
-                      <IonSpinner name="dots" style={{ width: '12px', height: '12px' }} />
+                      <IonSpinner
+                        name="dots"
+                        style={{ width: "12px", height: "12px" }}
+                      />
                     ) : (
                       `${tokenBalances.length} tokens`
                     )}
                   </span>
                 </div>
 
-                {isLoading || isLoadingBalances ? (
-                  renderLoadingItems()
-                ) : tokenBalances.length > 0 ? (
-                  tokenBalances.map(renderTokenItem)
-                ) : (
-                  renderEmptyState()
-                )}
+                {isLoading || isLoadingBalances
+                  ? renderLoadingItems()
+                  : tokenBalances.length > 0
+                    ? tokenBalances.map(renderTokenItem)
+                    : renderEmptyState()}
               </div>
 
               {/* Popular Tokens */}
@@ -501,9 +548,13 @@ const Tab2: React.FC = () => {
                       <div
                         key={token.mint}
                         className="popular-token-item"
-                        onClick={() => showToastMessage(`Add ${token.symbol} coming soon!`)}
+                        onClick={() =>
+                          showToastMessage(`Add ${token.symbol} coming soon!`)
+                        }
                       >
-                        <div className="popular-token-symbol">{token.symbol}</div>
+                        <div className="popular-token-symbol">
+                          {token.symbol}
+                        </div>
                         <div className="popular-token-name">{token.name}</div>
                       </div>
                     ))}
@@ -516,16 +567,20 @@ const Tab2: React.FC = () => {
                 <div className="popular-tokens">
                   <div className="popular-tokens-title">Popular Tokens</div>
                   <div className="popular-grid">
-                                      {popularTokens.map((token) => (
-                    <div
-                      key={token.mint}
-                      className="popular-token-item"
-                      onClick={() => showToastMessage(`Add ${token.symbol} coming soon!`)}
-                    >
-                      <div className="popular-token-symbol">{token.symbol}</div>
-                      <div className="popular-token-name">{token.name}</div>
-                    </div>
-                  ))}
+                    {popularTokens.map((token) => (
+                      <div
+                        key={token.mint}
+                        className="popular-token-item"
+                        onClick={() =>
+                          showToastMessage(`Add ${token.symbol} coming soon!`)
+                        }
+                      >
+                        <div className="popular-token-symbol">
+                          {token.symbol}
+                        </div>
+                        <div className="popular-token-name">{token.name}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -534,7 +589,10 @@ const Tab2: React.FC = () => {
         </div>
 
         {/* Add Token Modal */}
-        <IonModal isOpen={showAddTokenModal} onDidDismiss={() => setShowAddTokenModal(false)}>
+        <IonModal
+          isOpen={showAddTokenModal}
+          onDidDismiss={() => setShowAddTokenModal(false)}
+        >
           <IonHeader>
             <IonToolbar>
               <IonTitle>Add Token</IonTitle>
@@ -556,13 +614,13 @@ const Tab2: React.FC = () => {
                     placeholder="Enter token mint address"
                   />
                 </IonItem>
-                
+
                 <IonButton
                   className="add-token-button"
                   onClick={handleAddToken}
                   disabled={!newTokenAddress.trim()}
                   expand="block"
-                  style={{ marginTop: '20px' }}
+                  style={{ marginTop: "20px" }}
                 >
                   <IonIcon icon={add} slot="start" />
                   Add Token
@@ -573,7 +631,10 @@ const Tab2: React.FC = () => {
         </IonModal>
 
         {/* Send Token Modal */}
-        <IonModal isOpen={showSendTokenModal} onDidDismiss={() => setShowSendTokenModal(false)}>
+        <IonModal
+          isOpen={showSendTokenModal}
+          onDidDismiss={() => setShowSendTokenModal(false)}
+        >
           <IonHeader>
             <IonToolbar>
               <IonTitle>Send {selectedToken?.tokenInfo?.symbol}</IonTitle>
@@ -604,23 +665,35 @@ const Tab2: React.FC = () => {
                     placeholder="0.00"
                   />
                 </IonItem>
-                
+
                 {selectedToken && (
-                  <div style={{ margin: '16px 0', padding: '12px', background: '#f8f9fa', borderRadius: '8px' }}>
+                  <div
+                    style={{
+                      margin: "16px 0",
+                      padding: "12px",
+                      background: "#f8f9fa",
+                      borderRadius: "8px",
+                    }}
+                  >
                     <IonText>
-                      <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
-                        Available: {formatTokenAmount(selectedToken.amount, selectedToken.decimals)} {selectedToken.tokenInfo?.symbol}
+                      <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
+                        Available:{" "}
+                        {formatTokenAmount(
+                          selectedToken.amount,
+                          selectedToken.decimals,
+                        )}{" "}
+                        {selectedToken.tokenInfo?.symbol}
                       </p>
                     </IonText>
                   </div>
                 )}
-                
+
                 <IonButton
                   className="add-token-button"
                   onClick={handleSendToken}
                   disabled={!sendAddress.trim() || !sendAmount.trim()}
                   expand="block"
-                  style={{ marginTop: '20px' }}
+                  style={{ marginTop: "20px" }}
                 >
                   <IonIcon icon={send} slot="start" />
                   Send Token

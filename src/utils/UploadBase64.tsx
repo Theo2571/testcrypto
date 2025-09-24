@@ -9,7 +9,7 @@ const UploadBase64: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files ? e.target.files[0] : undefined;
     if (!file) return;
 
     const reader = new FileReader();
