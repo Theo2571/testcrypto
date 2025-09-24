@@ -176,7 +176,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCreateClick, onSelectView }) => {
         </div>
       }
     >
-      {isMobile ? "🚀" : "🚀 LaunchPad"}
+      {isMobile ? "🚀" : "🚀 Возьмите-На-Работу.ком"}
     </NavBar>
   );
 };

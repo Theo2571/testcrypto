@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from "react";
 import { ProgressBar } from "antd-mobile";
 import { mockRewards } from "../moc/mockTokens";

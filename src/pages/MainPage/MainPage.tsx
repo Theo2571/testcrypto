@@ -65,7 +65,6 @@ const MainPage: React.FC = () => {
         : [],
     [tokens, debounced],
   );
-  console.log(activeView, "activeView");
   return (
     <IonPage>
       <IonContent fullscreen>
