@@ -158,7 +158,9 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       }
       right={
-        <div style={{ display: "flex", gap: S.gap, alignItems: "center" }}>
+        <div
+          style={{ display: "flex", gap: S.gap, justifyContent: "flex-end" }}
+        >
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
@@ -202,25 +204,29 @@ const Navbar: React.FC<NavbarProps> = ({
 
           {/* Auth/Profile */}
           {!authenticated && ready && (
-            <IonButton
-              className="nb__login"
+            <button
               onClick={login}
-              style={
-                {
-                  "--padding-start": "10px",
-                  "--padding-end": "12px",
-                  "--border-radius": "12px",
-                  height: `${S.height}px`,
-                  fontSize: S.font,
-                  border: "1px solid rgba(255,255,255,0.25)",
-                  background: "rgba(255,255,255,0.14)",
-                  color: textColor,
-                } as any
-              }
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                padding: S.btnPad,
+                height: S.height,
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,0.25)",
+                background: "rgba(59,130,246,0.9)", // яркая кнопка
+                color: "#fff",
+                fontSize: S.font,
+                fontWeight: 600,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+                transition: "all 0.2s ease",
+              }}
             >
-              <IonIcon icon={mail} slot="start" />
+              <IonIcon icon={mail} style={{ fontSize: S.icon }} />
               {!isMobile && "Login"}
-            </IonButton>
+            </button>
           )}
 
           {authenticated && (
