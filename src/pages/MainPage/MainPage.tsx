@@ -73,44 +73,59 @@ const MainPage: React.FC = () => {
           style={{
             minHeight: "100vh",
             backgroundColor: theme.background,
-            color: theme.text,
-            padding: "20px 16px",
-            boxSizing: "border-box",
-            transition: "background-color 0.4s ease, color 0.4s ease",
+            transition: "all 0.3s ease", // ✅ плавность смены темы
           }}
         >
-          <Navbar
-            onCreateClick={() => setShowCreate(true)}
-            onSelectView={setActiveView}
-          />
+          <div
+            style={{
+              maxWidth: "1200px",
+              color: theme.text,
+              padding: "16px",
+              margin: "0 auto",
+              boxSizing: "border-box",
+              transition: "all 0.3s ease", // ✅ плавный цвет текста и элементов
+            }}
+          >
+            <Navbar
+              onCreateClick={() => setShowCreate(true)}
+              onSelectView={setActiveView}
+            />
 
-          {/* ===== PROFILE ===== */}
-          {activeView === "home" && (
-            <>
-              <Search
-                value={query}
-                onChange={setQuery}
-                onClear={() => setQuery("")}
-              />
-              <TokenTable tokens={filtered} theme={theme} darkMode={darkMode} />
-              <TokenList tokens={filtered} theme={theme} darkMode={darkMode} />
-            </>
-          )}
+            {/* ===== PROFILE ===== */}
+            {activeView === "home" && (
+              <>
+                <Search
+                  value={query}
+                  onChange={setQuery}
+                  onClear={() => setQuery("")}
+                />
+                <TokenTable
+                  tokens={filtered}
+                  theme={theme}
+                  darkMode={darkMode}
+                />
+                <TokenList
+                  tokens={filtered}
+                  theme={theme}
+                  darkMode={darkMode}
+                />
+              </>
+            )}
 
-          {/* ===== PORTFOLIO ===== */}
-          {activeView === "portfolio" && (
-            <div>
-              <h2 style={{ marginBottom: 16 }}>Portfolio</h2>
-              <PortfolioTable />
-            </div>
-          )}
+            {/* ===== PORTFOLIO ===== */}
+            {activeView === "portfolio" && (
+              <div>
+                <h2 style={{ marginBottom: 16 }}>Portfolio</h2>
+                <PortfolioTable />
+              </div>
+            )}
 
-          {/* ===== REWARDS ===== */}
-          {activeView === "rewards" && (
-            <RewardsSection theme={theme} darkMode={darkMode} />
-          )}
+            {/* ===== REWARDS ===== */}
+            {activeView === "rewards" && (
+              <RewardsSection theme={theme} darkMode={darkMode} />
+            )}
 
-          <style>{`
+            <style>{`
             @media (max-width: 768px) {
               .desktop-table { display: none !important; }
               .mobile-list { display: flex !important; }
@@ -120,6 +135,7 @@ const MainPage: React.FC = () => {
               .mobile-list { display: none !important; }
             }
           `}</style>
+          </div>
         </div>
         <CreateMemeModal
           isOpen={showCreate}

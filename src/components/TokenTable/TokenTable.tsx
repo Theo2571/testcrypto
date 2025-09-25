@@ -1,6 +1,6 @@
-// @ts-nocheck
 import React from "react";
 import TokenCard from "../TokenCard/TokenCard";
+import NoDataPlaceholder from "../NoDataPlaceholder";
 
 interface TokenTableProps {
   tokens: any[];
@@ -27,9 +27,7 @@ const TokenTable: React.FC<TokenTableProps> = ({ tokens, darkMode, theme }) => {
   );
 
   if (visible.length === 0) {
-    return (
-      <div style={{ padding: 20, color: theme.secondary }}>Нет данных</div>
-    );
+    return <NoDataPlaceholder darkMode={darkMode} theme={theme} />;
   }
 
   return (

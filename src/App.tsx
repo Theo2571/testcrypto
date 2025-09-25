@@ -55,15 +55,6 @@ const App: React.FC = () => (
               <Route exact path="/tab1">
                 <Tab1 />
               </Route>
-              <Route exact path="/tab2">
-                <Tab2 />
-              </Route>
-              <Route path="/tab3">
-                <Tab3 />
-              </Route>
-              <Route path="/tab4">
-                <Tab4 />
-              </Route>
               <Route exact path="/">
                 <Redirect to="/main" />
               </Route>
