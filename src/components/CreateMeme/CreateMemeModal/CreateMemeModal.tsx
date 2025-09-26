@@ -13,11 +13,14 @@ import { useTheme } from "../../../context/ThemeContext";
 import CreateMeme from "../CreateMeme";
 import { useSolana } from "../../../context/SolanaContext";
 import toast from "react-hot-toast";
+import { usePrivyAuth } from "../../../context/PrivyContext";
 
 type Props = { isOpen: boolean; onClose: () => void };
 
 const CreateMemeModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { theme } = useTheme();
+  const { authenticated } = usePrivyAuth();
+
   const { create, loading, error } = useCreateMeme();
   const { walletState, connectWallet } = useSolana();
 
@@ -63,7 +66,7 @@ const CreateMemeModal: React.FC<Props> = ({ isOpen, onClose }) => {
           {/* 👇 остальная форма */}
           <CreateMeme
             onSubmit={async (data: any) => {
-              if (!walletState.publicKey) {
+              if (!authenticated) {
                 toast.error("Подключи кошелек");
                 await connectWallet();
                 return;
